@@ -1,0 +1,95 @@
+{
+  "app": {
+    "name": "مَدَد",
+    "fullName": "مَدَد · MADAD",
+    "skipToContent": "تخطَّ إلى المحتوى"
+  },
+  "nav": {
+    "main": "التنقل الرئيسي",
+    "search": "البحث",
+    "pharmacies": "الصيدليات",
+    "directory": "الدليل",
+    "favorites": "المفضلة",
+    "account": "حسابي",
+    "forOrganizations": "للمؤسسات",
+    "login": "تسجيل الدخول",
+    "menu": "القائمة",
+    "breadcrumb": "مسار التنقل"
+  },
+  "lang": {
+    "short": "EN",
+    "label": "Switch to English"
+  },
+  "home": {
+    "title": "ابحث عن دوائك واعرف أين أُبلغ عن توفره",
+    "subtitle": "معلومات من الصيدليات مع وقت آخر تحديث"
+  },
+  "status": {
+    "available": "متوفر",
+    "limited": "كمية محدودة",
+    "needs_update": "يحتاج تحديث",
+    "unconfirmed": "غير مؤكد",
+    "unavailable": "غير متوفر",
+    "pending_review": "قيد المراجعة"
+  },
+  "freshness": {
+    "updated": "حُدّث {{time}}",
+    "lastReport": "آخر بلاغ: {{status}}"
+  },
+  "disclaimer": {
+    "full": "تعتمد معلومات التوفر على آخر تحديث أبلغت عنه الصيدلية. يُرجى الاتصال بالصيدلية أو زيارتها للتأكد. يخضع الصرف لتقدير الصيدلي المهني والأنظمة المعمول بها.",
+    "short": "تعتمد معلومات التوفر على آخر تحديث أبلغت عنه الصيدلية. اتصل أو زر الصيدلية للتأكد."
+  },
+  "offline": {
+    "banner": "أنت غير متصل",
+    "lastSync": "آخر مزامنة {{time}}"
+  },
+  "demo": {
+    "badge": "بيانات تجريبية"
+  },
+  "common": {
+    "loading": "جارٍ التحميل",
+    "retry": "إعادة المحاولة",
+    "back": "رجوع",
+    "close": "إغلاق",
+    "underConstruction": "هذه الشاشة قيد البناء",
+    "underConstructionHint": "ستُنفَّذ في مرحلة لاحقة حسب خطة التنفيذ."
+  },
+  "notFound": {
+    "title": "الصفحة غير موجودة",
+    "body": "ربما تغيّر الرابط أو حُذفت الصفحة.",
+    "home": "العودة للرئيسية"
+  },
+  "portal": {
+    "pharmacy": {
+      "title": "بوابة الصيدلية",
+      "nav": {
+        "dashboard": "لوحة التحكم",
+        "update": "تحديث التوفر",
+        "medicines": "أدويتي",
+        "add": "إضافة دواء",
+        "history": "السجل",
+        "inquiries": "الاستفسارات",
+        "profile": "ملف الصيدلية",
+        "team": "الفريق",
+        "settings": "الإعدادات"
+      }
+    },
+    "admin": {
+      "title": "لوحة الإدارة",
+      "nav": {
+        "overview": "نظرة عامة",
+        "verification": "التوثيق",
+        "organizations": "المؤسسات",
+        "catalog": "الكتالوج",
+        "dataQuality": "جودة البيانات",
+        "unmetDemand": "الطلب غير الملبّى",
+        "reports": "البلاغات",
+        "moderation": "مراجعة المحتوى",
+        "users": "المستخدمون",
+        "audit": "سجل التدقيق",
+        "settings": "الإعدادات"
+      }
+    }
+  }
+}

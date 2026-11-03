@@ -1,0 +1,95 @@
+{
+  "app": {
+    "name": "MADAD",
+    "fullName": "MADAD · مَدَد",
+    "skipToContent": "Skip to content"
+  },
+  "nav": {
+    "main": "Main navigation",
+    "search": "Search",
+    "pharmacies": "Pharmacies",
+    "directory": "Directory",
+    "favorites": "Favorites",
+    "account": "Account",
+    "forOrganizations": "For organizations",
+    "login": "Log in",
+    "menu": "Menu",
+    "breadcrumb": "Breadcrumb"
+  },
+  "lang": {
+    "short": "عربي",
+    "label": "التبديل إلى العربية"
+  },
+  "home": {
+    "title": "Find your medicine and see where it was reported available",
+    "subtitle": "Information from pharmacies, with the time of the last update"
+  },
+  "status": {
+    "available": "Available",
+    "limited": "Limited quantity",
+    "needs_update": "Needs update",
+    "unconfirmed": "Unconfirmed",
+    "unavailable": "Unavailable",
+    "pending_review": "Under review"
+  },
+  "freshness": {
+    "updated": "Updated {{time}}",
+    "lastReport": "Last report: {{status}}"
+  },
+  "disclaimer": {
+    "full": "Availability is based on the pharmacy's latest reported update. Please call or visit to confirm. Dispensing is subject to the pharmacist's professional judgement and applicable regulations.",
+    "short": "Availability is based on the pharmacy's latest reported update. Please call or visit to confirm."
+  },
+  "offline": {
+    "banner": "You are offline",
+    "lastSync": "Last synced {{time}}"
+  },
+  "demo": {
+    "badge": "Demo data"
+  },
+  "common": {
+    "loading": "Loading",
+    "retry": "Try again",
+    "back": "Back",
+    "close": "Close",
+    "underConstruction": "This screen is under construction",
+    "underConstructionHint": "It will be built in a later phase of the plan."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "The link may have changed or the page was removed.",
+    "home": "Back to home"
+  },
+  "portal": {
+    "pharmacy": {
+      "title": "Pharmacy portal",
+      "nav": {
+        "dashboard": "Dashboard",
+        "update": "Update availability",
+        "medicines": "My medicines",
+        "add": "Add medicine",
+        "history": "History",
+        "inquiries": "Inquiries",
+        "profile": "Pharmacy profile",
+        "team": "Team",
+        "settings": "Settings"
+      }
+    },
+    "admin": {
+      "title": "Admin",
+      "nav": {
+        "overview": "Overview",
+        "verification": "Verification",
+        "organizations": "Organizations",
+        "catalog": "Catalog",
+        "dataQuality": "Data quality",
+        "unmetDemand": "Unmet demand",
+        "reports": "Reports",
+        "moderation": "Moderation",
+        "users": "Users",
+        "audit": "Audit log",
+        "settings": "Settings"
+      }
+    }
+  }
+}
