@@ -38,6 +38,13 @@ export function requireOwner(orgId: string) {
   if (u.memberships.find((m) => m.orgId === orgId)?.memberRole !== 'owner') throw new AccessError('forbidden');
 }
 
+/** is_platform(role): reviewer covers review screens; super_admin also covers settings, users and audit. */
+export function requirePlatform(role: 'reviewer' | 'super_admin') {
+  const u = requireUser();
+  const ok = role === 'reviewer' ? u.platformRole === 'reviewer' || u.platformRole === 'super_admin' : u.platformRole === 'super_admin';
+  if (!ok) throw new AccessError('forbidden');
+}
+
 export function toMe(u: UserRow, s: MockState = store.get()): Me {
   const memberships: Membership[] = u.memberships.flatMap((m) => {
     const o = s.orgs.find((x) => x.id === m.orgId);

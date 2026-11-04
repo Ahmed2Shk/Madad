@@ -2,9 +2,12 @@ import { QueryClient } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import { del, get, set } from 'idb-keyval';
-import { useEffect, type ReactNode } from 'react';
+import { lazy, Suspense, useEffect, type ReactNode } from 'react';
 import { DemoBadge, ToastProvider } from '../components/ui';
 import { getRepos } from '../data';
+
+// Statically false in a production build (VITE_DEMO unset), so the switcher is not even bundled.
+const RoleSwitcher = import.meta.env.VITE_DEMO === 'true' ? lazy(() => import('../features/demo/RoleSwitcher')) : null;
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -53,6 +56,11 @@ export function Providers({ children }: { children: ReactNode }) {
         <RepoSync />
         {children}
         <DemoBadge />
+        {RoleSwitcher && (
+          <Suspense fallback={null}>
+            <RoleSwitcher />
+          </Suspense>
+        )}
       </ToastProvider>
     </PersistQueryClientProvider>
   );

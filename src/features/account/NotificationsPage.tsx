@@ -33,6 +33,10 @@ function NotificationText({ n }: { n: AppNotification }) {
   if (n.kind === 'inquiry_reply') {
     return <>{t('notifications.inquiryReply', { org: lang === 'en' ? n.data.orgNameEn || n.data.orgNameAr : n.data.orgNameAr, subject: n.data.subject })}</>;
   }
+  if (n.kind === 'verification') {
+    return <>{t(`notifications.verification.${n.data.status}`, { org: lang === 'en' ? n.data.orgNameEn || n.data.orgNameAr : n.data.orgNameAr })}</>;
+  }
+  if (n.data.key) return <>{t(`notifications.platform.${n.data.key}`)}</>;
   return <>{n.data.text ?? ''}</>;
 }
 

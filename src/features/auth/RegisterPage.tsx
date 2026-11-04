@@ -18,10 +18,11 @@ import {
 } from '../../components/ui';
 import { governorateById, type DocumentMeta, type OrgType, type RegistrationDraft } from '../../data';
 import { useMe, useRegister } from '../../data/portalQueries';
+import { useSettings } from '../../data/queries';
+import { REQUIRED_DOCS_DEFAULT } from '../../data/requiredDocs';
 import { useLang } from '../../hooks/useLang';
 import { readJson, safeStorage } from '../../lib/storage';
 import { cn } from '../../lib/cn';
-import { REQUIRED_DOCS } from './requiredDocs';
 
 const MapPicker = lazy(() => import('../../components/ui/MapPicker'));
 const TYPES: OrgType[] = ['pharmacy', 'hospital', 'medical_point', 'humanitarian'];
@@ -108,7 +109,8 @@ function Wizard({ type }: { type: OrgType }) {
 
   const steps = [t('register.stepAccount'), t('register.stepOrg'), t('register.stepDocs'), t('register.stepReview')];
   const gov = governorateById(draft.org.governorate);
-  const required = REQUIRED_DOCS[type];
+  const settings = useSettings();
+  const required = (settings.data?.requiredDocs ?? REQUIRED_DOCS_DEFAULT)[type];
   const docFor = (docType: string) => draft.documents.find((d) => d.docType === docType) ?? null;
 
   const setAccount = (patch: Partial<Draft['account']>) => setDraft((d) => ({ ...d, account: { ...d.account, ...patch } }));

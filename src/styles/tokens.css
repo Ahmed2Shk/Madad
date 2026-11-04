@@ -36,6 +36,11 @@
   --color-review-text: #1f5f8b;
   --color-review-bg: #e4eef7;
 
+  /* Chart series (dataviz reference palette slots 1–2, validated for CVD and contrast on light).
+     Status charts reuse the status icon colors above, always with a legend. */
+  --color-chart-1: #2a78d6;
+  --color-chart-2: #eb6834;
+
   /* Type: Arabic first, Latin falls through to Inter via unicode-range */
   --font-sans: 'IBM Plex Sans Arabic', 'Inter', 'Noto Sans Arabic', system-ui, sans-serif;
   --font-weight-normal: 400;

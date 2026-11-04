@@ -29,8 +29,36 @@ import usersSeed from './seed/users.json';
 import viewsSeed from './seed/page_views.json';
 import inquiriesSeed from './seed/inquiries.json';
 import requestsSeed from './seed/medicine_requests.json';
+import reportsSeed from './seed/reports.json';
+import providersSeed from './seed/providers.json';
+import { REQUIRED_DOCS_DEFAULT } from '../requiredDocs';
 
 export type { VerificationStatus };
+
+export interface ReportRow extends NewReport {
+  id: string;
+  createdAt: string;
+  status: 'new' | 'in_review' | 'resolved' | 'rejected';
+  adminNote: string | null;
+  resolution: string | null;
+}
+
+/** Same shape as a row of public/catalog.json. */
+export interface CatalogMedicineRow {
+  id: string;
+  name_ar: string;
+  name_en: string;
+  generic_name: string;
+  strength: string;
+  strength_en?: string | null;
+  dosage_form: string;
+  pack_size: string;
+  pack_size_en?: string | null;
+  manufacturer: string | null;
+  barcode: string | null;
+  aliases: string[];
+  category_id: string;
+}
 
 export interface OrgRow {
   id: string;
@@ -52,6 +80,8 @@ export interface OrgRow {
   events: VerificationEvent[];
   documents: (DocumentMeta & { status: 'pending' | 'accepted' | 'rejected' })[];
   invitations: { email: string; role: MemberRole; perms: Perms; createdAt: string }[];
+  /** Set by AD-03 "تعليق"; the org disappears from search at once but its data stays for audit. */
+  suspendedReason: string | null;
   isDemo: boolean;
   infoUpdatedAt: string;
   /** organization_private: never leaves the mock repo through a public method. */
@@ -139,14 +169,18 @@ type Owned<T> = T & { userId: string };
 export interface MockState {
   version: number;
   seededAt: string;
-  settings: PublicSettings;
+  settings: PublicSettings & { programConfirmDays: number; rejectionReasons: string[] };
   orgs: OrgRow[];
   stock: StockRow[];
   stockPrivate: StockPrivateRow[];
   stockHistory: StockHistoryRow[];
   searchLogs: SearchLogRow[];
   pageViews: { pharmacyId: string; day: string; count: number }[];
-  reports: (NewReport & { id: string; createdAt: string; status: 'new' })[];
+  reports: ReportRow[];
+  /** Medicines added by the MADAD team on top of the shipped catalog (AD-04). */
+  catalogAdditions: CatalogMedicineRow[];
+  /** Search aliases edited in AD-04 (e.g. «بنادول» → paracetamol). */
+  aliasOverrides: Record<string, string[]>;
   medicineRequests: (MedicineRequest & { orgId: string })[];
   users: UserRow[];
   sessionUserId: string | null;
@@ -158,7 +192,7 @@ export interface MockState {
 }
 
 const STORAGE_KEY = 'madad.mock.v1';
-const VERSION = 2;
+const VERSION = 3;
 
 const ago = (now: number, minutes: number | null) =>
   minutes == null ? null : new Date(now - minutes * 60_000).toISOString();
@@ -166,12 +200,50 @@ const dayKey = (d: Date) => d.toISOString().slice(0, 10);
 
 export const newId = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
 
+/** Service providers (phase 5 portal) are loaded now so admin counts and memberships are complete. */
+function toProviderOrg(p: (typeof providersSeed)[number], now: number): OrgRow {
+  return {
+    id: p.id,
+    type: p.type as OrgType,
+    nameAr: p.name_ar,
+    nameEn: p.name_en,
+    governorate: p.governorate,
+    area: p.area,
+    addressText: p.address_text,
+    landmark: p.landmark,
+    locationPrecision: p.location_precision as LocationPrecision,
+    phone: p.phone,
+    whatsapp: p.whatsapp,
+    hours: p.hours as Hours,
+    description: p.description,
+    temporarilyClosed: null,
+    verificationStatus: p.verification_status as VerificationStatus,
+    reviewerNote: null,
+    events: [{ action: 'approved', note: null, createdAt: new Date(now - 30 * 86_400_000).toISOString() }],
+    documents: [],
+    invitations: [],
+    suspendedReason: null,
+    isDemo: p.is_demo,
+    infoUpdatedAt: new Date(now - 10 * 86_400_000).toISOString(),
+    private: { licenseNo: p.private.license_no, exactLat: p.private.exact_lat, exactLng: p.private.exact_lng, contactPerson: p.private.contact_person },
+  };
+}
+
 export function seedState(now = Date.now()): MockState {
   return {
     version: VERSION,
     seededAt: new Date(now).toISOString(),
-    settings: { freshHours: 24, expireHours: 72, priceMaxDays: 14 },
-    orgs: pharmaciesSeed.map((p) => ({
+    settings: {
+      freshHours: 24,
+      expireHours: 72,
+      priceMaxDays: 14,
+      programConfirmDays: 7,
+      disclaimerAr: null,
+      disclaimerEn: null,
+      requiredDocs: REQUIRED_DOCS_DEFAULT,
+      rejectionReasons: ['وثائق غير واضحة أو ناقصة', 'الرخصة غير سارية', 'البيانات لا تطابق الوثائق', 'مؤسسة مكررة'],
+    },
+    orgs: [...pharmaciesSeed.map((p) => ({
       id: p.id,
       type: 'pharmacy' as const,
       nameAr: p.name_ar,
@@ -189,8 +261,9 @@ export function seedState(now = Date.now()): MockState {
       verificationStatus: p.verification_status as VerificationStatus,
       reviewerNote: p.verification_status === 'needs_info' ? 'صورة ترخيص الصيدلية غير واضحة، يُرجى رفعها مجددًا.' : null,
       events: [{ action: 'submitted' as const, note: null, createdAt: ago(now, p.info_updated_minutes_ago)! }],
-      documents: [],
+      documents: (p.documents ?? []).map((d) => ({ docType: d.doc_type, fileName: d.file_name, size: d.size, mime: d.mime, status: d.status as 'pending' | 'accepted' | 'rejected' })),
       invitations: [],
+      suspendedReason: null,
       isDemo: p.is_demo,
       infoUpdatedAt: ago(now, p.info_updated_minutes_ago)!,
       private: {
@@ -199,7 +272,7 @@ export function seedState(now = Date.now()): MockState {
         exactLng: p.private.exact_lng,
         contactPerson: p.private.contact_person,
       },
-    })),
+    })), ...providersSeed.map((p) => toProviderOrg(p, now))],
     stock: stockSeed.map((s) => ({
       pharmacyId: s.pharmacy_id,
       medicineId: s.medicine_id,
@@ -220,7 +293,8 @@ export function seedState(now = Date.now()): MockState {
       id: `h-seed-${i}`,
       pharmacyId: h.pharmacy_id,
       medicineId: h.medicine_id,
-      action: 'update' as const,
+      action: h.action as StockHistoryRow['action'],
+      count: 'count' in h ? (h.count as number) : undefined,
       oldStatus: h.old_status as Reported,
       newStatus: h.new_status as Reported,
       oldPrice: h.old_price,
@@ -240,7 +314,20 @@ export function seedState(now = Date.now()): MockState {
       day: dayKey(new Date(now - v.days_ago * 86_400_000)),
       count: v.count,
     })),
-    reports: [],
+    reports: reportsSeed.map((r) => ({
+      id: r.id,
+      entityType: r.entity_type as NewReport['entityType'],
+      entityId: r.entity_id,
+      reason: r.reason as NewReport['reason'],
+      details: r.details,
+      governorate: r.governorate,
+      status: r.status as ReportRow['status'],
+      adminNote: null,
+      resolution: null,
+      createdAt: ago(now, r.minutes_ago)!,
+    })),
+    catalogAdditions: [],
+    aliasOverrides: {},
     medicineRequests: requestsSeed.map((r) => ({
       id: r.id,
       orgId: r.org_id,

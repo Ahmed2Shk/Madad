@@ -72,6 +72,7 @@ export const registrationRepo: RegistrationRepo = {
         events: [{ action: 'submitted', note: null, createdAt: now }],
         documents: draft.documents.map((d) => ({ ...d, status: 'pending' as const })),
         invitations: [],
+        suspendedReason: null,
         // Real names are never seeded, but anything registered in the demo is still demo data.
         isDemo: true,
         infoUpdatedAt: now,

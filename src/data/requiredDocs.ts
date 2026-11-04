@@ -1,7 +1,7 @@
-import type { OrgType } from '../../data';
+import type { OrgType } from './types';
 
-/** Documents per organization type (SPEC §7 A-05 step 3; the admin edits this list in AD-11, phase 3). */
-export const REQUIRED_DOCS: Record<OrgType, string[]> = {
+/** Documents per organization type (SPEC §7 A-05 step 3). The admin can change this list in AD-11. */
+export const REQUIRED_DOCS_DEFAULT: Record<OrgType, string[]> = {
   pharmacy: ['practice_license', 'pharmacy_license', 'contact_id'],
   hospital: ['facility_license', 'contact_id'],
   medical_point: ['authorization_letter', 'contact_id'],

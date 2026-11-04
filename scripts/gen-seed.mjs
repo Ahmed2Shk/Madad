@@ -439,6 +439,33 @@ const inquiries = [
 // Catalog requests waiting for review (PH-04 → AD-04).
 const medicine_requests = [
   { id: 'req-1', org_id: 'ph-nour', name_ar: 'مونتيلوكاست 10', name_en: 'Montelukast 10', generic_name: 'Montelukast', strength: '10 ملغ', dosage_form: 'tablet', pack_size: '30 قرص', manufacturer: null, barcode: null, category_id: 'respiratory', status: 'pending', minutes_ago: 2 * DAY },
+  // Near-duplicate of paracetamol-500, so AD-04 shows "قد يكرر دواءً موجودًا".
+  { id: 'req-2', org_id: 'ph-shifa', name_ar: 'باراسيتامول 500 ملغ', name_en: 'Paracetamol 500mg', generic_name: 'Paracetamol', strength: '500 ملغ', dosage_form: 'tablet', pack_size: '24 قرص', manufacturer: null, barcode: null, category_id: 'pain_fever', status: 'pending', minutes_ago: 9 * HOUR },
+];
+
+// ---------------------------------------------------------------- admin data (phase 3)
+// Documents for the applications waiting in AD-02 (metadata only in mock mode).
+const pharmacyDocs = (id) => [
+  { doc_type: 'practice_license', file_name: `${id}-practice-license.pdf`, size: 182_000, mime: 'application/pdf', status: 'pending' },
+  { doc_type: 'pharmacy_license', file_name: `${id}-pharmacy-license.jpg`, size: 640_000, mime: 'image/jpeg', status: id === 'ph-wafa' ? 'rejected' : 'pending' },
+  { doc_type: 'contact_id', file_name: `${id}-contact-id.jpg`, size: 410_000, mime: 'image/jpeg', status: 'pending' },
+];
+for (const p of pharmacies) if (p.verification_status !== 'approved') p.documents = pharmacyDocs(p.id);
+// AD-02 warns when a phone or licence is already used by another organization.
+pharmacies.find((p) => p.id === 'ph-bushra').phone = pharmacies.find((p) => p.id === 'ph-zaytoon').phone;
+
+// A pharmacy that mostly taps "تأكيد الكل" (AD-05: possible box-ticking).
+for (let d = 1; d <= 9; d++)
+  stock_history.push({ pharmacy_id: 'ph-salam', medicine_id: null, action: 'confirm_all', old_status: null, new_status: null, old_price: null, new_price: null, actor_id: null, count: 27, minutes_ago: d * DAY + between(0, 6 * HOUR) });
+
+// Reports from patients (P-13 → AD-07). One conflicts with a same-day "available" report (AD-05).
+const nourParacetamol = stock.find((s) => s.pharmacy_id === 'ph-nour' && s.medicine_id === 'paracetamol-500');
+const reports = [
+  { id: 'rep-1', entity_type: 'availability', entity_id: 'ph-nour/paracetamol-500', reason: 'wrong_availability', details: 'ذهبت للصيدلية وقالوا إنه غير متوفر.', governorate: 'khan_younis', status: 'new', minutes_ago: Math.max(1, nourParacetamol.reported_minutes_ago - 2) },
+  { id: 'rep-2', entity_type: 'pharmacy', entity_id: 'ph-salam', reason: 'closed_or_moved', details: 'الصيدلية مغلقة منذ يومين.', governorate: 'rafah', status: 'new', minutes_ago: 5 * HOUR },
+  { id: 'rep-3', entity_type: 'pharmacy', entity_id: 'ph-zaytoon', reason: 'wrong_phone', details: 'الرقم لا يرد.', governorate: 'deir_al_balah', status: 'in_review', minutes_ago: DAY },
+  { id: 'rep-4', entity_type: 'medicine', entity_id: 'insulin-glargine', reason: 'shortage', details: '', governorate: 'gaza', status: 'new', minutes_ago: 3 * HOUR },
+  { id: 'rep-5', entity_type: 'pharmacy', entity_id: 'ph-hayat', reason: 'misleading', details: 'الأسعار المعروضة غير صحيحة.', governorate: 'ramallah', status: 'resolved', minutes_ago: 4 * DAY },
 ];
 
 // ---------------------------------------------------------------- write
@@ -459,6 +486,7 @@ write('page_views.json', page_views);
 write('stock_history.json', stock_history);
 write('inquiries.json', inquiries);
 write('medicine_requests.json', medicine_requests);
+write('reports.json', reports);
 
 // Public offline catalog for suggestions (SPEC §11): approved medicines only, compact keys.
 writeFileSync(

@@ -4,6 +4,7 @@ import type { FreshnessSettings, Reported } from '../lib/freshness';
 export type { Reported } from '../lib/freshness';
 import type { Hours } from '../lib/hours';
 import type { Searchable } from '../lib/search';
+import type { SuppressedMatrix } from '../lib/suppression';
 
 export type GovId = string;
 /** 'all' searches every governorate. */
@@ -108,7 +109,13 @@ export interface StockChange {
   clientUpdatedAt: string;
 }
 
-export type PublicSettings = FreshnessSettings;
+/** settings rows with is_public = true (SPEC §13). */
+export interface PublicSettings extends FreshnessSettings {
+  /** Admin-edited disclaimer; null = the default text (SPEC §2 rule 10). */
+  disclaimerAr: string | null;
+  disclaimerEn: string | null;
+  requiredDocs: Record<OrgType, string[]>;
+}
 
 export interface SearchLogEntry {
   query: string;
@@ -240,6 +247,8 @@ export interface ReportsRepo {
 }
 
 export interface Repos {
+  admin: AdminRepo;
+  demo: DemoRepo;
   auth: AuthRepo;
   registration: RegistrationRepo;
   pharmacyPortal: PharmacyPortalRepo;
@@ -466,4 +475,170 @@ export interface PharmacyPortalRepo {
   invite(orgId: string, email: string, role: MemberRole): Promise<void>;
   updateMember(orgId: string, key: string, patch: { role?: MemberRole; perms?: Perms }): Promise<void>;
   removeMember(orgId: string, key: string): Promise<void>;
+}
+
+// ---------------------------------------------------------------- admin (phase 3)
+
+export interface AdminOverview {
+  verifiedPharmacies: number;
+  verifiedProviders: number;
+  pendingVerifications: number;
+  catalogSize: number;
+  /** Share of listed reports that are still fresh, 0..1. */
+  freshRatio: number;
+  searchesToday: number;
+  failedToday: number;
+  openReports: number;
+  daily: { date: string; searches: number; failed: number }[];
+  freshnessByGov: { governorate: GovId; fresh: number; stale: number; expired: number }[];
+  topUnmet: { medicineId: string; count: number }[];
+  byGov: { governorate: GovId; pharmacies: number; stalePharmacies: number; failedSearches: number }[];
+  pending: { pharmacies: number; medicines: number; reports: number; announcements: number };
+}
+
+export type ReviewDecision = 'approve' | 'needs_info' | 'reject';
+export type DocumentStatus = 'pending' | 'accepted' | 'rejected';
+
+export interface VerificationItem {
+  orgId: string;
+  type: OrgType;
+  nameAr: string;
+  nameEn: string;
+  governorate: GovId;
+  area: string;
+  addressText: string;
+  landmark: string | null;
+  phone: string;
+  whatsapp: string | null;
+  licenseNo: string;
+  contactPerson: string;
+  exactLat: number | null;
+  exactLng: number | null;
+  status: VerificationStatus;
+  submittedAt: string;
+  reviewerNote: string | null;
+  documents: (DocumentMeta & { status: DocumentStatus })[];
+  events: VerificationEvent[];
+  /** Same phone or licence as another organization (SPEC §10 AD-02). */
+  warnings: { field: 'phone' | 'license'; otherOrgId: string; otherNameAr: string; otherNameEn: string }[];
+}
+
+export interface AdminOrgRow {
+  id: string;
+  type: OrgType;
+  nameAr: string;
+  nameEn: string;
+  governorate: GovId;
+  verificationStatus: VerificationStatus;
+  suspendedReason: string | null;
+  listed: number;
+  lastStockUpdateAt: string | null;
+  members: number;
+}
+
+export interface RequestReview extends MedicineRequest {
+  orgId: string;
+  orgNameAr: string;
+  orgNameEn: string;
+  /** Fuzzy matches in the catalog, best first. */
+  duplicates: { medicineId: string; score: number }[];
+}
+
+export interface QualityRow {
+  pharmacyId: string;
+  nameAr: string;
+  nameEn: string;
+  governorate: GovId;
+  listed: number;
+  freshRatio: number;
+  lastUpdate: string | null;
+  reportsAgainst: number;
+  /** confirm_all actions ÷ all save actions over 30 days; high = possible box-ticking. */
+  confirmAllRatio: number;
+}
+
+export interface ConflictRow {
+  pharmacyId: string;
+  medicineId: string;
+  reportedAt: string;
+  reportId: string;
+  reportedWrongAt: string;
+}
+
+export interface DataQuality {
+  byGov: { governorate: GovId; fresh: number; stale: number; expired: number }[];
+  pharmacies: QualityRow[];
+  conflicts: ConflictRow[];
+}
+
+export interface UnmetDemand {
+  governorates: GovId[];
+  medicineIds: string[];
+  /** Failed searches per medicine × governorate, already suppressed on the server (cells under 5, revealing totals). */
+  matrix: SuppressedMatrix;
+  /** Frequent search texts that matched nothing in the catalog. */
+  unmatched: { query: string; count: number }[];
+  failedTotal: number;
+}
+
+export type ReportStatus = 'new' | 'in_review' | 'resolved' | 'rejected';
+
+export interface AdminReport extends NewReport {
+  id: string;
+  status: ReportStatus;
+  adminNote: string | null;
+  resolution: string | null;
+  createdAt: string;
+}
+
+export interface AuditEntry {
+  id: string;
+  actorName: string;
+  actorRole: string;
+  action: string;
+  entityType: string;
+  entityId: string;
+  oldValue: unknown;
+  newValue: unknown;
+  createdAt: string;
+}
+
+export interface PlatformSettings extends PublicSettings {
+  programConfirmDays: number;
+  rejectionReasons: string[];
+}
+
+export interface AdminRepo {
+  overview(): Promise<AdminOverview>;
+  verificationQueue(): Promise<VerificationItem[]>;
+  /** review_org(org_id, decision, note): notes are required for needs_info and reject. */
+  reviewOrg(orgId: string, decision: ReviewDecision, note: string): Promise<void>;
+  setDocumentStatus(orgId: string, fileName: string, status: DocumentStatus): Promise<void>;
+  organizations(): Promise<AdminOrgRow[]>;
+  suspendOrg(orgId: string, reason: string): Promise<void>;
+  reactivateOrg(orgId: string): Promise<void>;
+  catalog(): Promise<Catalog>;
+  addCatalogMedicine(input: MedicineRequestInput & { aliases: string[] }): Promise<string>;
+  setAliases(medicineId: string, aliases: string[]): Promise<void>;
+  importCatalog(rows: (MedicineRequestInput & { aliases: string[] })[]): Promise<number>;
+  requests(): Promise<RequestReview[]>;
+  /** review_medicine(id, decision, merge_into). */
+  reviewRequest(id: string, decision: 'approve' | 'merge' | 'reject', mergeInto?: string): Promise<void>;
+  dataQuality(): Promise<DataQuality>;
+  remindPharmacy(pharmacyId: string): Promise<void>;
+  /** Hides one report from the public with a reason. There is deliberately no "confirm availability" (SPEC §2 rule 5). */
+  hideReport(pharmacyId: string, medicineId: string, reason: string): Promise<void>;
+  /** unmet_demand(from, to): reviewers only; aggregated, no identities. */
+  unmetDemand(days: number, categoryId: string | 'all', region: 'gaza' | 'west_bank'): Promise<UnmetDemand>;
+  reports(): Promise<AdminReport[]>;
+  updateReport(id: string, patch: { status?: ReportStatus; adminNote?: string; resolution?: string }): Promise<void>;
+  audit(): Promise<AuditEntry[]>;
+  settings(): Promise<PlatformSettings>;
+  updateSettings(patch: Partial<PlatformSettings>): Promise<void>;
+}
+
+/** Demo mode only (VITE_DEMO=true): the floating role switcher and data reset (SPEC §4). */
+export interface DemoRepo {
+  signInAs(userId: string | null): Promise<Me | null>;
+  reset(): Promise<void>;
 }

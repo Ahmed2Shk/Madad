@@ -46,5 +46,14 @@
 {"pharmacy_id":"ph-shifa","medicine_id":"ferrous-sulfate","action":"update","old_status":"limited","new_status":"available","old_price":null,"new_price":null,"actor_id":"u-ph-staff","minutes_ago":557},
 {"pharmacy_id":"ph-shifa","medicine_id":"carbamazepine-200","action":"update","old_status":"limited","new_status":"available","old_price":null,"new_price":null,"actor_id":"u-ph-staff","minutes_ago":417},
 {"pharmacy_id":"ph-shifa","medicine_id":"loratadine-10","action":"update","old_status":"unavailable","new_status":"available","old_price":null,"new_price":10.6,"actor_id":"u-ph-staff","minutes_ago":783},
-{"pharmacy_id":"ph-shifa","medicine_id":"azithromycin-250","action":"update","old_status":"available","new_status":"unavailable","old_price":null,"new_price":22.66,"actor_id":"u-ph-staff","minutes_ago":581}
+{"pharmacy_id":"ph-shifa","medicine_id":"azithromycin-250","action":"update","old_status":"available","new_status":"unavailable","old_price":null,"new_price":22.66,"actor_id":"u-ph-staff","minutes_ago":581},
+{"pharmacy_id":"ph-salam","medicine_id":null,"action":"confirm_all","old_status":null,"new_status":null,"old_price":null,"new_price":null,"actor_id":null,"count":27,"minutes_ago":1710},
+{"pharmacy_id":"ph-salam","medicine_id":null,"action":"confirm_all","old_status":null,"new_status":null,"old_price":null,"new_price":null,"actor_id":null,"count":27,"minutes_ago":3164},
+{"pharmacy_id":"ph-salam","medicine_id":null,"action":"confirm_all","old_status":null,"new_status":null,"old_price":null,"new_price":null,"actor_id":null,"count":27,"minutes_ago":4363},
+{"pharmacy_id":"ph-salam","medicine_id":null,"action":"confirm_all","old_status":null,"new_status":null,"old_price":null,"new_price":null,"actor_id":null,"count":27,"minutes_ago":6012},
+{"pharmacy_id":"ph-salam","medicine_id":null,"action":"confirm_all","old_status":null,"new_status":null,"old_price":null,"new_price":null,"actor_id":null,"count":27,"minutes_ago":7243},
+{"pharmacy_id":"ph-salam","medicine_id":null,"action":"confirm_all","old_status":null,"new_status":null,"old_price":null,"new_price":null,"actor_id":null,"count":27,"minutes_ago":8942},
+{"pharmacy_id":"ph-salam","medicine_id":null,"action":"confirm_all","old_status":null,"new_status":null,"old_price":null,"new_price":null,"actor_id":null,"count":27,"minutes_ago":10124},
+{"pharmacy_id":"ph-salam","medicine_id":null,"action":"confirm_all","old_status":null,"new_status":null,"old_price":null,"new_price":null,"actor_id":null,"count":27,"minutes_ago":11627},
+{"pharmacy_id":"ph-salam","medicine_id":null,"action":"confirm_all","old_status":null,"new_status":null,"old_price":null,"new_price":null,"actor_id":null,"count":27,"minutes_ago":13162}
 ]

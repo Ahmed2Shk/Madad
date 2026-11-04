@@ -1,6 +1,6 @@
 // Mock implementations of the repositories (SPEC §12). Public reads go through the same
 // rules as the Postgres views: approved orgs only, listed and not hidden, no quantity, no reporter.
-import { fetchCatalog, mapCatalog, type RawCatalog } from '../catalog';
+import { fetchRawCatalog } from '../catalog';
 import { matchCatalog } from '../../lib/search';
 import { normalizeArabic } from '../../lib/normalizeArabic';
 import type {
@@ -20,11 +20,10 @@ import type {
 import { AccessError, currentUser, hasOrgPerm, latency, requireOrgPerm, requireUser } from './access';
 import { authRepo, registrationRepo } from './authRepos';
 import { pharmacyPortalRepo } from './portalRepo';
+import { adminRepo } from './adminRepo';
+import { demoRepo } from './demoRepo';
+import { currentCatalog } from './catalogData';
 import { audit, newId, store, type OrgRow, type StockRow, type UserRow } from './store';
-import medicinesSeed from './seed/medicines.json';
-import categoriesSeed from './seed/categories.json';
-
-export const catalog = mapCatalog({ version: 1, categories: categoriesSeed, medicines: medicinesSeed } as RawCatalog);
 
 const inGov = (gov: GovFilter | undefined, orgGov: string) => !gov || gov === 'all' || gov === orgGov;
 
@@ -87,13 +86,16 @@ function toPublicPharmacy(o: OrgRow): PublicPharmacy {
 
 const catalogRepo: CatalogRepo = {
   // Same file in both modes; the bundled seed is only a fallback (e.g. in tests).
-  load: () => fetchCatalog().catch(() => catalog),
+  load: () =>
+    fetchRawCatalog()
+      .then((raw) => currentCatalog(raw))
+      .catch(() => currentCatalog()),
 };
 
 const availability: AvailabilityRepo = {
   searchMedicines(q, gov) {
     const rows = publicStock(gov);
-    const hits = matchCatalog(catalog.medicines, q).map((medicine) => ({
+    const hits = matchCatalog(currentCatalog().medicines, q).map((medicine) => ({
       medicine,
       reports: rows.filter((r) => r.medicineId === medicine.id).map(toPublicRow),
     }));
@@ -228,7 +230,11 @@ const insights: InsightsRepo = {
 };
 
 const settings: SettingsRepo = {
-  get: () => latency({ ...store.get().settings }),
+  // Only the is_public rows (SPEC §13): reviewer-only lists stay out.
+  get: () => {
+    const { freshHours, expireHours, priceMaxDays, disclaimerAr, disclaimerEn, requiredDocs } = store.get().settings;
+    return latency({ freshHours, expireHours, priceMaxDays, disclaimerAr, disclaimerEn, requiredDocs });
+  },
 };
 
 const toSession = (u: UserRow): Session => ({ userId: u.id, displayName: u.displayName, email: u.email, phone: u.phone });
@@ -352,7 +358,7 @@ const account: AccountRepo = {
 const reports: ReportsRepo = {
   submit(r) {
     store.mutate((s) => {
-      s.reports.push({ ...r, id: newId(), createdAt: new Date().toISOString(), status: 'new' });
+      s.reports.push({ ...r, id: newId(), createdAt: new Date().toISOString(), status: 'new', adminNote: null, resolution: null });
     });
     return latency(undefined);
   },
@@ -375,6 +381,8 @@ function async<T extends object>(repo: T): T {
 }
 
 export const mockRepos: Repos = {
+  admin: async(adminRepo),
+  demo: async(demoRepo),
   auth: async(authRepo),
   registration: async(registrationRepo),
   pharmacyPortal: async(pharmacyPortalRepo),

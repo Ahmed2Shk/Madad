@@ -45,9 +45,11 @@ export function mapCatalog(raw: RawCatalog): Catalog {
   };
 }
 
-/** The offline catalog: precached by the service worker, refreshed daily by the query cache. */
-export async function fetchCatalog(): Promise<Catalog> {
+/** The offline catalog file: precached by the service worker, refreshed daily by the query cache. */
+export async function fetchRawCatalog(): Promise<RawCatalog> {
   const res = await fetch('/catalog.json');
   if (!res.ok) throw new Error(`catalog ${res.status}`);
-  return mapCatalog((await res.json()) as RawCatalog);
+  return (await res.json()) as RawCatalog;
 }
+
+export const fetchCatalog = async (): Promise<Catalog> => mapCatalog(await fetchRawCatalog());

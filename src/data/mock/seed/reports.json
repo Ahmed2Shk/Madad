@@ -1,0 +1,7 @@
+[
+{"id":"rep-1","entity_type":"availability","entity_id":"ph-nour/paracetamol-500","reason":"wrong_availability","details":"ذهبت للصيدلية وقالوا إنه غير متوفر.","governorate":"khan_younis","status":"new","minutes_ago":6},
+{"id":"rep-2","entity_type":"pharmacy","entity_id":"ph-salam","reason":"closed_or_moved","details":"الصيدلية مغلقة منذ يومين.","governorate":"rafah","status":"new","minutes_ago":300},
+{"id":"rep-3","entity_type":"pharmacy","entity_id":"ph-zaytoon","reason":"wrong_phone","details":"الرقم لا يرد.","governorate":"deir_al_balah","status":"in_review","minutes_ago":1440},
+{"id":"rep-4","entity_type":"medicine","entity_id":"insulin-glargine","reason":"shortage","details":"","governorate":"gaza","status":"new","minutes_ago":180},
+{"id":"rep-5","entity_type":"pharmacy","entity_id":"ph-hayat","reason":"misleading","details":"الأسعار المعروضة غير صحيحة.","governorate":"ramallah","status":"resolved","minutes_ago":5760}
+]

@@ -5,7 +5,6 @@ import HomePage from '../features/search/HomePage';
 import NotFound from './NotFound';
 import UnderConstruction from './UnderConstruction';
 import { CardSkeleton } from '../components/ui';
-import { adminNav } from './shells/navs';
 
 // Every page but the home page is its own chunk, and the portals load separately,
 // so the public path stays under budget (SPEC §11).
@@ -33,14 +32,20 @@ const InquiriesPage = lazy(() => import('../features/pharmacy-portal/InquiriesPa
 const ProfilePage = lazy(() => import('../features/pharmacy-portal/ProfilePage'));
 const TeamPage = lazy(() => import('../features/pharmacy-portal/TeamPage'));
 const AdminShell = lazy(() => import('./shells/AdminShell'));
+const OverviewPage = lazy(() => import('../features/admin/OverviewPage'));
+const VerificationPage = lazy(() => import('../features/admin/VerificationPage'));
+const OrganizationsPage = lazy(() => import('../features/admin/OrganizationsPage'));
+const CatalogPage = lazy(() => import('../features/admin/CatalogPage'));
+const DataQualityPage = lazy(() => import('../features/admin/DataQualityPage'));
+const UnmetDemandPage = lazy(() => import('../features/admin/UnmetDemandPage'));
+const ReportsPage = lazy(() => import('../features/admin/ReportsPage'));
+const AuditPage = lazy(() => import('../features/admin/AuditPage'));
+const SettingsPage = lazy(() => import('../features/admin/SettingsPage'));
 
 const page = (node: ReactNode) => <Suspense fallback={<CardSkeleton />}>{node}</Suspense>;
 
 // Screens of later phases (P-07/P-08 and the provider portal arrive in phase 5).
 const placeholders = ['directory', 'org/:id', 'provider'];
-
-const childPaths = (nav: { to: string }[], base: string) =>
-  nav.filter((n) => n.to !== base).map((n) => ({ path: n.to.slice(base.length + 1), element: <UnderConstruction /> }));
 
 export const router = createBrowserRouter([
   {
@@ -87,6 +92,19 @@ export const router = createBrowserRouter([
   {
     path: '/admin',
     element: page(<AdminShell />),
-    children: [{ index: true, element: <UnderConstruction /> }, ...childPaths(adminNav, '/admin')],
+    children: [
+      { index: true, element: page(<OverviewPage />) },
+      { path: 'verification', element: page(<VerificationPage />) },
+      { path: 'organizations', element: page(<OrganizationsPage />) },
+      { path: 'catalog', element: page(<CatalogPage />) },
+      { path: 'data-quality', element: page(<DataQualityPage />) },
+      { path: 'unmet-demand', element: page(<UnmetDemandPage />) },
+      { path: 'reports', element: page(<ReportsPage />) },
+      { path: 'audit', element: page(<AuditPage />) },
+      { path: 'settings', element: page(<SettingsPage />) },
+      // AD-08 and AD-09 arrive in phase 5.
+      { path: 'moderation', element: <UnderConstruction /> },
+      { path: 'users', element: <UnderConstruction /> },
+    ],
   },
 ]);

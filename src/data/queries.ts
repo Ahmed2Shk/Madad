@@ -2,13 +2,12 @@
 // offline use (SPEC §11); keys under 'me' hold account data and are never persisted.
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getRepos } from './index';
-import { DEFAULT_FRESHNESS } from '../lib/freshness';
+import { DEFAULT_FRESHNESS, type FreshnessSettings } from '../lib/freshness';
 import type {
   FavoriteType,
   GovFilter,
   NewInquiry,
   NewReport,
-  PublicSettings,
   Repos,
   SearchLogEntry,
   Session,
@@ -48,7 +47,7 @@ export const useSettings = () =>
   useQuery({ queryKey: keys.settings, queryFn: use((r) => r.settings.get()), staleTime: 5 * 60_000 });
 
 /** Admin-tunable freshness windows; defaults until the settings load. */
-export function useFreshnessSettings(): PublicSettings {
+export function useFreshnessSettings(): FreshnessSettings {
   return useSettings().data ?? DEFAULT_FRESHNESS;
 }
 
