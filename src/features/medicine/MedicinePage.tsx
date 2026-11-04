@@ -47,7 +47,7 @@ export default function MedicinePage() {
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { pick, lang } = useLang();
+  const { pick, lang, strength, pack } = useLang();
   // Directional icons mirror with the reading direction (SPEC §5).
   const Chevron = lang === 'ar' ? ChevronLeft : ChevronRight;
   const toast = useToast();
@@ -149,7 +149,7 @@ export default function MedicinePage() {
             <h1 className="text-page mt-3">{pick(medicine)}</h1>
             <p className="mt-1 text-ink-muted">
               <bdi dir="ltr">{medicine.genericName}</bdi>
-              {medicine.strength && <> · {medicine.strength}</>} · {t(`forms.${medicine.dosageForm}`)}
+              {medicine.strength && <> · {strength(medicine)}</>} · {t(`forms.${medicine.dosageForm}`)}
             </p>
             {!loading && (
               <dl className="mt-4 space-y-2">
@@ -176,7 +176,7 @@ export default function MedicinePage() {
             <dl className="mt-4 space-y-2 text-meta">
               <div className="flex justify-between gap-4">
                 <dt className="text-ink-muted">{t('medicine.pack')}</dt>
-                <dd>{medicine.packSize}</dd>
+                <dd>{pack(medicine)}</dd>
               </div>
               {category && (
                 <div className="flex justify-between gap-4">

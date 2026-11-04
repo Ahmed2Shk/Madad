@@ -7,13 +7,14 @@ export interface Searchable {
   nameEn: string;
   genericName: string;
   strength: string;
+  strengthEn?: string | null;
   aliases: string[];
   barcode: string | null;
 }
 
 /** Everything a medicine can be found by, normalized once. */
 export function searchTextOf(m: Searchable): string {
-  return normalizeArabic([m.nameAr, m.nameEn, m.genericName, m.strength, ...m.aliases, m.barcode ?? ''].join(' '));
+  return normalizeArabic([m.nameAr, m.nameEn, m.genericName, m.strength, m.strengthEn ?? '', ...m.aliases, m.barcode ?? ''].join(' '));
 }
 
 function rank<T extends Searchable>(catalog: T[], tokens: string[], phonetic: boolean): T[] {

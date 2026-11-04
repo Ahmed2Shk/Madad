@@ -9,7 +9,7 @@ import { Freshness } from './Freshness';
 /** Medicine line: names, generic, strength, form, and how many pharmacies reported it available. */
 export function MedicineCard({ medicine, summary, to }: { medicine: Medicine; summary: MedicineSummary; to: string }) {
   const { t } = useTranslation();
-  const { lang, pick } = useLang();
+  const { lang, pick, strength } = useLang();
   const Chevron = lang === 'ar' ? ChevronLeft : ChevronRight;
   return (
     <Link
@@ -23,7 +23,7 @@ export function MedicineCard({ medicine, summary, to }: { medicine: Medicine; su
         <h2 className="text-section">{pick(medicine)}</h2>
         <p className="text-meta text-ink-muted">
           <bdi dir="ltr">{medicine.genericName}</bdi>
-          {medicine.strength && <> · {medicine.strength}</>} · {t(`forms.${medicine.dosageForm}`)}
+          {medicine.strength && <> · {strength(medicine)}</>} · {t(`forms.${medicine.dosageForm}`)}
         </p>
         <p className="mt-1 text-meta">
           {summary.availableCount > 0 ? (

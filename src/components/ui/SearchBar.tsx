@@ -28,7 +28,7 @@ export function SearchBar({
   initialGov?: GovFilter;
 }) {
   const { t } = useTranslation();
-  const { pick } = useLang();
+  const { pick, strength } = useLang();
   const navigate = useNavigate();
   const [prefs, setPrefs] = usePreferences();
   const { data: catalog } = useCatalog();
@@ -155,7 +155,7 @@ export function SearchBar({
                 <span className="font-medium">{pick(m)}</span>
                 <span className="ms-2 text-meta text-ink-muted">
                   <bdi dir="ltr">{m.genericName}</bdi>
-                  {m.strength && <> · {m.strength}</>}
+                  {m.strength && <> · {strength(m)}</>}
                 </span>
               </li>
             ))}

@@ -36,7 +36,7 @@ export default function PharmacyPage() {
   const [params] = useSearchParams();
   const fromMedicine = params.get('medicine');
   const { t } = useTranslation();
-  const { pick } = useLang();
+  const { pick, strength } = useLang();
   const toast = useToast();
   const now = useNow();
   const settings = useFreshnessSettings();
@@ -215,7 +215,7 @@ export default function PharmacyPage() {
                   <Link to={`/medicine/${x.row.medicineId}?gov=${p.governorate}`} className="font-medium hover:text-primary">
                     {pick(m)}
                     {m?.strength && !pick(m).includes(m.strength.split(' ')[0]!) && (
-                      <bdi className="ms-2 text-meta text-ink-muted">{m.strength}</bdi>
+                      <bdi className="ms-2 text-meta text-ink-muted">{strength(m)}</bdi>
                     )}
                   </Link>
                   <div className="flex flex-wrap items-center gap-3">

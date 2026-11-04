@@ -7,8 +7,10 @@ interface RawMedicine {
   name_en: string;
   generic_name: string;
   strength: string;
+  strength_en?: string | null;
   dosage_form: string;
   pack_size: string;
+  pack_size_en?: string | null;
   manufacturer: string | null;
   barcode: string | null;
   aliases: string[];
@@ -31,8 +33,10 @@ export function mapCatalog(raw: RawCatalog): Catalog {
       nameEn: m.name_en,
       genericName: m.generic_name,
       strength: m.strength,
+      strengthEn: m.strength_en ?? null,
       dosageForm: m.dosage_form as DosageForm,
       packSize: m.pack_size,
+      packSizeEn: m.pack_size_en ?? null,
       manufacturer: m.manufacturer,
       barcode: m.barcode,
       aliases: m.aliases,

@@ -15,7 +15,7 @@ const m = (id: string, nameAr: string, nameEn: string, genericName: string, extr
 const catalog: Searchable[] = [
   m('ins-asp', 'إنسولين نوفورابيد', 'NovoRapid', 'Insulin aspart', { strength: '100 وحدة/مل', barcode: '6250000000011' }),
   m('ins-gla', 'إنسولين لانتوس', 'Lantus', 'Insulin glargine'),
-  m('para', 'باراسيتامول 500', 'Paracetamol 500', 'Paracetamol', { strength: '500 ملغ', aliases: ['بنادول', 'Panadol'] }),
+  m('para', 'باراسيتامول 500', 'Paracetamol 500', 'Paracetamol', { strength: '500 ملغ', strengthEn: '500 mg', aliases: ['بنادول', 'Panadol'] }),
   m('salb', 'سالبوتامول بخاخ', 'Salbutamol inhaler', 'Salbutamol'),
 ];
 
@@ -37,6 +37,10 @@ describe('matchCatalog', () => {
   it('handles digits glued to names', () => {
     expect(ids('باراسيتامول500')).toEqual(['para']);
     expect(ids('باراسيتامول ٥٠٠')).toEqual(['para']);
+  });
+
+  it('finds by English strength', () => {
+    expect(ids('paracetamol 500 mg')).toEqual(['para']);
   });
 
   it('matches a barcode exactly', () => {

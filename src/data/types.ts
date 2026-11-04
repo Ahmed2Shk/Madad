@@ -43,6 +43,8 @@ export type DosageForm =
 export interface Medicine extends Searchable {
   dosageForm: DosageForm;
   packSize: string;
+  /** English pack size, when the catalog has one (docs/DECISIONS.md #6). */
+  packSizeEn: string | null;
   manufacturer: string | null;
   categoryId: string;
 }

@@ -121,14 +121,36 @@ const M = [
   ['hydrocortisone-cream', 'هيدروكورتيزون كريم 1%', 'Hydrocortisone cream 1%', 'Hydrocortisone', '1%', 'cream', '15 غ', 'steroids', ['كريم كورتيزون'], 11],
 ];
 
+// English strength and pack (approved decision 6, docs/DECISIONS.md), derived from the Arabic units.
+// Order matters: longer Arabic units first.
+const UNIT_EN = [
+  ['وحدة دولية', 'IU'],
+  ['وحدة/مل', 'U/mL'],
+  ['ميكروغرام/بخة', 'mcg/puff'],
+  ['ميكروغرام', 'mcg'],
+  ['ملغ/5 مل', 'mg/5 mL'],
+  ['ملغ', 'mg'],
+  [' مل', ' mL'],
+  [' غ', ' g'],
+];
+const PACK_EN = { "قرص": "tablets", "أقراص": "tablets", "كبسولة": "capsules", "كبسولات": "capsules", "أقلام": "pens", "بخة": "puffs", "أكياس": "sachets", "مل": "mL", "غ": "g" };
+const strengthEn = (ar) => (ar ? UNIT_EN.reduce((x, [arUnit, en]) => x.replaceAll(arUnit, en), ar) : null);
+const packEn = (ar) => {
+  const [n, unit] = ar.split(" ");
+  if (!PACK_EN[unit]) throw new Error(`no English pack unit for "${ar}"`);
+  return `${n} ${PACK_EN[unit]}`;
+};
+
 const medicines = M.map(([id, name_ar, name_en, generic_name, strength, dosage_form, pack_size, category_id, aliases], i) => ({
   id,
   name_ar,
   name_en,
   generic_name,
   strength,
+  strength_en: strengthEn(strength),
   dosage_form,
   pack_size,
+  pack_size_en: packEn(pack_size),
   manufacturer: null,
   barcode: `62500000${String(i + 1).padStart(5, '0')}`,
   aliases,
@@ -362,7 +384,7 @@ const STAFF_PERMS = { availability: true, prices: false, medicines: false, publi
 const users = [
   { id: 'u-patient', role: 'patient', display_name: 'مريض تجريبي', email: 'patient@madad.test', phone: null, platform_role: null, memberships: [] },
   { id: 'u-ph-owner', role: 'pharmacy_owner', display_name: 'مالك صيدلية تجريبي', email: 'owner@madad.test', phone: null, platform_role: null, memberships: [{ org_id: 'ph-nour', member_role: 'owner', perms: ALL_PERMS }] },
-  { id: 'u-ph-staff', role: 'pharmacy_staff', display_name: 'موظف صيدلية تجريبي', email: 'staff@madad.test', phone: null, platform_role: null, memberships: [{ org_id: 'ph-nour', member_role: 'staff', perms: STAFF_PERMS }] },
+  { id: 'u-ph-staff', role: 'pharmacy_staff', display_name: 'موظف صيدلية تجريبي', email: 'staff@madad.test', phone: null, platform_role: null, memberships: [{ org_id: 'ph-shifa', member_role: 'staff', perms: STAFF_PERMS }] },
   { id: 'u-org-owner', role: 'provider_owner', display_name: 'مالك مؤسسة تجريبي', email: 'org@madad.test', phone: null, platform_role: null, memberships: [{ org_id: 'pr-sanad', member_role: 'owner', perms: ALL_PERMS }] },
   { id: 'u-reviewer', role: 'reviewer', display_name: 'مراجِع تجريبي', email: 'reviewer@madad.test', phone: null, platform_role: 'reviewer', memberships: [] },
   { id: 'u-admin', role: 'super_admin', display_name: 'مدير نظام تجريبي', email: 'admin@madad.test', phone: null, platform_role: 'super_admin', memberships: [] },
