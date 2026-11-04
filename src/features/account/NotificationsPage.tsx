@@ -30,6 +30,9 @@ function NotificationText({ n }: { n: AppNotification }) {
       </>
     );
   }
+  if (n.kind === 'inquiry_reply') {
+    return <>{t('notifications.inquiryReply', { org: lang === 'en' ? n.data.orgNameEn || n.data.orgNameAr : n.data.orgNameAr, subject: n.data.subject })}</>;
+  }
   return <>{n.data.text ?? ''}</>;
 }
 

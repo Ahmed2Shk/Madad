@@ -1,9 +1,11 @@
-import { Bell, ChevronDown, UserRound } from 'lucide-react';
+import { Bell, ChevronDown, LayoutDashboard, UserRound } from 'lucide-react';
 import { useState } from 'react';
 import { Link, NavLink, Outlet } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitch, OfflineBanner, Wordmark, buttonClass } from '../../components/ui';
+import { useMe } from '../../data/portalQueries';
 import { useNotifications, useSession } from '../../data/queries';
+import { homeFor } from '../../lib/homeFor';
 import { SignInPromptProvider } from '../../features/account/SignInPrompt';
 import { cn } from '../../lib/cn';
 
@@ -21,6 +23,8 @@ function AccountLinks({ onPick }: { onPick?: () => void }) {
   const { t } = useTranslation();
   const { data: session } = useSession();
   const { data: notifications } = useNotifications();
+  const { data: me } = useMe();
+  const portal = me ? (me.platformRole ? '/admin' : me.memberships[0] ? homeFor(me) : null) : null;
   const unread = notifications?.filter((n) => !n.readAt).length ?? 0;
   if (!session)
     return (
@@ -30,6 +34,12 @@ function AccountLinks({ onPick }: { onPick?: () => void }) {
     );
   return (
     <div className="flex items-center gap-1">
+      {portal && (
+        <Link to={portal} onClick={onPick} className={buttonClass('secondary')}>
+          <LayoutDashboard aria-hidden className="size-4" />
+          {t('nav.myPortal')}
+        </Link>
+      )}
       <Link
         to="/me/notifications"
         onClick={onPick}

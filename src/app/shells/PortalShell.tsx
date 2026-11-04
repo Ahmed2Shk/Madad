@@ -19,10 +19,20 @@ export function PortalShell({
   titleKey,
   nav,
   headerExtra,
+  account,
+  banner,
+  children,
 }: {
   titleKey: string;
   nav: PortalNavItem[];
+  /** Start side of the header: e.g. the pharmacy name and its status badge. */
   headerExtra?: ReactNode;
+  /** End side of the header, next to the language switch. */
+  account?: ReactNode;
+  /** Shown above every page, e.g. "طلبك قيد المراجعة". */
+  banner?: ReactNode;
+  /** Defaults to the route outlet. */
+  children?: ReactNode;
 }) {
   const { t } = useTranslation();
   const { pathname } = useLocation();
@@ -76,6 +86,7 @@ export function PortalShell({
             <div className="hidden min-w-0 flex-1 lg:block">{headerExtra}</div>
             <div className="ms-auto flex items-center gap-2">
               <LanguageSwitch />
+              {account}
             </div>
           </div>
           <div className="border-t border-border px-4 py-2 lg:hidden">
@@ -111,8 +122,10 @@ export function PortalShell({
           </ol>
         </nav>
 
+        {banner && <div className="px-4 pt-4 lg:px-6">{banner}</div>}
+
         <main id="main" className="w-full max-w-content flex-1 px-4 py-4 lg:px-6">
-          <Outlet />
+          {children ?? <Outlet />}
         </main>
       </div>
     </div>

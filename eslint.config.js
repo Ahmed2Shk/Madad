@@ -20,6 +20,8 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      // A leading underscore marks a value dropped on purpose (e.g. omitted from a rest spread).
+      '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '^_', argsIgnorePattern: '^_', ignoreRestSiblings: true }],
       // Data layer boundary (CLAUDE.md): UI never imports Supabase directly.
       'no-restricted-imports': [
         'error',

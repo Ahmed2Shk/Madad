@@ -18,7 +18,8 @@
     "breadcrumb": "Breadcrumb",
     "notifications": "Notifications",
     "notificationsUnread_one": "Notifications, 1 new",
-    "notificationsUnread_other": "Notifications, {{count}} new"
+    "notificationsUnread_other": "Notifications, {{count}} new",
+    "myPortal": "My portal"
   },
   "lang": {
     "short": "عربي",
@@ -131,7 +132,9 @@
       "exact": "Location on the map",
       "area": "This pharmacy publishes its area only. Use the address and landmark to find it.",
       "hidden": "This pharmacy does not publish its location on a map. Use the address and landmark to find it."
-    }
+    },
+    "previewBanner": "Preview: this is how patients see your page. It is not public before approval.",
+    "temporarilyClosed": "Temporarily closed"
   },
   "pharmacies": {
     "title": "Nearby pharmacies",
@@ -147,7 +150,12 @@
     "closed": "Closed",
     "allDay": "24 hours",
     "openNow": "Open now",
-    "closedNow": "Closed now"
+    "closedNow": "Closed now",
+    "opens": "Opens on {{day}}",
+    "closes": "Closes on {{day}}",
+    "markClosed": "Mark {{day}} as closed",
+    "copyAll": "Copy to all days",
+    "addRange": "add hours"
   },
   "days": {
     "sat": "Saturday",
@@ -211,7 +219,8 @@
     "view": "View",
     "emptyTitle": "No notifications",
     "emptyBody": "Inquiry replies and availability alerts will appear here.",
-    "alertMet": "{{pharmacy}} ({{gov}}) reported {{medicine}} available {{time}}. Call to confirm."
+    "alertMet": "{{pharmacy}} ({{gov}}) reported {{medicine}} available {{time}}. Call to confirm.",
+    "inquiryReply": "{{org}} replied to your inquiry “{{subject}}”."
   },
   "inquiry": {
     "open": "Send an inquiry",
@@ -250,7 +259,39 @@
     "reasonFavorite": "Sign in to save what matters to you.",
     "continueDemo": "Continue with the demo patient account",
     "pageTitle": "Sign in to see this page",
-    "pageBody": "An account is only needed for favorites, alerts and inquiries."
+    "pageBody": "An account is only needed for favorites, alerts and inquiries.",
+    "loginTitle": "Log in",
+    "password": "Password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "remember": "Remember me",
+    "forgot": "Forgot your password?",
+    "badCredentials": "Wrong email or password",
+    "noAccount": "No account yet?",
+    "signupLink": "Create one",
+    "demoAccounts": "Demo accounts",
+    "demoPassword": "Password for every account:",
+    "demoRole": {
+      "patient": "Patient",
+      "owner": "Pharmacy owner",
+      "staff": "Pharmacy staff",
+      "reviewer": "Reviewer",
+      "admin": "System admin"
+    },
+    "signupTitle": "Create an account",
+    "passwordHint": "At least 8 characters",
+    "confirmPassword": "Confirm password",
+    "phoneHint": "For contact only; we never send text messages",
+    "agreePrefix": "I agree to the",
+    "agreeAnd": "and",
+    "createAccount": "Create account",
+    "haveAccount": "Already have an account?",
+    "resetTitle": "Reset your password",
+    "resetIntro": "Enter your email and we will send a link to set a new password.",
+    "sendLink": "Send link",
+    "resetSent": "If this email is registered, you will receive a reset link.",
+    "resetDemoNote": "The demo sends no emails. Use the demo accounts password.",
+    "backToLogin": "Back to log in"
   },
   "account": {
     "title": "Account and settings",
@@ -362,7 +403,18 @@
     "networkCached": "Could not connect. Showing the last saved results.",
     "required": "This field is required",
     "tooLong": "The text is too long",
-    "phone": "Invalid mobile number"
+    "phone": "Invalid mobile number",
+    "email": "Invalid email address",
+    "emailTaken": "This email is already registered. Log in instead.",
+    "passwordShort": "Password too short: at least 8 characters",
+    "passwordMismatch": "Passwords do not match",
+    "terms": "You must accept the terms",
+    "licenseRequired": "Licence number is required",
+    "pinRequired": "Pick the location on the map, or choose “Area only”",
+    "docRequired": "This document is required",
+    "fileType": "The file must be a PDF or an image",
+    "fileSize": "The file is larger than 5MB",
+    "barcode": "Barcode is digits only (8 to 14)"
   },
   "disclaimer": {
     "full": "Availability is based on the pharmacy's latest reported update. Please call or visit to confirm. Dispensing is subject to the pharmacist's professional judgement and applicable regulations.",
@@ -422,10 +474,367 @@
         "audit": "Audit log",
         "settings": "Settings"
       }
-    }
+    },
+    "noAccess": "You don’t have permission for this page",
+    "ownerOnly": "This page is for the pharmacy owner only.",
+    "noAccessBody": "Ask the pharmacy owner for access.",
+    "notPharmacyMember": "Your account is not a member of a pharmacy",
+    "bannerPending": "Your application is under review. You can set up your medicines now; they will not be public before approval.",
+    "bannerNeedsInfo": "Your application needs more information before approval. Nothing is public until then.",
+    "viewApplication": "Application status",
+    "viewSite": "View the site"
   },
   "breadcrumb": {
     "home": "Home",
     "results": "Search results"
+  },
+  "orgTypes": {
+    "pharmacy": "Pharmacy",
+    "hospital": "Hospital",
+    "medical_point": "Medical point",
+    "humanitarian": "Humanitarian organization"
+  },
+  "orgs": {
+    "title": "MADAD for organizations",
+    "lead": "Register your organization to publish availability or services. Nothing is public until the organization is verified.",
+    "desc": {
+      "pharmacy": "Report your medicines’ availability in seconds and answer people’s questions.",
+      "hospital": "Publish your departments, services and their hours.",
+      "medical_point": "Publish your services, programs and locations.",
+      "humanitarian": "Publish aid programs and eligibility rules."
+    },
+    "register": "Register",
+    "haveAccount": "I have an account",
+    "needTitle": "What you need to register",
+    "need1": "Practice licence or registration certificate",
+    "need2": "ID of the person in charge",
+    "need3": "The organization’s address and phone",
+    "reviewTitle": "Review",
+    "reviewBody": "The MADAD team reviews your documents, then approves or asks for more. You will be notified of the decision and can follow it on the application status page."
+  },
+  "register": {
+    "title": "Register a {{type}}",
+    "draftNote": "Your draft is saved on this device automatically (except the password).",
+    "progress": "Registration steps",
+    "stepAccount": "Account",
+    "stepOrg": "Organization",
+    "stepDocs": "Documents",
+    "stepReview": "Review",
+    "signedInAs": "The organization will be registered under your account: {{name}} ({{email}}).",
+    "contactName": "Person in charge",
+    "contactRole": "Their role",
+    "contactRoleHint": "e.g. responsible pharmacist, director",
+    "passwordNotSaved": "At least 8 characters. Not saved in the draft.",
+    "nameAr": "Name in Arabic",
+    "nameEn": "Name in English",
+    "type": "Type",
+    "licenseNo": "Licence or registration number",
+    "area": "Area",
+    "address": "Text address",
+    "addressHint": "Enough when people are displaced and places change",
+    "landmark": "Nearby landmark",
+    "mapLabel": "Location on the map",
+    "openMap": "Pick on the map",
+    "precision": "Published location precision",
+    "precisionHint": "Your organization chooses what people see. The exact spot shows only with “Exact”.",
+    "precisionOpt": {
+      "exact": "Exact",
+      "area": "Area only",
+      "hidden": "Hidden"
+    },
+    "precisionDesc": {
+      "exact": "A map pin and direct directions",
+      "area": "Area name and text address only",
+      "hidden": "No map; text address only"
+    },
+    "orgPhone": "Organization phone",
+    "docsIntro": "Upload the required documents: PDF or image, up to 5MB each.",
+    "edit": "Edit",
+    "prev": "Back",
+    "next": "Next",
+    "submit": "Submit application"
+  },
+  "docTypes": {
+    "practice_license": "Practice licence",
+    "pharmacy_license": "Pharmacy licence",
+    "contact_id": "ID of the person in charge",
+    "facility_license": "Facility licence",
+    "authorization_letter": "Authorization letter or licence",
+    "registration_certificate": "Registration certificate",
+    "additional": "Additional document"
+  },
+  "upload": {
+    "hint": "PDF or image, up to 5MB",
+    "choose": "Choose file",
+    "remove": "Remove {{name}}"
+  },
+  "status_page": {
+    "pending": {
+      "title": "Your application is under review",
+      "body": "We received your application and the review team has it now. You will be notified of the decision.",
+      "now": "The team is checking your documents and details.",
+      "prepare": "You can set up your portal now; nothing is public before approval."
+    },
+    "needs_info": {
+      "title": "Your application needs more information",
+      "body": "The reviewer asked for more details or documents before deciding."
+    },
+    "rejected": {
+      "title": "The application was not approved",
+      "body": "We could not approve the application. Contact us to find out the next step."
+    },
+    "approved": {
+      "title": "Your organization is approved",
+      "body": "Your organization is verified and public now."
+    },
+    "reviewerNote": "Reviewer’s note",
+    "yourNote": "Your reply to the note",
+    "extraDoc": "Additional document",
+    "resubmit": "Complete the application",
+    "resubmitted": "Sent back for review",
+    "openPortal": "Open the portal",
+    "prepareNow": "Set up the portal now",
+    "history": "Review history",
+    "events": {
+      "submitted": "Application submitted",
+      "approved": "Application approved",
+      "needs_info": "More information requested",
+      "rejected": "Application rejected",
+      "resubmitted": "Application completed",
+      "profile_changed": "Name or licence changed; back to review"
+    }
+  },
+  "roles": {
+    "owner": "Owner",
+    "manager": "Manager",
+    "staff": "Staff",
+    "viewer": "Viewer"
+  },
+  "perms": {
+    "availability": "Availability",
+    "prices": "Prices",
+    "medicines": "Add medicines",
+    "publish": "Publishing",
+    "inquiries": "Inquiries",
+    "profile": "Profile",
+    "team": "Team",
+    "reports": "Reports"
+  },
+  "dashboard": {
+    "title": "Overview",
+    "previewAsPatient": "Preview as a patient",
+    "listed": "Listed medicines",
+    "fresh": "Recent",
+    "stale": "Need update",
+    "expired": "Unconfirmed",
+    "newInquiries": "New inquiries",
+    "needsUpdate_one": "1 medicine needs an update",
+    "needsUpdate_other": "{{count}} medicines need an update",
+    "needsUpdateHint": "An old report shows as “Needs update”, then “Unconfirmed”.",
+    "updateNow": "Update now",
+    "unmetTitle": "Wanted nearby, not available here",
+    "unmetHint": "Medicines people searched for in your area in the last 7 days without finding them. Aggregated, no identities.",
+    "unmetEmpty": "No failed searches in your area this week.",
+    "searchedTimes_one": "Searched once this week",
+    "searchedTimes_other": "Searched {{count}} times this week",
+    "iHaveIt": "I have this medicine",
+    "added": "{{name}} added as available",
+    "activity": "Recent activity",
+    "noActivity": "No activity yet",
+    "views": "Views of your page this week",
+    "lastWeek_one": "Last week: 1 view",
+    "lastWeek_other": "Last week: {{count}} views",
+    "searchesChart": "Searches for your medicines in your governorate, last 7 days"
+  },
+  "history": {
+    "confirmAll_one": "Confirmed 1 medicine as is",
+    "confirmAll_other": "Confirmed {{count}} medicines as is",
+    "actions": {
+      "update": "updated",
+      "hide": "hid from the public",
+      "show": "made public",
+      "add": "added",
+      "remove": "removed"
+    },
+    "to": "to",
+    "allMedicines": "All medicines",
+    "allActors": "Everyone",
+    "from": "From",
+    "to_date": "To",
+    "empty": "No matching history"
+  },
+  "update": {
+    "subtitle": "Change what changed, then save. Or confirm everything as is.",
+    "search": "Search my medicines",
+    "filter": {
+      "needs": "Need update",
+      "all": "All",
+      "unavailable": "Unavailable",
+      "limited": "Limited"
+    },
+    "limitedShort": "Limited",
+    "statusFor": "Status of {{name}}",
+    "priceFor": "Price of {{name}} in shekels",
+    "priceOptional": "Price (optional)",
+    "priceSet": "Price: {{price}} ₪",
+    "unsaved": "Unsaved change",
+    "changes_zero": "No changes",
+    "changes_one": "1 change",
+    "changes_other": "{{count}} changes",
+    "confirmAll": "Confirm all as is",
+    "confirmAllTitle": "Confirm all as is?",
+    "confirmAllBody_one": "You are stating that 1 medicine has not changed since the last update. This is recorded under your name.",
+    "confirmAllBody_other": "You are stating that {{count}} medicines have not changed since the last update. This is recorded under your name.",
+    "pricesToo": "Prices have not changed either",
+    "confirmedAll_one": "1 medicine confirmed",
+    "confirmedAll_other": "{{count}} medicines confirmed",
+    "savedPublic_one": "1 medicine updated · public now",
+    "savedPublic_other": "{{count}} medicines updated · public now",
+    "savedPending_one": "1 medicine saved · public after the pharmacy is approved",
+    "savedPending_other": "{{count}} medicines saved · public after the pharmacy is approved",
+    "queued_one": "You are offline. 1 change is saved on this device and will be sent when you reconnect.",
+    "queued_other": "You are offline. {{count}} changes are saved on this device and will be sent when you reconnect.",
+    "waiting_one": "1 change waiting for a connection · it will be sent when you reconnect",
+    "waiting_other": "{{count}} changes waiting for a connection · they will be sent when you reconnect",
+    "seeAsPatient": "See it as a patient",
+    "allFresh": "All your medicines are recent",
+    "noMatch": "No matching medicines"
+  },
+  "table": {
+    "search": "Search the table",
+    "pages": "Table pages",
+    "pageOf": "Page {{page}} of {{pages}}",
+    "prev": "Previous",
+    "next": "Next",
+    "medicine": "Medicine",
+    "generic": "Active ingredient",
+    "strength": "Strength",
+    "form": "Form",
+    "publicStatus": "Public status",
+    "price": "Price",
+    "quantity": "Internal quantity",
+    "actions": "Actions",
+    "time": "Time",
+    "change": "Change",
+    "actor": "By"
+  },
+  "meds": {
+    "freshFilter": "Freshness",
+    "fresh": {
+      "all": "All",
+      "fresh": "Recent",
+      "stale": "Need update",
+      "expired": "Unconfirmed"
+    },
+    "allCategories": "All categories",
+    "hidden": "Hidden from the public",
+    "hiddenByAdmin": "Hidden by the MADAD team",
+    "quantityFor": "Internal quantity of {{name}}",
+    "low": "Low",
+    "update": "Update status",
+    "history": "History",
+    "hide": "Hide from the public",
+    "show": "Make public",
+    "shown": "Public now",
+    "remove": "Remove from my list",
+    "hideTitle": "Hide this medicine from the public?",
+    "hideBody": "Hide this medicine from the public? You can show it again later.",
+    "hiddenToast": "Hidden from the public",
+    "removeTitle": "Remove this medicine from your list?",
+    "removeBody": "It disappears from your list and from the public. Its history stays for audit, and you can add it again.",
+    "removed": "Removed from your list",
+    "empty": "No matching medicines"
+  },
+  "add": {
+    "fromCatalog": "From the catalog",
+    "request": "Request a new medicine",
+    "myRequests": "My requests",
+    "searchLabel": "Search by name, active ingredient or barcode",
+    "typeToSearch": "Type at least two letters to search the catalog.",
+    "notFound": "Not in the catalog",
+    "notFoundBody": "Request it and the MADAD team will review it.",
+    "alreadyListed": "Already in your medicines",
+    "addToMine": "Add to my medicines",
+    "requestIntro": "Pharmacies never create catalog entries directly, to avoid duplicates and misleading information. The MADAD team reviews your request.",
+    "f": {
+      "nameAr": "Name in Arabic",
+      "nameEn": "Name in English",
+      "generic": "Active ingredient",
+      "barcode": "Barcode",
+      "pickCategory": "Choose a category"
+    },
+    "requestNote": "Until approved, the request appears in “My requests” as under review and is not public.",
+    "sendRequest": "Send request",
+    "requestSent": "Your request was sent and is under review",
+    "noRequests": "No requests",
+    "requestStatus": {
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "merged": "Merged with an existing medicine"
+    }
+  },
+  "inq": {
+    "warning": "Never confirm a reservation or dispense based on an inquiry.",
+    "emptyTitle": "No inquiries yet",
+    "emptyBody": "They will appear here when a patient writes to you.",
+    "status": {
+      "new": "New",
+      "in_progress": "In progress",
+      "replied": "Replied",
+      "closed": "Closed"
+    },
+    "statusLabel": "Status",
+    "reply": "Write your reply",
+    "send": "Send reply",
+    "sent": "Reply sent",
+    "quickAvailable": "Available, you can come by.",
+    "quickUnavailable": "Not available right now.",
+    "alsoUpdate": "Update the status of {{name}} too?",
+    "markAvailable": "Mark available"
+  },
+  "profile": {
+    "completeness": "Profile completeness: {{percent}}%",
+    "completenessLabel": "Profile completeness",
+    "missing": "Missing: {{fields}}",
+    "fields": {
+      "name": "name",
+      "license": "licence number",
+      "address": "address",
+      "landmark": "landmark",
+      "phone": "phone",
+      "whatsapp": "WhatsApp",
+      "hours": "opening hours",
+      "location": "map location"
+    },
+    "identity": "Identity",
+    "identityWarning": "Changing the name or licence sends the pharmacy back to review and out of search until approved.",
+    "location": "Location",
+    "contact": "Contact",
+    "temporarilyClosed": "Temporarily closed",
+    "closedReason": "Reason",
+    "saved": "Saved",
+    "savedReReview": "Saved. The pharmacy is back in review because the name or licence changed.",
+    "reReviewTitle": "Send the pharmacy back to review?",
+    "reReviewBody": "You changed the name or licence number. The pharmacy goes back to review and disappears from search until the MADAD team approves it.",
+    "reReviewConfirm": "Save and send to review"
+  },
+  "team": {
+    "ownerHint": "Add members by email and set their permissions. Every change is recorded.",
+    "readOnly": "Only the owner can change the team and permissions.",
+    "inviteEmail": "Member email",
+    "role": "Role",
+    "invite": "Send invitation",
+    "invited": "Invitation sent to {{email}}",
+    "invitedStatus": "invitation pending",
+    "member": "Member",
+    "roleFor": "Role of {{name}}",
+    "permFor": "{{perm}} for {{name}}",
+    "updated": "Permissions updated",
+    "remove": "Remove {{name}}",
+    "removeTitle": "Remove this member?",
+    "removeBody": "{{name}} will lose access to the pharmacy portal.",
+    "removeConfirm": "Remove",
+    "removed": "Member removed",
+    "empty": "No members"
   }
 }

@@ -65,7 +65,15 @@ describe('public reads', () => {
   });
 });
 
+const PW = 'madad-demo-2026';
+const asStaff = () => r.auth.signIn('staff@madad.test', PW); // صيدلية الشفاء, Gaza
+const asOwner = () => r.auth.signIn('owner@madad.test', PW); // صيدلية النور, Khan Younis
+
 describe('updateStock', () => {
+  beforeEach(async () => {
+    await asStaff();
+  });
+
   it('uses the device time, never a future one', async () => {
     const before = Date.now();
     const tenMinAgo = new Date(before - 10 * 60_000).toISOString();
@@ -90,7 +98,9 @@ describe('updateStock', () => {
     await r.account.signInDemoPatient();
     await r.account.createAlert('levothyroxine-100', 'gaza');
     await r.account.createAlert('levothyroxine-100', 'rafah');
+    await asStaff();
     await r.availability.updateStock('ph-shifa', [{ medicineId: 'levothyroxine-100', status: 'available', clientUpdatedAt: new Date().toISOString() }]);
+    await r.account.signInDemoPatient();
     const notes = await r.account.notifications();
     expect(notes).toHaveLength(1);
     expect(notes[0]!.data).toMatchObject({ pharmacyId: 'ph-shifa', medicineId: 'levothyroxine-100' });
@@ -100,6 +110,7 @@ describe('updateStock', () => {
   });
 
   it('confirm_all renews reports but not prices unless asked', async () => {
+    await asOwner();
     const before = store.get().stock.find((s) => s.pharmacyId === 'ph-nour' && s.priceIls != null)!;
     const oldPriceAt = before.priceUpdatedAt;
     const n = await r.availability.confirmAll('ph-nour');

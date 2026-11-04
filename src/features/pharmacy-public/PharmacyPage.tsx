@@ -1,6 +1,6 @@
 // P-04 تفاصيل الصيدلية — contact actions only: no buy, no cart, no reservation.
-import { BadgeCheck, Flag, Heart, Landmark, Map as MapIcon, MapPin, MessageCircle, MessageSquare, Navigation, Phone, Search, Store } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { BadgeCheck, DoorClosed, Eye, Flag, Heart, Landmark, Map as MapIcon, MapPin, MessageCircle, MessageSquare, Navigation, Phone, Search, Store } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import {
@@ -18,7 +18,15 @@ import {
   useAreaLabel,
   useToast,
 } from '../../components/ui';
-import { useCatalog, useFavorites, useFreshnessSettings, usePharmacy, usePharmacyReports, useToggleFavorite } from '../../data/queries';
+import {
+  recordPharmacyView,
+  useCatalog,
+  useFavorites,
+  useFreshnessSettings,
+  usePharmacy,
+  usePharmacyReports,
+  useToggleFavorite,
+} from '../../data/queries';
 import { useLang } from '../../hooks/useLang';
 import { useNow } from '../../hooks/useNow';
 import { sortRanked, viewRow } from '../../lib/availability';
@@ -35,14 +43,18 @@ export default function PharmacyPage() {
   const { id = '' } = useParams();
   const [params] = useSearchParams();
   const fromMedicine = params.get('medicine');
+  const preview = params.get('preview') === '1';
   const { t } = useTranslation();
   const { pick, strength } = useLang();
   const toast = useToast();
   const now = useNow();
   const settings = useFreshnessSettings();
   const area = useAreaLabel();
-  const pharmacy = usePharmacy(id);
-  const reports = usePharmacyReports(id);
+  const pharmacy = usePharmacy(id, preview);
+  const reports = usePharmacyReports(id, preview);
+  useEffect(() => {
+    if (!preview) void recordPharmacyView(id);
+  }, [id, preview]);
   const catalog = useCatalog();
   const requireSession = useRequireSession();
   const favorites = useFavorites();
@@ -75,6 +87,19 @@ export default function PharmacyPage() {
 
   return (
     <div className="space-y-6">
+      {preview && (
+        <p role="status" className="flex items-center gap-2 rounded-card bg-review-bg p-3 text-review-text">
+          <Eye aria-hidden className="size-5 text-review-icon" />
+          {t('pharmacy.previewBanner')}
+        </p>
+      )}
+      {p.temporarilyClosed && (
+        <p role="status" className="flex items-center gap-2 rounded-card bg-warn-bg p-3 font-medium text-warn-text">
+          <DoorClosed aria-hidden className="size-5 text-warn-icon" />
+          {t('pharmacy.temporarilyClosed')}
+          {p.temporarilyClosed.reason && <span className="font-normal">— {p.temporarilyClosed.reason}</span>}
+        </p>
+      )}
       {focus && (
         <section className="rounded-card border border-secondary bg-mint p-4">
           <p className="font-medium">{pick(medicines.get(focus.row.medicineId))}</p>

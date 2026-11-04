@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from './Button';
 import { Dialog } from './Dialog';
@@ -12,7 +13,9 @@ export function ConfirmDialog({
   onClose,
   loading,
   danger = true,
+  children,
 }: {
+  children?: ReactNode;
   open: boolean;
   title: string;
   body: string;
@@ -41,6 +44,7 @@ export function ConfirmDialog({
       }
     >
       <p>{body}</p>
+      {children}
     </Dialog>
   );
 }

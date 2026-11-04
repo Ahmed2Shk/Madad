@@ -3,8 +3,11 @@ import { formatDateTime, formatRelative, type Lang } from '../../lib/format';
 import { useNow } from '../../hooks/useNow';
 import { cn } from '../../lib/cn';
 
-/** "حُدّث قبل 12 دقيقة" with the full date as a tooltip. */
-export function Freshness({ at, className }: { at: Date | string; className?: string }) {
+/**
+ * "حُدّث قبل 12 دقيقة" with the full date as a tooltip. `bare` drops the "updated" word for
+ * timestamps that are not availability reports (messages, requests).
+ */
+export function Freshness({ at, className, bare = false }: { at: Date | string; className?: string; bare?: boolean }) {
   const { t, i18n } = useTranslation();
   const now = useNow();
   const date = typeof at === 'string' ? new Date(at) : at;
@@ -12,7 +15,7 @@ export function Freshness({ at, className }: { at: Date | string; className?: st
   const full = formatDateTime(date, lang);
   return (
     <time dateTime={date.toISOString()} title={full} className={cn('text-meta text-ink-muted', className)}>
-      {t('freshness.updated', { time: formatRelative(date, now, lang) })}
+      {bare ? formatRelative(date, now, lang) : t('freshness.updated', { time: formatRelative(date, now, lang) })}
     </time>
   );
 }

@@ -15,3 +15,4 @@ export function getRepos(): Promise<Repos> {
 
 export * from './types';
 export { GOVERNORATES, governorateById } from './governorates';
+export { DEFAULT_PERMS } from './perms';

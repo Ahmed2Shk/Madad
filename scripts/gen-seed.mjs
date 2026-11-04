@@ -388,6 +388,57 @@ const users = [
   { id: 'u-org-owner', role: 'provider_owner', display_name: 'مالك مؤسسة تجريبي', email: 'org@madad.test', phone: null, platform_role: null, memberships: [{ org_id: 'pr-sanad', member_role: 'owner', perms: ALL_PERMS }] },
   { id: 'u-reviewer', role: 'reviewer', display_name: 'مراجِع تجريبي', email: 'reviewer@madad.test', phone: null, platform_role: 'reviewer', memberships: [] },
   { id: 'u-admin', role: 'super_admin', display_name: 'مدير نظام تجريبي', email: 'admin@madad.test', phone: null, platform_role: 'super_admin', memberships: [] },
+  // Patients who wrote the seeded inquiries; they have no password and cannot sign in.
+  { id: 'u-p2', role: 'patient', display_name: 'سارة م.', email: 'p2@madad.test', phone: null, platform_role: null, memberships: [] },
+  { id: 'u-p3', role: 'patient', display_name: 'أبو خالد', email: 'p3@madad.test', phone: null, platform_role: null, memberships: [] },
+];
+// Mock mode only (SPEC §12): one shared demo password, shown on the login page when VITE_DEMO=true.
+const DEMO_PASSWORD = 'madad-demo-2026';
+for (const u of users) u.password = u.id === 'u-p2' || u.id === 'u-p3' ? null : DEMO_PASSWORD;
+
+// ---------------------------------------------------------------- pharmacy portal data (phase 2)
+// stock_private: internal quantity, never read by public screens (SPEC §3, §13).
+const stock_private = stock.map((s) => ({
+  pharmacy_id: s.pharmacy_id,
+  medicine_id: s.medicine_id,
+  quantity: s.reported_status === 'unavailable' ? 0 : s.reported_status === 'limited' ? between(1, 6) : between(8, 90),
+  low_threshold: 5,
+}));
+
+// Page views per day for the last 14 days, for "مشاهدات صفحتك" (PH-01).
+const page_views = pharmacies
+  .filter((p) => p.verification_status === 'approved')
+  .flatMap((p) => Array.from({ length: 14 }, (_, d) => ({ pharmacy_id: p.id, days_ago: d, count: between(3, 40) })));
+
+// Recent history rows so "آخر النشاط" and PH-05 are not empty.
+const stock_history = stock
+  .filter((s) => (s.pharmacy_id === 'ph-nour' || s.pharmacy_id === 'ph-shifa') && s.reported_minutes_ago < 3 * DAY)
+  .map((s) => ({
+    pharmacy_id: s.pharmacy_id,
+    medicine_id: s.medicine_id,
+    action: 'update',
+    old_status: pick(['available', 'limited', 'unavailable'].filter((x) => x !== s.reported_status)),
+    new_status: s.reported_status,
+    old_price: null,
+    new_price: s.price_ils,
+    actor_id: s.pharmacy_id === 'ph-nour' ? 'u-ph-owner' : 'u-ph-staff',
+    minutes_ago: s.reported_minutes_ago,
+  }));
+
+// Inquiries from fictional patients (P-09 → PH-06).
+const inquiries = [
+  { id: 'inq-1001', org_id: 'ph-nour', patient_id: 'u-p2', medicine_id: 'insulin-glargine', subject: 'إنسولين لانتوس', status: 'new', messages: [{ sender: 'patient', body: 'هل يتوفر لديكم إنسولين لانتوس هذا الأسبوع؟', minutes_ago: 40 }] },
+  { id: 'inq-1002', org_id: 'ph-nour', patient_id: 'u-p3', medicine_id: 'salbutamol-inhaler', subject: 'سالبوتامول بخاخ', status: 'new', messages: [{ sender: 'patient', body: 'أبحث عن بخاخ سالبوتامول، هل ما زال متوفرًا؟', minutes_ago: 95 }] },
+  { id: 'inq-1003', org_id: 'ph-nour', patient_id: 'u-p2', medicine_id: null, subject: 'ساعات العمل', status: 'replied', messages: [
+    { sender: 'patient', body: 'هل تفتحون يوم الجمعة؟', minutes_ago: 26 * HOUR },
+    { sender: 'org', body: 'نعم، من الساعة 2 ظهرًا حتى 10 مساءً.', minutes_ago: 25 * HOUR },
+  ] },
+  { id: 'inq-1004', org_id: 'ph-shifa', patient_id: 'u-p3', medicine_id: 'levothyroxine-100', subject: 'ليفوثيروكسين 100', status: 'new', messages: [{ sender: 'patient', body: 'متى تتوقعون توفر ليفوثيروكسين 100؟', minutes_ago: 3 * HOUR }] },
+];
+
+// Catalog requests waiting for review (PH-04 → AD-04).
+const medicine_requests = [
+  { id: 'req-1', org_id: 'ph-nour', name_ar: 'مونتيلوكاست 10', name_en: 'Montelukast 10', generic_name: 'Montelukast', strength: '10 ملغ', dosage_form: 'tablet', pack_size: '30 قرص', manufacturer: null, barcode: null, category_id: 'respiratory', status: 'pending', minutes_ago: 2 * DAY },
 ];
 
 // ---------------------------------------------------------------- write
@@ -403,6 +454,11 @@ write('stock.json', stock);
 write('providers.json', providers);
 write('search_logs.json', search_logs);
 write('users.json', users);
+write('stock_private.json', stock_private);
+write('page_views.json', page_views);
+write('stock_history.json', stock_history);
+write('inquiries.json', inquiries);
+write('medicine_requests.json', medicine_requests);
 
 // Public offline catalog for suggestions (SPEC §11): approved medicines only, compact keys.
 writeFileSync(

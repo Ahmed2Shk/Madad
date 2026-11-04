@@ -5,7 +5,7 @@ import HomePage from '../features/search/HomePage';
 import NotFound from './NotFound';
 import UnderConstruction from './UnderConstruction';
 import { CardSkeleton } from '../components/ui';
-import { adminNav, pharmacyNav } from './shells/navs';
+import { adminNav } from './shells/navs';
 
 // Every page but the home page is its own chunk, and the portals load separately,
 // so the public path stays under budget (SPEC §11).
@@ -17,13 +17,27 @@ const FavoritesPage = lazy(() => import('../features/account/FavoritesPage'));
 const NotificationsPage = lazy(() => import('../features/account/NotificationsPage'));
 const AccountPage = lazy(() => import('../features/account/AccountPage'));
 const InfoPage = lazy(() => import('../features/info/InfoPage'));
+const LoginPage = lazy(() => import('../features/auth/LoginPage'));
+const SignupPage = lazy(() => import('../features/auth/SignupPage'));
+const ResetPage = lazy(() => import('../features/auth/ResetPage'));
+const ForOrganizationsPage = lazy(() => import('../features/auth/ForOrganizationsPage'));
+const RegisterPage = lazy(() => import('../features/auth/RegisterPage'));
+const StatusPage = lazy(() => import('../features/auth/StatusPage'));
 const PharmacyShell = lazy(() => import('./shells/PharmacyShell'));
+const DashboardPage = lazy(() => import('../features/pharmacy-portal/DashboardPage'));
+const QuickUpdatePage = lazy(() => import('../features/pharmacy-portal/QuickUpdatePage'));
+const MedicinesPage = lazy(() => import('../features/pharmacy-portal/MedicinesPage'));
+const AddMedicinePage = lazy(() => import('../features/pharmacy-portal/AddMedicinePage'));
+const HistoryPage = lazy(() => import('../features/pharmacy-portal/HistoryPage'));
+const InquiriesPage = lazy(() => import('../features/pharmacy-portal/InquiriesPage'));
+const ProfilePage = lazy(() => import('../features/pharmacy-portal/ProfilePage'));
+const TeamPage = lazy(() => import('../features/pharmacy-portal/TeamPage'));
 const AdminShell = lazy(() => import('./shells/AdminShell'));
 
 const page = (node: ReactNode) => <Suspense fallback={<CardSkeleton />}>{node}</Suspense>;
 
-// Screens of later phases (A-01..A-06 arrive in phase 2, P-07/P-08 in phase 5).
-const placeholders = ['directory', 'org/:id', 'for-organizations', 'login', 'signup', 'reset', 'register/status', 'register/:type'];
+// Screens of later phases (P-07/P-08 and the provider portal arrive in phase 5).
+const placeholders = ['directory', 'org/:id', 'provider'];
 
 const childPaths = (nav: { to: string }[], base: string) =>
   nav.filter((n) => n.to !== base).map((n) => ({ path: n.to.slice(base.length + 1), element: <UnderConstruction /> }));
@@ -43,6 +57,12 @@ export const router = createBrowserRouter([
       { path: 'about', element: page(<InfoPage page="about" />) },
       { path: 'privacy', element: page(<InfoPage page="privacy" />) },
       { path: 'terms', element: page(<InfoPage page="terms" />) },
+      { path: 'login', element: page(<LoginPage />) },
+      { path: 'signup', element: page(<SignupPage />) },
+      { path: 'reset', element: page(<ResetPage />) },
+      { path: 'for-organizations', element: page(<ForOrganizationsPage />) },
+      { path: 'register/status', element: page(<StatusPage />) },
+      { path: 'register/:type', element: page(<RegisterPage />) },
       ...placeholders.map((path) => ({ path, element: <UnderConstruction /> })),
       { path: '*', element: <NotFound /> },
     ],
@@ -50,7 +70,19 @@ export const router = createBrowserRouter([
   {
     path: '/pharmacy-portal',
     element: page(<PharmacyShell />),
-    children: [{ index: true, element: <UnderConstruction /> }, ...childPaths(pharmacyNav, '/pharmacy-portal')],
+    children: [
+      { index: true, element: page(<DashboardPage />) },
+      { path: 'update', element: page(<QuickUpdatePage />) },
+      { path: 'medicines', element: page(<MedicinesPage />) },
+      { path: 'medicines/add', element: page(<AddMedicinePage />) },
+      { path: 'history', element: page(<HistoryPage />) },
+      { path: 'inquiries', element: page(<InquiriesPage />) },
+      { path: 'profile', element: page(<ProfilePage />) },
+      { path: 'team', element: page(<TeamPage />) },
+      // PH-09 and PH-10 arrive in phase 5 (docs/DECISIONS.md).
+      { path: 'notifications', element: <UnderConstruction /> },
+      { path: 'settings', element: <UnderConstruction /> },
+    ],
   },
   {
     path: '/admin',

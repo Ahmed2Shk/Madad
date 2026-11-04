@@ -27,12 +27,13 @@ export const keys = {
   settings: ['public', 'settings'] as const,
   search: (q: string, gov: GovFilter) => ['public', 'search', q, gov] as const,
   medicinePharmacies: (id: string, gov: GovFilter) => ['public', 'medicine', id, gov] as const,
-  pharmacy: (id: string) => ['public', 'pharmacy', id] as const,
-  pharmacyReports: (id: string) => ['public', 'pharmacy-reports', id] as const,
+  pharmacy: (id: string, preview = false) => [preview ? 'me' : 'public', 'pharmacy', id] as const,
+  pharmacyReports: (id: string, preview = false) => [preview ? 'me' : 'public', 'pharmacy-reports', id] as const,
   pharmacies: (gov: GovFilter) => ['public', 'pharmacies', gov] as const,
   recent: (gov: GovFilter) => ['public', 'recent', gov] as const,
   top: (gov: GovFilter) => ['public', 'top', gov] as const,
   session: ['me', 'session'] as const,
+  me: ['me', 'profile'] as const,
   favorites: ['me', 'favorites'] as const,
   alerts: ['me', 'alerts'] as const,
   notifications: ['me', 'notifications'] as const,
@@ -64,11 +65,15 @@ export const usePharmaciesFor = (medicineId: string, gov: GovFilter) =>
     queryFn: use((r) => r.availability.pharmaciesFor(medicineId, gov)),
   });
 
-export const usePharmacy = (id: string) =>
-  useQuery({ queryKey: keys.pharmacy(id), queryFn: use((r) => r.orgs.pharmacy(id)) });
+/** `preview`: a member viewing their own not-yet-public pharmacy (PH-07); never persisted. */
+export const usePharmacy = (id: string, preview = false) =>
+  useQuery({ queryKey: keys.pharmacy(id, preview), queryFn: use((r) => r.orgs.pharmacy(id, { preview })) });
 
-export const usePharmacyReports = (id: string) =>
-  useQuery({ queryKey: keys.pharmacyReports(id), queryFn: use((r) => r.availability.pharmacyReports(id)) });
+export const usePharmacyReports = (id: string, preview = false) =>
+  useQuery({ queryKey: keys.pharmacyReports(id, preview), queryFn: use((r) => r.availability.pharmacyReports(id, { preview })) });
+
+/** Anonymous page-view count for the pharmacy dashboard (PH-01). */
+export const recordPharmacyView = (id: string) => getRepos().then((r) => r.insights.viewPharmacy(id));
 
 export const usePharmacies = (gov: GovFilter) =>
   useQuery({ queryKey: keys.pharmacies(gov), queryFn: use((r) => r.orgs.pharmacies(gov)) });
@@ -115,8 +120,9 @@ export function useSignOut() {
   return useMutation({
     mutationFn: () => getRepos().then((r) => r.account.signOut()),
     onSuccess: () => {
+      qc.removeQueries({ queryKey: ['me'] });
       qc.setQueryData(keys.session, null);
-      qc.removeQueries({ queryKey: ['me'], predicate: (q) => q.queryKey[1] !== 'session' });
+      qc.setQueryData(keys.me, null);
     },
   });
 }

@@ -17,19 +17,27 @@ import type {
   Session,
   SettingsRepo,
 } from '../types';
-import { newId, store, type OrgRow, type StockRow, type UserRow } from './store';
+import { AccessError, currentUser, hasOrgPerm, latency, requireOrgPerm, requireUser } from './access';
+import { authRepo, registrationRepo } from './authRepos';
+import { pharmacyPortalRepo } from './portalRepo';
+import { audit, newId, store, type OrgRow, type StockRow, type UserRow } from './store';
 import medicinesSeed from './seed/medicines.json';
 import categoriesSeed from './seed/categories.json';
 
-const LATENCY_MS = 120;
-const latency = <T>(value: T): Promise<T> => new Promise((r) => setTimeout(() => r(value), LATENCY_MS));
-
-const catalog = mapCatalog({ version: 1, categories: categoriesSeed, medicines: medicinesSeed } as RawCatalog);
+export const catalog = mapCatalog({ version: 1, categories: categoriesSeed, medicines: medicinesSeed } as RawCatalog);
 
 const inGov = (gov: GovFilter | undefined, orgGov: string) => !gov || gov === 'all' || gov === orgGov;
 
 function publicOrgs() {
   return new Map(store.get().orgs.filter((o) => o.verificationStatus === 'approved').map((o) => [o.id, o]));
+}
+
+/** An approved org, or — with `preview` — the signed-in member's own org in any state. */
+function visibleOrg(id: string, preview?: boolean): OrgRow | undefined {
+  const o = store.get().orgs.find((x) => x.id === id);
+  if (!o) return undefined;
+  if (o.verificationStatus === 'approved') return o;
+  return preview && hasOrgPerm(id, 'member') ? o : undefined;
 }
 
 function toPublicRow(s: StockRow): PharmacyAvailability {
@@ -43,17 +51,19 @@ function toPublicRow(s: StockRow): PharmacyAvailability {
   };
 }
 
+const publicListed = (s: StockRow) => s.isListed && !s.hiddenByAdmin;
+
 function publicStock(gov?: GovFilter) {
   const orgs = publicOrgs();
   return store.get().stock.filter((s) => {
     const o = orgs.get(s.pharmacyId);
-    return o && s.isListed && !s.hiddenByAdmin && inGov(gov, o.governorate);
+    return o && publicListed(s) && inGov(gov, o.governorate);
   });
 }
 
 function toPublicPharmacy(o: OrgRow): PublicPharmacy {
   const exact = o.locationPrecision === 'exact';
-  const reports = store.get().stock.filter((s) => s.pharmacyId === o.id && s.isListed && !s.hiddenByAdmin);
+  const reports = store.get().stock.filter((s) => s.pharmacyId === o.id && publicListed(s));
   const last = reports.reduce<string | null>((m, s) => (!m || s.reportedAt > m ? s.reportedAt : m), null);
   return {
     id: o.id,
@@ -69,6 +79,7 @@ function toPublicPharmacy(o: OrgRow): PublicPharmacy {
     phone: o.phone,
     whatsapp: o.whatsapp,
     hours: o.hours,
+    temporarilyClosed: o.temporarilyClosed,
     infoUpdatedAt: o.infoUpdatedAt,
     lastStockUpdateAt: last,
   };
@@ -91,8 +102,9 @@ const availability: AvailabilityRepo = {
   pharmaciesFor(medicineId, gov) {
     return latency(publicStock(gov).filter((r) => r.medicineId === medicineId).map(toPublicRow));
   },
-  pharmacyReports(pharmacyId) {
-    return latency(publicStock().filter((r) => r.pharmacyId === pharmacyId).map(toPublicRow));
+  pharmacyReports(pharmacyId, opts) {
+    if (!visibleOrg(pharmacyId, opts?.preview)) return latency([]);
+    return latency(store.get().stock.filter((r) => r.pharmacyId === pharmacyId && publicListed(r)).map(toPublicRow));
   },
   recentlyUpdated(gov, withinMinutes, limit) {
     const since = new Date(Date.now() - withinMinutes * 60_000).toISOString();
@@ -106,6 +118,9 @@ const availability: AvailabilityRepo = {
     return latency(list.sort((a, b) => b.at.localeCompare(a.at)).slice(0, limit));
   },
   updateStock(pharmacyId, changes) {
+    // update_stock RPC: availability permission required; price changes need the prices permission.
+    requireOrgPerm(pharmacyId, 'availability');
+    const canPrice = hasOrgPerm(pharmacyId, 'prices');
     const now = new Date();
     store.mutate((s) => {
       const org = s.orgs.find((o) => o.id === pharmacyId);
@@ -122,14 +137,15 @@ const availability: AvailabilityRepo = {
         const old = { status: row.reportedStatus, price: row.priceIls };
         row.reportedStatus = c.status;
         row.reportedAt = at;
-        if (c.priceIls !== undefined) {
+        if (c.priceIls !== undefined && canPrice) {
           row.priceIls = c.priceIls;
           row.priceUpdatedAt = c.priceIls == null ? null : at;
         }
-        s.stockHistory.push({ pharmacyId, medicineId: c.medicineId, action: 'update', oldStatus: old.status, newStatus: c.status, oldPrice: old.price, newPrice: row.priceIls, actorId: s.sessionUserId, createdAt: now.toISOString() });
+        s.stockHistory.push({ id: newId(), pharmacyId, medicineId: c.medicineId, action: 'update', oldStatus: old.status, newStatus: c.status, oldPrice: old.price, newPrice: row.priceIls, actorId: s.sessionUserId, createdAt: now.toISOString() });
+        audit(s, 'stock.update', 'pharmacy_stock', `${pharmacyId}/${c.medicineId}`, old, { status: c.status, price: row.priceIls });
 
-        // notify_alerts(): people waiting for this medicine in this governorate.
-        if (org && (c.status === 'available' || c.status === 'limited')) {
+        // notify_alerts(): people waiting for this medicine in this governorate — only once the pharmacy is public.
+        if (org?.verificationStatus === 'approved' && (c.status === 'available' || c.status === 'limited')) {
           for (const a of s.alerts) {
             if (!a.active || a.medicineId !== c.medicineId || !inGov(a.governorate, org.governorate)) continue;
             a.active = false;
@@ -150,14 +166,17 @@ const availability: AvailabilityRepo = {
     return latency(undefined);
   },
   confirmAll(pharmacyId, opts) {
+    requireOrgPerm(pharmacyId, 'availability');
+    const pricesToo = !!opts?.pricesToo && hasOrgPerm(pharmacyId, 'prices');
     const now = new Date().toISOString();
     const count = store.mutate((s) => {
       const rows = s.stock.filter((r) => r.pharmacyId === pharmacyId && r.isListed);
       for (const r of rows) {
         r.reportedAt = now;
-        if (opts?.pricesToo && r.priceIls != null) r.priceUpdatedAt = now;
+        if (pricesToo && r.priceIls != null) r.priceUpdatedAt = now;
       }
-      s.stockHistory.push({ pharmacyId, medicineId: null, action: 'confirm_all', oldStatus: null, newStatus: null, oldPrice: null, newPrice: null, actorId: s.sessionUserId, count: rows.length, createdAt: now });
+      s.stockHistory.push({ id: newId(), pharmacyId, medicineId: null, action: 'confirm_all', oldStatus: null, newStatus: null, oldPrice: null, newPrice: null, actorId: s.sessionUserId, count: rows.length, createdAt: now });
+      audit(s, 'stock.confirm_all', 'organization', pharmacyId, null, { count: rows.length, pricesToo });
       return rows.length;
     });
     return latency(count);
@@ -168,13 +187,22 @@ const orgs: OrgRepo = {
   pharmacies(gov) {
     return latency([...publicOrgs().values()].filter((o) => o.type === 'pharmacy' && inGov(gov, o.governorate)).map(toPublicPharmacy));
   },
-  pharmacy(id) {
-    const o = publicOrgs().get(id);
+  pharmacy(id, opts) {
+    const o = visibleOrg(id, opts?.preview);
     return latency(o && o.type === 'pharmacy' ? toPublicPharmacy(o) : null);
   },
 };
 
 const insights: InsightsRepo = {
+  viewPharmacy(pharmacyId) {
+    const day = new Date().toISOString().slice(0, 10);
+    store.mutate((s) => {
+      const row = s.pageViews.find((v) => v.pharmacyId === pharmacyId && v.day === day);
+      if (row) row.count++;
+      else s.pageViews.push({ pharmacyId, day, count: 1 });
+    });
+    return latency(undefined);
+  },
   logSearch(e) {
     store.mutate((s) => {
       s.searchLogs.push({
@@ -202,17 +230,6 @@ const insights: InsightsRepo = {
 const settings: SettingsRepo = {
   get: () => latency({ ...store.get().settings }),
 };
-
-function currentUser(): UserRow | null {
-  const s = store.get();
-  return s.users.find((u) => u.id === s.sessionUserId) ?? null;
-}
-
-function requireUser(): UserRow {
-  const u = currentUser();
-  if (!u) throw new Error('not_signed_in');
-  return u;
-}
 
 const toSession = (u: UserRow): Session => ({ userId: u.id, displayName: u.displayName, email: u.email, phone: u.phone });
 
@@ -289,8 +306,19 @@ const account: AccountRepo = {
   },
   sendInquiry(inq) {
     const u = requireUser();
+    const now = new Date().toISOString();
     store.mutate((s) => {
-      s.inquiries.push({ ...inq, id: newId(), userId: u.id, createdAt: new Date().toISOString(), status: 'new' });
+      s.inquiries.push({
+        id: `inq-${newId()}`,
+        orgId: inq.orgId,
+        patientId: u.id,
+        medicineId: inq.medicineId,
+        subject: inq.subject,
+        status: 'new',
+        messages: [{ sender: 'patient', body: inq.body, createdAt: now }],
+        createdAt: now,
+        updatedAt: now,
+      });
     });
     return latency(undefined);
   },
@@ -304,7 +332,7 @@ const account: AccountRepo = {
       favorites: mine(s.favorites),
       alerts: mine(s.alerts),
       notifications: mine(s.notifications),
-      inquiries: mine(s.inquiries),
+      inquiries: s.inquiries.filter((q) => q.patientId === u.id),
     });
   },
   deleteAccount() {
@@ -314,7 +342,7 @@ const account: AccountRepo = {
       s.favorites = keep(s.favorites);
       s.alerts = keep(s.alerts);
       s.notifications = keep(s.notifications);
-      s.inquiries = keep(s.inquiries);
+      s.inquiries = s.inquiries.filter((q) => q.patientId !== u.id);
       s.sessionUserId = null;
     });
     return latency(undefined);
@@ -330,16 +358,37 @@ const reports: ReportsRepo = {
   },
 };
 
+/** Access checks throw synchronously; callers should always see a rejected promise, as with a real backend. */
+function async<T extends object>(repo: T): T {
+  return Object.fromEntries(
+    Object.entries(repo).map(([k, fn]) => [
+      k,
+      (...args: unknown[]) => {
+        try {
+          return Promise.resolve((fn as (...a: unknown[]) => unknown)(...args));
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      },
+    ]),
+  ) as T;
+}
+
 export const mockRepos: Repos = {
+  auth: async(authRepo),
+  registration: async(registrationRepo),
+  pharmacyPortal: async(pharmacyPortalRepo),
   catalog: catalogRepo,
-  availability,
-  orgs,
-  insights,
+  availability: async(availability),
+  orgs: async(orgs),
+  insights: async(insights),
   settings,
-  account,
+  account: async(account),
   reports,
   subscribe: (l) => {
     const off = store.subscribe(l);
     return () => void off();
   },
 };
+
+export { AccessError };

@@ -1,6 +1,7 @@
 // Shared data contracts (SPEC §12). The UI talks to these interfaces only; mock and
 // Supabase implementations live in src/data/mock and src/data/supabase.
 import type { FreshnessSettings, Reported } from '../lib/freshness';
+export type { Reported } from '../lib/freshness';
 import type { Hours } from '../lib/hours';
 import type { Searchable } from '../lib/search';
 
@@ -72,6 +73,8 @@ export interface PublicPharmacy {
   phone: string;
   whatsapp: string | null;
   hours: Hours;
+  /** "مغلق مؤقتًا" set by the pharmacy (PH-07). */
+  temporarilyClosed: { reason: string | null } | null;
   infoUpdatedAt: string;
   lastStockUpdateAt: string | null;
 }
@@ -145,7 +148,7 @@ export interface AvailabilityAlert {
   notifiedAt: string | null;
 }
 
-export type NotificationKind = 'alert_met' | 'inquiry_reply' | 'platform';
+export type NotificationKind = 'alert_met' | 'inquiry_reply' | 'verification' | 'platform';
 
 export interface AppNotification {
   id: string;
@@ -190,7 +193,7 @@ export interface CatalogRepo {
 export interface AvailabilityRepo {
   searchMedicines(q: string, gov?: GovFilter): Promise<MedicineHit[]>;
   pharmaciesFor(medicineId: string, gov?: GovFilter): Promise<PharmacyAvailability[]>;
-  pharmacyReports(pharmacyId: string): Promise<PharmacyAvailability[]>;
+  pharmacyReports(pharmacyId: string, opts?: { preview?: boolean }): Promise<PharmacyAvailability[]>;
   recentlyUpdated(gov: GovFilter, withinMinutes: number, limit: number): Promise<RecentUpdate[]>;
   updateStock(pharmacyId: string, changes: StockChange[]): Promise<void>;
   confirmAll(pharmacyId: string, opts?: { pricesToo?: boolean }): Promise<number>;
@@ -198,10 +201,13 @@ export interface AvailabilityRepo {
 
 export interface OrgRepo {
   pharmacies(gov?: GovFilter): Promise<PublicPharmacy[]>;
-  pharmacy(id: string): Promise<PublicPharmacy | null>;
+  /** `preview` lets members see their own not-yet-approved pharmacy as patients will (PH-07). */
+  pharmacy(id: string, opts?: { preview?: boolean }): Promise<PublicPharmacy | null>;
 }
 
 export interface InsightsRepo {
+  /** Anonymous page-view counter for "مشاهدات صفحتك" (PH-01); no identity is stored. */
+  viewPharmacy(pharmacyId: string): Promise<void>;
   /** Called only after the user presses "search" or picks a suggestion (SPEC §7). */
   logSearch(entry: SearchLogEntry): Promise<void>;
   topSearched(gov: GovFilter, limit: number): Promise<TopSearch[]>;
@@ -234,6 +240,9 @@ export interface ReportsRepo {
 }
 
 export interface Repos {
+  auth: AuthRepo;
+  registration: RegistrationRepo;
+  pharmacyPortal: PharmacyPortalRepo;
   catalog: CatalogRepo;
   availability: AvailabilityRepo;
   orgs: OrgRepo;
@@ -243,4 +252,218 @@ export interface Repos {
   reports: ReportsRepo;
   /** Fires when data changes outside the current query (another tab, a portal update). */
   subscribe(listener: () => void): () => void;
+}
+
+// ---------------------------------------------------------------- auth, organizations, pharmacy portal (phase 2)
+
+export type OrgType = 'pharmacy' | 'hospital' | 'medical_point' | 'humanitarian';
+export type VerificationStatus = 'draft' | 'pending' | 'needs_info' | 'approved' | 'rejected' | 'suspended';
+export type MemberRole = 'owner' | 'manager' | 'staff' | 'viewer';
+export const PERMS = ['availability', 'prices', 'medicines', 'publish', 'inquiries', 'profile', 'team', 'reports'] as const;
+export type Perm = (typeof PERMS)[number];
+export type Perms = Record<Perm, boolean>;
+
+export interface Membership {
+  orgId: string;
+  orgType: OrgType;
+  orgNameAr: string;
+  orgNameEn: string;
+  role: MemberRole;
+  perms: Perms;
+  verificationStatus: VerificationStatus;
+}
+
+export interface Me extends Session {
+  platformRole: 'reviewer' | 'super_admin' | null;
+  memberships: Membership[];
+}
+
+export interface SignUpInput {
+  displayName: string;
+  email: string;
+  password: string;
+  phone: string | null;
+}
+
+export interface AuthRepo {
+  me(): Promise<Me | null>;
+  /** Generic failure on purpose: never says whether the email exists (SPEC §7 A-02). */
+  signIn(email: string, password: string): Promise<Me | null>;
+  signUp(input: SignUpInput): Promise<{ ok: true; me: Me } | { ok: false; reason: 'email_taken' }>;
+  requestPasswordReset(email: string): Promise<void>;
+}
+
+export interface DocumentMeta {
+  docType: string;
+  fileName: string;
+  size: number;
+  mime: string;
+}
+
+export interface RegistrationDraft {
+  account: { contactName: string; contactRole: string; email: string; phone: string; password: string };
+  org: {
+    type: OrgType;
+    nameAr: string;
+    nameEn: string;
+    licenseNo: string;
+    governorate: GovId;
+    area: string;
+    addressText: string;
+    landmark: string;
+    lat: number | null;
+    lng: number | null;
+    locationPrecision: LocationPrecision;
+    phone: string;
+    whatsapp: string;
+    hours: Hours;
+  };
+  documents: DocumentMeta[];
+}
+
+export interface VerificationEvent {
+  action: 'submitted' | 'approved' | 'needs_info' | 'rejected' | 'resubmitted' | 'profile_changed';
+  note: string | null;
+  createdAt: string;
+}
+
+export interface RegistrationStatus {
+  orgId: string;
+  orgType: OrgType;
+  nameAr: string;
+  nameEn: string;
+  status: VerificationStatus;
+  reviewerNote: string | null;
+  events: VerificationEvent[];
+}
+
+export interface RegistrationRepo {
+  submit(draft: RegistrationDraft): Promise<{ ok: true; orgId: string } | { ok: false; reason: 'email_taken' }>;
+  myStatus(): Promise<RegistrationStatus | null>;
+  /** "استكمال الطلب": sends a needs_info application back to review with the applicant's note. */
+  resubmit(orgId: string, note: string, documents: DocumentMeta[]): Promise<void>;
+}
+
+/** A pharmacy's own row: public fields, listing flags and, for authorized members only, the internal quantity. */
+export interface PortalStockRow extends PharmacyAvailability {
+  isListed: boolean;
+  hiddenByAdmin: boolean;
+  quantity: number | null;
+  lowThreshold: number | null;
+}
+
+export interface HistoryEntry {
+  id: string;
+  medicineId: string | null;
+  action: 'update' | 'confirm_all' | 'hide' | 'show' | 'add' | 'remove';
+  oldStatus: Reported | null;
+  newStatus: Reported | null;
+  oldPrice: number | null;
+  newPrice: number | null;
+  actorName: string;
+  count: number | null;
+  createdAt: string;
+}
+
+export interface PortalOverview {
+  listed: number;
+  fresh: number;
+  stale: number;
+  expired: number;
+  newInquiries: number;
+  viewsThisWeek: number;
+  viewsLastWeek: number;
+  /** Searches for this pharmacy's medicines in its governorate, oldest day first. */
+  searchesByDay: { date: string; count: number }[];
+  /** "مطلوب عندك وغير متوفر": searched with no result in the area over 7 days, aggregated without identities. */
+  unmetNearby: { medicineId: string; count: number }[];
+  activity: HistoryEntry[];
+}
+
+export type InquiryStatus = 'new' | 'in_progress' | 'replied' | 'closed';
+
+export interface InquiryThread {
+  id: string;
+  orgId: string;
+  medicineId: string | null;
+  subject: string;
+  status: InquiryStatus;
+  /** Display name only (SPEC §2 rule 8). */
+  patientName: string;
+  messages: { sender: 'patient' | 'org'; body: string; createdAt: string }[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface OrgProfile {
+  id: string;
+  type: OrgType;
+  nameAr: string;
+  nameEn: string;
+  licenseNo: string;
+  governorate: GovId;
+  area: string;
+  addressText: string;
+  landmark: string | null;
+  locationPrecision: LocationPrecision;
+  exactLat: number | null;
+  exactLng: number | null;
+  phone: string;
+  whatsapp: string | null;
+  hours: Hours;
+  description: string | null;
+  temporarilyClosed: { reason: string | null } | null;
+  verificationStatus: VerificationStatus;
+}
+
+export type OrgProfilePatch = Partial<Omit<OrgProfile, 'id' | 'type' | 'verificationStatus'>>;
+
+export interface TeamMember {
+  /** userId for active members, email for invitations. */
+  key: string;
+  email: string;
+  displayName: string | null;
+  role: MemberRole;
+  perms: Perms;
+  status: 'active' | 'invited';
+}
+
+export interface MedicineRequestInput {
+  nameAr: string;
+  nameEn: string;
+  genericName: string;
+  strength: string;
+  dosageForm: DosageForm;
+  packSize: string;
+  manufacturer: string | null;
+  barcode: string | null;
+  categoryId: string;
+}
+
+export interface MedicineRequest extends MedicineRequestInput {
+  id: string;
+  status: 'pending' | 'approved' | 'rejected' | 'merged';
+  createdAt: string;
+}
+
+export interface PharmacyPortalRepo {
+  overview(orgId: string): Promise<PortalOverview>;
+  stock(orgId: string): Promise<PortalStockRow[]>;
+  history(orgId: string): Promise<HistoryEntry[]>;
+  setListed(orgId: string, medicineId: string, listed: boolean): Promise<void>;
+  removeMedicine(orgId: string, medicineId: string): Promise<void>;
+  addMedicine(orgId: string, medicineId: string, status: Reported): Promise<void>;
+  setQuantity(orgId: string, medicineId: string, quantity: number, lowThreshold: number): Promise<void>;
+  requestMedicine(orgId: string, input: MedicineRequestInput): Promise<void>;
+  requests(orgId: string): Promise<MedicineRequest[]>;
+  inquiries(orgId: string): Promise<InquiryThread[]>;
+  replyInquiry(orgId: string, inquiryId: string, body: string): Promise<void>;
+  setInquiryStatus(orgId: string, inquiryId: string, status: InquiryStatus): Promise<void>;
+  profile(orgId: string): Promise<OrgProfile>;
+  /** Changing the name or licence sends the organization back to review (SPEC §8 PH-07). */
+  updateProfile(orgId: string, patch: OrgProfilePatch): Promise<{ reReview: boolean }>;
+  team(orgId: string): Promise<TeamMember[]>;
+  invite(orgId: string, email: string, role: MemberRole): Promise<void>;
+  updateMember(orgId: string, key: string, patch: { role?: MemberRole; perms?: Perms }): Promise<void>;
+  removeMember(orgId: string, key: string): Promise<void>;
 }

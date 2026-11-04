@@ -1,0 +1,6 @@
+[
+{"id":"inq-1001","org_id":"ph-nour","patient_id":"u-p2","medicine_id":"insulin-glargine","subject":"إنسولين لانتوس","status":"new","messages":[{"sender":"patient","body":"هل يتوفر لديكم إنسولين لانتوس هذا الأسبوع؟","minutes_ago":40}]},
+{"id":"inq-1002","org_id":"ph-nour","patient_id":"u-p3","medicine_id":"salbutamol-inhaler","subject":"سالبوتامول بخاخ","status":"new","messages":[{"sender":"patient","body":"أبحث عن بخاخ سالبوتامول، هل ما زال متوفرًا؟","minutes_ago":95}]},
+{"id":"inq-1003","org_id":"ph-nour","patient_id":"u-p2","medicine_id":null,"subject":"ساعات العمل","status":"replied","messages":[{"sender":"patient","body":"هل تفتحون يوم الجمعة؟","minutes_ago":1560},{"sender":"org","body":"نعم، من الساعة 2 ظهرًا حتى 10 مساءً.","minutes_ago":1500}]},
+{"id":"inq-1004","org_id":"ph-shifa","patient_id":"u-p3","medicine_id":"levothyroxine-100","subject":"ليفوثيروكسين 100","status":"new","messages":[{"sender":"patient","body":"متى تتوقعون توفر ليفوثيروكسين 100؟","minutes_ago":180}]}
+]
