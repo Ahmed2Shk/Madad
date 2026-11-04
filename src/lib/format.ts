@@ -36,3 +36,21 @@ export function formatDateTime(date: Date, lang: Lang): string {
 export function formatPrice(ils: number): string {
   return `${ils.toFixed(2)} ₪`;
 }
+
+/** "1.2 كم" / "1.2 km"; metres under 1 km. */
+export function formatDistance(km: number, lang: Lang): string {
+  if (km < 1) return lang === 'ar' ? `${Math.round(km * 1000)} م` : `${Math.round(km * 1000)} m`;
+  return lang === 'ar' ? `${km.toFixed(1)} كم` : `${km.toFixed(1)} km`;
+}
+
+const digitsOf = (phone: string) => phone.replace(/\D/g, '');
+
+/** International digits for a Palestinian number: 059-000-0000 → 970590000000. */
+export function intlPhone(phone: string): string {
+  const d = digitsOf(phone);
+  if (d.startsWith('970') || d.startsWith('972')) return d;
+  return `970${d.replace(/^0/, '')}`;
+}
+
+export const telHref = (phone: string) => `tel:+${intlPhone(phone)}`;
+export const whatsappHref = (phone: string) => `https://wa.me/${intlPhone(phone)}`;

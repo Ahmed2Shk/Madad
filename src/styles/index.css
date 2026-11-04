@@ -13,6 +13,8 @@
     color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-text-size-adjust: 100%;
+    /* Reserve the scrollbar so content loading in does not shift the page sideways. */
+    scrollbar-gutter: stable;
   }
   body {
     @apply text-body min-h-dvh;

@@ -6,6 +6,7 @@
   },
   "nav": {
     "main": "Main navigation",
+    "footer": "Site links",
     "search": "Search",
     "pharmacies": "Pharmacies",
     "directory": "Directory",
@@ -14,7 +15,10 @@
     "forOrganizations": "For organizations",
     "login": "Log in",
     "menu": "Menu",
-    "breadcrumb": "Breadcrumb"
+    "breadcrumb": "Breadcrumb",
+    "notifications": "Notifications",
+    "notificationsUnread_one": "Notifications, 1 new",
+    "notificationsUnread_other": "Notifications, {{count}} new"
   },
   "lang": {
     "short": "عربي",
@@ -22,7 +26,58 @@
   },
   "home": {
     "title": "Find your medicine and see where it was reported available",
-    "subtitle": "Information from pharmacies, with the time of the last update"
+    "subtitle": "Information from pharmacies, with the time of the last update",
+    "topSearched": "Most searched in {{gov}}",
+    "recentlyUpdated": "Recently updated",
+    "recentlyUpdatedHint": "Pharmacies in {{gov}} that updated in the last hour",
+    "noRecent": "No pharmacy updated in the last hour.",
+    "lastSearch": "Last saved search: {{query}}",
+    "howTitle": "How MADAD works",
+    "how1Title": "Search",
+    "how1Body": "Type a medicine or active ingredient, or scan its barcode, and pick your governorate.",
+    "how2Title": "Compare update times",
+    "how2Body": "Every status shows when the pharmacy last reported it. An old report is never shown as confirmed.",
+    "how3Title": "Call and go to the pharmacy",
+    "how3Body": "Call to confirm, then go to the pharmacy yourself. Dispensing happens at the pharmacy only."
+  },
+  "search": {
+    "fieldLabel": "Medicine, active ingredient or barcode",
+    "placeholder": "e.g. insulin, paracetamol 500",
+    "submit": "Search",
+    "suggestions": "Suggestions",
+    "resultsTitle": "Results for “{{query}}” in {{gov}}",
+    "reportedAvailable_one": "1 pharmacy reported it available",
+    "reportedAvailable_other": "{{count}} pharmacies reported it available",
+    "noRecentReports": "No recent availability reports"
+  },
+  "filters": {
+    "label": "Filter results",
+    "availableOnly": "Available only",
+    "today": "Updated today",
+    "nearest": "Nearest",
+    "openNow": "Open now",
+    "noneMatch": "Nothing matches these filters",
+    "noneMatchBody": "Try turning off “Updated today” or “Open now”."
+  },
+  "gov": {
+    "label": "Governorate",
+    "all": "All governorates",
+    "anywhere": "all governorates",
+    "regionGaza": "Gaza Strip",
+    "regionWestBank": "West Bank"
+  },
+  "geo": {
+    "useMine": "Use my location",
+    "denied": "We could not get your location. You can search by area instead."
+  },
+  "map": {
+    "list": "List",
+    "map": "Map",
+    "toggle": "View",
+    "label": "Map of pharmacies",
+    "dataSaver": "The map is off in data saver mode. You can change this in your account.",
+    "offline": "The map needs an internet connection.",
+    "show": "Show map"
   },
   "status": {
     "available": "Available",
@@ -36,13 +91,287 @@
     "updated": "Updated {{time}}",
     "lastReport": "Last report: {{status}}"
   },
+  "price": {
+    "asOfLastUpdate": "as of last update"
+  },
+  "forms": {
+    "tablet": "Tablets",
+    "capsule": "Capsules",
+    "syrup": "Syrup",
+    "suspension": "Suspension",
+    "injection_pen": "Injection pen",
+    "vial": "Vial",
+    "inhaler": "Inhaler",
+    "sachet": "Sachets",
+    "cream": "Cream"
+  },
+  "medicine": {
+    "pack": "Pack",
+    "category": "Category",
+    "manufacturer": "Manufacturer",
+    "reportingIn": "Reporting pharmacies in {{gov}}",
+    "lowestPrice": "Lowest reported price",
+    "allUnconfirmed": "No recent reports. Call to confirm.",
+    "reportingLabel": "Pharmacies reported",
+    "reportingValue_one": "1 ({{fresh}} recent)",
+    "reportingValue_other": "{{count}} ({{fresh}} recent)",
+    "pharmacyCount_one": "1 pharmacy",
+    "pharmacyCount_other": "{{count}} pharmacies"
+  },
+  "pharmacy": {
+    "verified": "Verified",
+    "landmark": "Near: {{landmark}}",
+    "infoUpdated": "Information last updated:",
+    "recentMedicines": "Recently reported medicines",
+    "searchInside": "Search this pharmacy's medicines",
+    "noRecent": "No matching recent reports",
+    "notFound": "Pharmacy not available",
+    "notFoundBody": "It may not be approved yet, or it is suspended.",
+    "precision": {
+      "exact": "Location on the map",
+      "area": "This pharmacy publishes its area only. Use the address and landmark to find it.",
+      "hidden": "This pharmacy does not publish its location on a map. Use the address and landmark to find it."
+    }
+  },
+  "pharmacies": {
+    "title": "Nearby pharmacies",
+    "note": "This is a list of pharmacies, not of any medicine's availability.",
+    "searchArea": "Search by area",
+    "lastStockUpdate": "Stock last updated:",
+    "never": "never",
+    "empty": "No matching pharmacies",
+    "emptyBody": "Try another governorate or search term."
+  },
+  "hours": {
+    "title": "Opening hours",
+    "closed": "Closed",
+    "allDay": "24 hours",
+    "openNow": "Open now",
+    "closedNow": "Closed now"
+  },
+  "days": {
+    "sat": "Saturday",
+    "sun": "Sunday",
+    "mon": "Monday",
+    "tue": "Tuesday",
+    "wed": "Wednesday",
+    "thu": "Thursday",
+    "fri": "Friday"
+  },
+  "actions": {
+    "call": "Call",
+    "whatsapp": "WhatsApp",
+    "directions": "Directions"
+  },
+  "noResults": {
+    "title": "No pharmacy in {{gov}} recently reported {{medicine}} available",
+    "subtitle": "Information depends on pharmacy updates.",
+    "notifyBody": "We'll notify you when a pharmacy reports it available.",
+    "allGovs": "Search all governorates",
+    "allGovsBody": "Show reports from every governorate.",
+    "reportShortage": "Report a shortage",
+    "reportShortageBody": "Tell us it is missing in your area.",
+    "anonymousNote": "Your search counts anonymously in the shortage map organizations see.",
+    "unknownTitle": "We found no medicine with this name",
+    "unknownHint": "Check the spelling or try the active ingredient.",
+    "suggest": "Suggest adding it",
+    "suggestBody": "We'll send “{{query}}” to the MADAD team for review.",
+    "suggested": "Thanks, we got your suggestion",
+    "notifyAction": "Turn on alert",
+    "allGovsAction": "Widen the search",
+    "reportShortageAction": "Log the shortage",
+    "suggestAction": "Send suggestion"
+  },
+  "alerts": {
+    "notifyMe": "Notify me when available",
+    "created": "We'll notify you when it's available",
+    "stop": "Stop",
+    "stopped": "Alert stopped",
+    "met": "Met",
+    "emptyTitle": "No alerts",
+    "emptyBody": "Tap “Notify me when available” on any medicine page."
+  },
+  "favorites": {
+    "title": "Favorites",
+    "save": "Save",
+    "savedLabel": "Saved",
+    "saved": "Saved to favorites",
+    "removed": "Removed from favorites",
+    "medicines": "Medicines",
+    "pharmacies": "Pharmacies",
+    "providers": "Service providers",
+    "emptyTitle": "Nothing saved yet",
+    "emptyBody": "Save your medicine or pharmacy to reach them quickly.",
+    "providersLater": "The service provider directory is coming soon."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "tab": "Notifications",
+    "myAlerts": "My alerts",
+    "view": "View",
+    "emptyTitle": "No notifications",
+    "emptyBody": "Inquiry replies and availability alerts will appear here.",
+    "alertMet": "{{pharmacy}} ({{gov}}) reported {{medicine}} available {{time}}. Call to confirm."
+  },
+  "inquiry": {
+    "open": "Send an inquiry",
+    "title": "Inquiry to {{name}}",
+    "subject": "Subject",
+    "message": "Message",
+    "send": "Send",
+    "sent": "Your inquiry was sent. You'll be notified when they reply.",
+    "noMedicalInfo": "Do not write personal medical information.",
+    "notAnOrder": "An inquiry never becomes an order or a reservation."
+  },
+  "report": {
+    "open": "Report a mistake",
+    "title": "Report wrong information",
+    "shortageTitle": "Report a shortage",
+    "shortageBody": "Your report joins the aggregated shortage data, with no identity.",
+    "reasonLabel": "What is wrong?",
+    "reasons": {
+      "wrong_availability": "Availability is wrong",
+      "closed_or_moved": "Pharmacy closed or moved",
+      "wrong_phone": "Wrong phone number",
+      "misleading": "Misleading information",
+      "other": "Other"
+    },
+    "details": "Note (optional)",
+    "send": "Send report",
+    "thanks": "Thanks, we got your report",
+    "tooMany": "You sent many reports. Try again later.",
+    "noAccountNeeded": "No account needed to report."
+  },
+  "auth": {
+    "promptTitle": "Sign in to continue",
+    "reasonGeneric": "This step needs an account.",
+    "reasonInquiry": "Sign in to send the inquiry; we'll bring you back here.",
+    "reasonAlert": "Sign in so we can notify you when it's available.",
+    "reasonFavorite": "Sign in to save what matters to you.",
+    "continueDemo": "Continue with the demo patient account",
+    "pageTitle": "Sign in to see this page",
+    "pageBody": "An account is only needed for favorites, alerts and inquiries."
+  },
+  "account": {
+    "title": "Account and settings",
+    "profile": "Profile",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Mobile",
+    "saved": "Saved",
+    "preferences": "Preferences",
+    "language": "Language",
+    "lang_ar": "العربية",
+    "lang_en": "English",
+    "dataSaver": "Data saver",
+    "dataSaverHint": "Turns off images and the map.",
+    "saver_auto": "Follow the browser",
+    "saver_on": "On",
+    "saver_off": "Off",
+    "privacy": "Privacy",
+    "privacyNote": "We never ask for medical information, and the search log holds no identity.",
+    "download": "Download my data",
+    "delete": "Delete account",
+    "deleteTitle": "Delete your account?",
+    "deleteBody": "Your favorites, alerts, notifications and inquiries will be deleted. This cannot be undone.",
+    "deleteConfirm": "Delete permanently",
+    "deleted": "Account deleted",
+    "more": "Links",
+    "haveOrg": "Have an organization? Register it",
+    "signOut": "Sign out"
+  },
+  "info": {
+    "about": "About MADAD",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "contact": "Contact us"
+  },
+  "infoPages": {
+    "about": {
+      "title": "About MADAD",
+      "lead": "MADAD tells you where a pharmacy recently reported a medicine available, and when. This is a prototype with demo data.",
+      "sections": [
+        {
+          "title": "What MADAD does",
+          "body": "MADAD collects availability reports that pharmacies enter themselves and shows each one with its time. A report that is too old shows as “Unconfirmed”, never as available."
+        },
+        {
+          "title": "What it does not do",
+          "body": "MADAD does not sell, deliver or reserve medicines, and gives no medical advice, alternatives or doses. Dispensing happens at the pharmacy, at the pharmacist's judgement."
+        },
+        {
+          "title": "Contact us",
+          "id": "contact",
+          "body": "This is a demo version. The official contact channel will be announced at launch."
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Privacy",
+      "lead": "We collect as little data as possible.",
+      "sections": [
+        {
+          "title": "Searching without an account",
+          "body": "You can search and browse pharmacies without an account. The search log is fully anonymous: the search text, governorate and result count only."
+        },
+        {
+          "title": "Location",
+          "body": "We ask for your location only when you tap “Nearest” or “Use my location”. It is used in your browser to compute distance and is never sent to us."
+        },
+        {
+          "title": "Your account",
+          "body": "An account needs only a name and email; mobile is optional. There are no medical fields. You can download your data or delete your account from your account page."
+        },
+        {
+          "title": "Inquiries",
+          "body": "Organizations see your inquiries with your display name only. Do not write personal medical information in them."
+        }
+      ]
+    },
+    "terms": {
+      "title": "Terms",
+      "lead": "By using MADAD you agree to the following.",
+      "sections": [
+        {
+          "title": "Nature of the information",
+          "body": "Availability comes from pharmacies and is shown as reported, with its time. It may not be accurate when you visit, so call to confirm."
+        },
+        {
+          "title": "No medical advice",
+          "body": "The site gives no diagnosis or medicine recommendation. Ask your doctor or pharmacist."
+        },
+        {
+          "title": "Acceptable use",
+          "body": "Entering misleading information or misusing reports and inquiries is not allowed."
+        }
+      ]
+    }
+  },
+  "barcode": {
+    "open": "Search by barcode",
+    "title": "Barcode search",
+    "camera": "Camera view",
+    "starting": "Starting the camera…",
+    "scanning": "Point the camera at the barcode.",
+    "denied": "We could not use the camera. Type the barcode number instead.",
+    "unsupported": "Your browser can't use the camera here. Type the barcode number instead.",
+    "manual": "Or type the barcode number"
+  },
+  "errors": {
+    "network": "Could not connect.",
+    "networkCached": "Could not connect. Showing the last saved results.",
+    "required": "This field is required",
+    "tooLong": "The text is too long",
+    "phone": "Invalid mobile number"
+  },
   "disclaimer": {
     "full": "Availability is based on the pharmacy's latest reported update. Please call or visit to confirm. Dispensing is subject to the pharmacist's professional judgement and applicable regulations.",
     "short": "Availability is based on the pharmacy's latest reported update. Please call or visit to confirm."
   },
   "offline": {
     "banner": "You are offline",
-    "lastSync": "Last synced {{time}}"
+    "lastSync": "Last synced {{time}}",
+    "saved": "Saved {{time}}"
   },
   "demo": {
     "badge": "Demo data"
@@ -52,6 +381,9 @@
     "retry": "Try again",
     "back": "Back",
     "close": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
+    "optional": "optional",
     "underConstruction": "This screen is under construction",
     "underConstructionHint": "It will be built in a later phase of the plan."
   },
@@ -91,5 +423,9 @@
         "settings": "Settings"
       }
     }
+  },
+  "breadcrumb": {
+    "home": "Home",
+    "results": "Search results"
   }
 }

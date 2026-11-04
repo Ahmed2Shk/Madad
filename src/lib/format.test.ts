@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { formatDateTime, formatPrice, formatRelative, localeTag } from './format';
+import {
+  formatDateTime,
+  formatDistance,
+  formatPrice,
+  formatRelative,
+  intlPhone,
+  localeTag,
+  telHref,
+  whatsappHref,
+} from './format';
 
 const now = new Date('2026-11-03T12:00:00Z');
 const ago = (s: number) => new Date(now.getTime() - s * 1000);
@@ -34,6 +43,26 @@ describe('formatRelative', () => {
 describe('formatDateTime', () => {
   it('never uses Eastern Arabic digits', () => {
     expect(formatDateTime(now, 'ar')).not.toMatch(easternDigits);
+  });
+});
+
+describe('formatDistance', () => {
+  it('uses km with one decimal, metres under 1 km', () => {
+    expect(formatDistance(1.234, 'ar')).toBe('1.2 كم');
+    expect(formatDistance(1.234, 'en')).toBe('1.2 km');
+    expect(formatDistance(0.45, 'en')).toBe('450 m');
+  });
+});
+
+describe('phone links', () => {
+  it('converts local numbers to international digits', () => {
+    expect(intlPhone('059-000-0000')).toBe('970590000000');
+    expect(intlPhone('+970 59 000 0001')).toBe('970590000001');
+  });
+
+  it('builds tel: and wa.me links', () => {
+    expect(telHref('059-000-0000')).toBe('tel:+970590000000');
+    expect(whatsappHref('059-000-0000')).toBe('https://wa.me/970590000000');
   });
 });
 

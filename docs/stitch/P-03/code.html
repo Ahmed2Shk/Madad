@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-secondary-fixed-variant": "#00504a", "surface-container": "#d0f5f3", "outline-variant": "#bec9c7", "on-tertiary-fixed": "#131e1b", "surface-container-highest": "#c5eae8", "surface-tint": "#116966", "error": "#ba1a1a", "secondary-fixed-dim": "#7bd6cc", "on-primary-fixed-variant": "#00504d", "surface": "#e3fffd", "on-tertiary": "#ffffff", "surface-container-low": "#d6fbf9", "tertiary-fixed": "#d9e5e1", "background": "#e3fffd", "on-tertiary-fixed-variant": "#3e4946", "secondary": "#006a63", "primary-fixed": "#a4f0ec", "on-primary-fixed": "#00201f", "surface-dim": "#bce1df", "on-primary-container": "#9de9e4", "inverse-surface": "#123635", "on-error": "#ffffff", "tertiary-container": "#57625f", "on-error-container": "#93000a", "primary-container": "#146b68", "error-container": "#ffdad6", "on-secondary-container": "#007169", "on-surface": "#00201f", "surface-bright": "#e3fffd", "outline": "#6f7978", "surface-container-lowest": "#ffffff", "on-secondary-fixed": "#00201d", "tertiary-fixed-dim": "#bdc9c5", "on-secondary": "#ffffff", "inverse-primary": "#88d4cf", "secondary-container": "#98f3e8", "primary": "#00514f", "tertiary": "#3f4a48", "on-primary": "#ffffff", "on-surface-variant": "#3f4948", "surface-container-high": "#caefed", "on-tertiary-container": "#d1ddd9", "inverse-on-surface": "#d3f8f6", "secondary-fixed": "#98f3e8", "surface-variant": "#c5eae8", "on-background": "#00201f", "primary-fixed-dim": "#88d4cf" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-sm": "0.5rem", "space-lg": "1.5rem", "space-xs": "0.25rem", "margin-mobile": "1rem", "space-xl": "2.5rem", "space-md": "1rem", "gutter": "1.25rem", "gutter-mobile": "0.75rem", "margin": "2rem" }, "fontFamily": { "body-sm": ["IBM Plex Sans"], "body-base": ["IBM Plex Sans"], "headline-sm": ["IBM Plex Sans"], "label-md": ["Inter"], "display": ["IBM Plex Sans"], "label-sm": ["Inter"], "timestamp": ["IBM Plex Sans"], "body-lg": ["IBM Plex Sans"], "headline-lg-mobile": ["IBM Plex Sans"], "headline-lg": ["IBM Plex Sans"], "headline-md": ["IBM Plex Sans"] }, "fontSize": { "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "body-base": ["15px", { "lineHeight": "22px", "fontWeight": "400" }], "headline-sm": ["17px", { "lineHeight": "24px", "fontWeight": "600" }], "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }], "display": ["32px", { "lineHeight": "44px", "fontWeight": "700" }], "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "timestamp": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "headline-lg-mobile": ["22px", { "lineHeight": "32px", "fontWeight": "600" }], "headline-lg": ["26px", { "lineHeight": "36px", "fontWeight": "600" }], "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }] } } } };</script></head><body class="bg-background font-body-base text-body-base text-on-surface antialiased"><header class="fixed top-0 w-full z-50 bg-surface-container-lowest shadow-[0_1px_8px_rgba(20,107,104,0.06)]"><div class="h-20 max-w-[1200px] mx-auto px-margin-mobile md:px-margin flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md shrink-0"><a class="text-primary hover:text-primary-container transition-colors" data-path="medication-search" href="#"><span class="font-display text-display tracking-tight font-bold select-none">مَدَد</span></a><span class="hidden lg:inline-flex items-center px-space-sm py-space-xs rounded-lg bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">بيانات تجريبية</span></div><div class="flex-1 max-w-[620px] mx-space-sm"><div class="relative flex items-center w-full bg-surface-container-lowest rounded-lg border border-outline-variant focus-within:border-primary transition-colors"><span class="material-symbols-outlined absolute right-space-sm text-outline pointer-events-none text-[20px]">search</span><input class="w-full h-11 pr-10 pl-11 bg-transparent text-on-surface font-body-base text-body-base placeholder:text-outline focus:outline-none" placeholder="ابحث بالاسم العلمي، التجاري، أو المادة الفعالة..." type="text" value="إنسولين نوفورابيد"/><button class="absolute left-space-xs p-space-xs text-outline hover:text-primary transition-colors rounded-DEFAULT flex items-center justify-center" title="مسح الباركود" type="button"><span class="material-symbols-outlined text-[20px]">barcode_scanner</span></button></div></div><div class="flex items-center gap-space-sm shrink-0"><button class="h-11 px-space-md rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface hover:bg-surface-container-low hover:border-primary transition-colors font-label-md text-label-md flex items-center justify-center" type="button">EN</button><button class="h-11 px-space-lg rounded-lg bg-primary hover:bg-primary-container text-on-primary transition-colors font-label-md text-label-md flex items-center gap-space-xs shadow-[0_1px_3px_rgba(20,107,104,0.05)]" type="button"><span class="material-symbols-outlined text-[20px]">login</span><span>تسجيل الدخول</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-20 bg-background"><div class="flex flex-col w-full">
+<div class="w-full max-w-[1200px] mx-auto px-margin-mobile md:px-margin py-space-xl">
+<!-- Breadcrumbs navigation -->
+<nav aria-label="مسار التصفح" class="flex items-center gap-space-xs text-body-sm font-body-sm text-outline mb-space-lg select-none">
+<a class="hover:text-primary transition-colors flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-[16px]">home</span>
+<span>الرئيسية</span>
+</a>
+<span class="material-symbols-outlined text-[14px] text-outline-variant">chevron_left</span>
+<a class="hover:text-primary transition-colors" href="#">نتائج البحث</a>
+<span class="material-symbols-outlined text-[14px] text-outline-variant">chevron_left</span>
+<span aria-current="page" class="text-on-surface font-headline-sm text-label-md">إنسولين نوفورابيد</span>
+</nav>
+<!-- Main Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+<!-- Right Sidebar (Metadata & Subscription) in RTL -->
+<aside class="lg:col-span-4 w-full flex flex-col gap-space-md order-1">
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm">
+<div class="flex items-center gap-space-md mb-space-md">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[26px]">medication</span>
+</div>
+<div class="min-w-0">
+<h1 class="font-headline-lg text-headline-md text-on-surface leading-tight font-bold">إنسولين نوفورابيد</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-0.5" dir="ltr">Insulin aspart · 100 U/ml · FlexPen</p>
+</div>
+</div>
+<div class="w-full h-px bg-surface-container mb-space-md"></div>
+<!-- Key Metrics -->
+<div class="space-y-space-sm mb-space-lg">
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low text-on-surface">
+<div class="flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px] text-primary">local_pharmacy</span>
+<span>صيدليات أبلغت</span>
+</div>
+<span class="font-label-md text-label-md font-semibold text-on-surface">4 (منها 2 حديثة)</span>
+</div>
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low text-on-surface">
+<div class="flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px] text-primary">payments</span>
+<span>أقل سعر مُبلَّغ</span>
+</div>
+<span class="font-label-md text-label-md font-semibold text-primary">42.00 ₪</span>
+</div>
+</div>
+<!-- Notification & Bookmark Actions -->
+<div class="flex flex-col gap-space-sm">
+<button class="w-full h-11 px-space-md rounded-lg bg-primary hover:bg-primary-container text-on-primary transition-all font-label-md text-label-md flex items-center justify-center gap-space-xs shadow-sm" id="btn-alert" type="button">
+<span class="material-symbols-outlined text-[20px]">notifications_active</span>
+<span>نبّهني عند التوفر</span>
+</button>
+<button class="w-full h-11 px-space-md rounded-lg bg-surface-container-lowest hover:bg-surface-container-low text-on-surface transition-all font-label-md text-label-md flex items-center justify-center gap-space-xs" id="btn-save" type="button">
+<span class="material-symbols-outlined text-[20px] text-outline">bookmark_border</span>
+<span>حفظ في القائمة</span>
+</button>
+</div>
+<!-- Quick Report Link -->
+<div class="mt-space-md text-center">
+<button class="inline-flex items-center gap-1 font-body-sm text-timestamp text-outline hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">flag</span>
+<span>أبلغ عن معلومة غير دقيقة</span>
+</button>
+</div>
+<!-- Clinical Disclaimer -->
+<div class="mt-space-md p-space-sm rounded-lg bg-surface-container-low text-on-surface-variant font-body-sm text-timestamp leading-relaxed flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-outline text-[18px] shrink-0 mt-0.5">verified_user</span>
+<p>تعتمد معلومات التوفر على آخر تحديث أبلغت عنه الصيدلية. يرجى الاتصال المباشر للتأكد قبل التحرك. يخضع الصرف الفعلي للبروتوكولات الطبية المعتمدة وتقدير الصيدلي المسؤول.</p>
+</div>
+</div>
+<!-- Verification Flow Explainer -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm">
+<span class="font-label-sm text-label-sm text-primary font-bold block mb-space-xs">نظام توثيق البيانات</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            يتم التحقق من بيانات المخزون عبر استجابات الصيدليات الميدانية ومراسلي الهلال الأحمر. تتناقص صلاحية التأكيد تلقائياً كل 12 ساعة في الحالات الحرجة.
+          </p>
+</div>
+</aside>
+<!-- Left Main Column (Pharmacy List & Filters) -->
+<section class="lg:col-span-8 w-full flex flex-col order-2">
+<!-- Header & Counter -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-sm">
+<div class="flex items-center gap-space-sm">
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">الصيدليات المبلِّغة في خان يونس</h2>
+<span class="px-space-sm py-0.5 rounded-full bg-surface-container text-primary font-label-sm text-label-sm font-semibold">4 مراكز</span>
+</div>
+<span class="font-timestamp text-timestamp text-outline">المنطقة الجغرافية: قطاع غزة - المحافظة الوسطى والجنوب</span>
+</div>
+<!-- Filter Controls Toolbar -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm mt-space-sm mb-space-md p-space-xs rounded-xl bg-surface-container-lowest shadow-sm">
+<!-- Filter Tags -->
+<div class="flex flex-wrap items-center gap-space-xs">
+<button class="filter-pill active h-8 px-space-md rounded-full bg-primary text-on-primary font-label-sm text-label-sm flex items-center gap-1.5 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">check</span>
+<span>المتوفر فقط</span>
+</button>
+<button class="filter-pill h-8 px-space-md rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface font-label-sm text-label-sm flex items-center gap-1.5 transition-colors" type="button">
+<span>حُدّث اليوم</span>
+</button>
+<button class="filter-pill h-8 px-space-md rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface font-label-sm text-label-sm flex items-center gap-1.5 transition-colors" type="button">
+<span>الأقرب مسافة</span>
+</button>
+</div>
+<!-- List/Map Segmented Switch -->
+<div class="inline-flex items-center p-0.5 rounded-lg bg-surface-container-low" role="tablist">
+<button class="h-7 px-space-sm rounded-md bg-surface-container-lowest text-on-surface shadow-sm font-label-sm text-label-sm flex items-center gap-1 font-semibold transition-all" id="tab-list" type="button">
+<span class="material-symbols-outlined text-[16px]">view_list</span>
+<span>قائمة</span>
+</button>
+<button class="h-7 px-space-sm rounded-md text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm flex items-center gap-1 transition-all" id="tab-map" type="button">
+<span class="material-symbols-outlined text-[16px]">map</span>
+<span>خريطة</span>
+</button>
+</div>
+</div>
+<!-- Pharmacy Cards Stack -->
+<div class="flex flex-col gap-space-md" id="pharmacy-stack">
+<!-- Pharmacy Row 1 (Available) -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md sm:p-space-lg shadow-sm hover:shadow-md transition-shadow">
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-space-md">
+<div class="space-y-space-xs flex-1 min-w-0">
+<div class="flex items-center gap-space-xs flex-wrap">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">صيدلية الأمل المركزية</h3>
+<span class="inline-flex items-center text-primary" title="صيدلية موثقة من جهة الاستجابة">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+</span>
+<span class="px-space-xs py-0.5 rounded text-timestamp font-timestamp bg-surface-container text-primary font-medium">ميدانية طوارئ</span>
+</div>
+<div class="flex items-center gap-space-xs text-outline font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px] text-primary">location_on</span>
+<span>خان يونس (وسط البلد - بجوار الجامع الكبير)</span>
+<span class="text-outline-variant">•</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium" dir="ltr">0.8 km</span>
+</div>
+<!-- Status & Freshness Indicators -->
+<div class="flex flex-wrap items-center gap-space-sm pt-space-xs">
+<div class="inline-flex items-center gap-1 px-space-sm py-1 rounded-full bg-surface-container text-on-secondary-container font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+<span>متوفر</span>
+</div>
+<span class="font-timestamp text-timestamp text-outline">حُدّث قبل 12 دقيقة</span>
+<span class="text-outline-variant">•</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">السعر المُبلَّغ: <strong class="text-on-surface font-semibold">42.00 ₪</strong></span>
+</div>
+</div>
+<!-- Action Triggers -->
+<div class="flex items-center gap-space-xs shrink-0 pt-space-xs md:pt-0">
+<a class="h-10 px-space-md rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md flex items-center justify-center gap-space-xs transition-colors" href="tel:+970590000001">
+<span class="material-symbols-outlined text-[18px]">call</span>
+<span>اتصال</span>
+</a>
+<button class="h-10 px-space-md rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-space-xs transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">near_me</span>
+<span>الاتجاهات</span>
+</button>
+</div>
+</div>
+<!-- Contextual Operational Notice -->
+<div class="mt-space-md p-space-xs px-space-sm rounded-lg bg-surface-container-low flex items-center gap-space-xs font-body-sm text-timestamp text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-primary shrink-0">info</span>
+<span>الصرف داخل مقر الصيدلية فقط مع إبراز الوصفة الطبية الأصلية إن وجدت — يرجى التحقق هاتفياً قبل التوجه.</span>
+</div>
+</article>
+<!-- Pharmacy Row 2 (Limited Quantity) -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md sm:p-space-lg shadow-sm hover:shadow-md transition-shadow">
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-space-md">
+<div class="space-y-space-xs flex-1 min-w-0">
+<div class="flex items-center gap-space-xs flex-wrap">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">صيدلية النور - حي الأمل</h3>
+<span class="inline-flex items-center text-primary" title="صيدلية موثقة">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+</span>
+</div>
+<div class="flex items-center gap-space-xs text-outline font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px] text-primary">location_on</span>
+<span>حي الأمل - الشارع العام مقابل مدرسة خانيونس</span>
+<span class="text-outline-variant">•</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium" dir="ltr">1.4 km</span>
+</div>
+<!-- Status & Freshness Indicators -->
+<div class="flex flex-wrap items-center gap-space-sm pt-space-xs">
+<div class="inline-flex items-center gap-1 px-space-sm py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[16px]">warning</span>
+<span>كمية محدودة</span>
+</div>
+<span class="font-timestamp text-timestamp text-outline">حُدّث قبل ساعة واحدة</span>
+<span class="text-outline-variant">•</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">السعر المُبلَّغ: <strong class="text-on-surface font-semibold">44.50 ₪</strong></span>
+</div>
+</div>
+<!-- Action Triggers -->
+<div class="flex items-center gap-space-xs shrink-0 pt-space-xs md:pt-0">
+<a class="h-10 px-space-md rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md flex items-center justify-center gap-space-xs transition-colors" href="tel:+970590000002">
+<span class="material-symbols-outlined text-[18px]">call</span>
+<span>اتصال</span>
+</a>
+<button class="h-10 px-space-md rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-space-xs transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">near_me</span>
+<span>الاتجاهات</span>
+</button>
+</div>
+</div>
+<div class="mt-space-md p-space-xs px-space-sm rounded-lg bg-surface-container-low flex items-center gap-space-xs font-body-sm text-timestamp text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-error shrink-0">inventory_2</span>
+<span>متبقي أقل من 3 أقلام مسجلة في التحديث الأخير. يرجى الاستعلام الفوري.</span>
+</div>
+</article>
+<!-- Pharmacy Row 3 (Needs Verification) -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md sm:p-space-lg shadow-sm hover:shadow-md transition-shadow">
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-space-md">
+<div class="space-y-space-xs flex-1 min-w-0">
+<div class="flex items-center gap-space-xs flex-wrap">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">صيدلية الشفاء الحديثة</h3>
+<span class="inline-flex items-center text-primary" title="صيدلية موثقة">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+</span>
+</div>
+<div class="flex items-center gap-space-xs text-outline font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px] text-primary">location_on</span>
+<span>طريق صلاح الدين - مفترق التحلية</span>
+<span class="text-outline-variant">•</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium" dir="ltr">2.1 km</span>
+</div>
+<!-- Status & Freshness Indicators -->
+<div class="flex flex-wrap items-center gap-space-sm pt-space-xs">
+<div class="inline-flex items-center gap-1 px-space-sm py-1 rounded-full bg-secondary-container text-on-secondary-fixed-variant font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+<span>يحتاج تحديث</span>
+</div>
+<span class="font-timestamp text-timestamp text-outline">آخر بلاغ: متوفر قبل 24 ساعة</span>
+<span class="text-outline-variant">•</span>
+<span class="font-label-sm text-label-sm text-outline">السعر غير محدد</span>
+</div>
+</div>
+<!-- Action Triggers -->
+<div class="flex items-center gap-space-xs shrink-0 pt-space-xs md:pt-0">
+<a class="h-10 px-space-md rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md flex items-center justify-center gap-space-xs transition-colors" href="tel:+970590000003">
+<span class="material-symbols-outlined text-[18px]">call</span>
+<span>اتصال</span>
+</a>
+<button class="h-10 px-space-md rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-space-xs transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">near_me</span>
+<span>الاتجاهات</span>
+</button>
+</div>
+</div>
+<div class="mt-space-md p-space-xs px-space-sm rounded-lg bg-surface-container-low flex items-center gap-space-xs font-body-sm text-timestamp text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-outline shrink-0">update</span>
+<span>انقضت مدة الضمان الزمني التلقائي (24 ساعة). يرجى إجراء اتصال هاتفي قبل الحضور لتجنب الإجهاد.</span>
+</div>
+</article>
+<!-- Pharmacy Row 4 (Unconfirmed) -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md sm:p-space-lg shadow-sm hover:shadow-md transition-shadow">
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-space-md">
+<div class="space-y-space-xs flex-1 min-w-0">
+<div class="flex items-center gap-space-xs flex-wrap">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">صيدلية السلام الميدانية</h3>
+<span class="text-timestamp font-timestamp text-outline px-space-xs py-0.5 rounded bg-surface-container-low">بلاغ أهلي</span>
+</div>
+<div class="flex items-center gap-space-xs text-outline font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px] text-primary">location_on</span>
+<span>القرارة - محيط مستشفى ناصر</span>
+<span class="text-outline-variant">•</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium" dir="ltr">3.6 km</span>
+</div>
+<!-- Status & Freshness Indicators -->
+<div class="flex flex-wrap items-center gap-space-sm pt-space-xs">
+<div class="inline-flex items-center gap-1 px-space-sm py-1 rounded-full bg-surface-container-low text-tertiary font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[16px]">help</span>
+<span>غير مؤكد</span>
+</div>
+<span class="font-timestamp text-timestamp text-outline">حُدّث قبل 4 أيام</span>
+</div>
+</div>
+<!-- Action Triggers -->
+<div class="flex items-center gap-space-xs shrink-0 pt-space-xs md:pt-0">
+<a class="h-10 px-space-md rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md flex items-center justify-center gap-space-xs transition-colors" href="tel:+970590000004">
+<span class="material-symbols-outlined text-[18px]">call</span>
+<span>اتصال</span>
+</a>
+<button class="h-10 px-space-md rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-space-xs transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">near_me</span>
+<span>الاتجاهات</span>
+</button>
+</div>
+</div>
+<div class="mt-space-md p-space-xs px-space-sm rounded-lg bg-surface-container-low flex items-center gap-space-xs font-body-sm text-timestamp text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-outline shrink-0">contact_phone</span>
+<span>لم يتم فحص المخزون بواسطة فريق الإسناد اليوم. يرجى الاتصال للتأكد من ساعات العمل الحالية.</span>
+</div>
+</article>
+</div>
+<!-- Integrated Geo Context Container (Hidden by default, switchable via tab) -->
+<div class="hidden flex-col gap-space-md" id="map-view-container">
+<div class="w-full h-96 rounded-xl bg-cover bg-center overflow-hidden shadow-sm relative" data-location="Khan Yunis, Gaza" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBXOK7AQOlWDjy6Z1Uu-LObeUlwSKzVMCdehfVzOPKI-zN00jeBz6Ag7Pyfq2MgERfEYOD6CB5O78e4oMCiujEhkb_i0fksScgq94224dvX-FNdxukfyji97PQNBQJ6OYpNAMX8SYsvma_Bh2GRYMNzFjh2p3prOqS64qrauAk09tnzhq8mPdYX-Md7gsH2t2peGPqcAq7BS3BuxQ0QnCSPl4R0jzO1jPbN5cePHpY')">
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/80 via-transparent to-transparent flex items-end p-space-lg">
+<div class="bg-surface-container-lowest/95 backdrop-blur rounded-lg p-space-md max-w-md shadow-lg">
+<span class="font-label-sm text-label-sm text-primary font-bold block mb-1">توزيع الصيدليات الحية</span>
+<p class="font-body-sm text-body-sm text-on-surface">يظهر العرض الجغرافي 4 نقاط طبية موثقة في نطاق خان يونس ومحيطها. المسافات مقاسة شعاعياً من موقعك التقريبي الحالي.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Guidance Strip -->
+<div class="mt-space-xl p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[22px]">medical_services</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-label-md text-on-surface font-semibold">هل أنت صيدلي أو مسؤول نقطة طبية؟</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">يمكنك تحديث حالة وفرة إنسولين نوفورابيد فورياً عبر لوحة الإسناد السريع بدون تسجيل مسبق.</p>
+</div>
+</div>
+<button class="shrink-0 h-10 px-space-lg rounded-lg bg-surface-container-low hover:bg-surface-container text-primary font-label-md text-label-md font-semibold transition-colors flex items-center gap-space-xs" type="button">
+<span class="material-symbols-outlined text-[18px]">edit_note</span>
+<span>تحديث مخزون نقطتك</span>
+</button>
+</div>
+</section>
+</div>
+</div>
+</div>
+<script>
+  (function initMedicinePage() {
+    const tabList = document.getElementById('tab-list');
+    const tabMap = document.getElementById('tab-map');
+    const pharmacyStack = document.getElementById('pharmacy-stack');
+    const mapViewContainer = document.getElementById('map-view-container');
+
+    if (tabList && tabMap && pharmacyStack && mapViewContainer) {
+      tabList.addEventListener('click', () => {
+        pharmacyStack.classList.remove('hidden');
+        mapViewContainer.classList.add('hidden');
+        mapViewContainer.classList.remove('flex');
+        
+        tabList.className = 'h-7 px-space-sm rounded-md bg-surface-container-lowest text-on-surface shadow-sm font-label-sm text-label-sm flex items-center gap-1 font-semibold transition-all';
+        tabMap.className = 'h-7 px-space-sm rounded-md text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm flex items-center gap-1 transition-all';
+      });
+
+      tabMap.addEventListener('click', () => {
+        pharmacyStack.classList.add('hidden');
+        mapViewContainer.classList.remove('hidden');
+        mapViewContainer.classList.add('flex');
+        
+        tabMap.className = 'h-7 px-space-sm rounded-md bg-surface-container-lowest text-on-surface shadow-sm font-label-sm text-label-sm flex items-center gap-1 font-semibold transition-all';
+        tabList.className = 'h-7 px-space-sm rounded-md text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm flex items-center gap-1 transition-all';
+      });
+    }
+
+    const filterPills = document.querySelectorAll('.filter-pill');
+    filterPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        filterPills.forEach(p => {
+          p.classList.remove('bg-primary', 'text-on-primary', 'active');
+          p.classList.add('bg-surface-container-low', 'text-on-surface');
+          const checkIcon = p.querySelector('.material-symbols-outlined');
+          if (checkIcon) checkIcon.remove();
+        });
+
+        pill.classList.remove('bg-surface-container-low', 'text-on-surface');
+        pill.classList.add('bg-primary', 'text-on-primary', 'active');
+        
+        if (!pill.querySelector('.material-symbols-outlined')) {
+          const icon = document.createElement('span');
+          icon.className = 'material-symbols-outlined text-[16px]';
+          icon.textContent = 'check';
+          pill.prepend(icon);
+        }
+      });
+    });
+
+    const alertBtn = document.getElementById('btn-alert');
+    if (alertBtn) {
+      alertBtn.addEventListener('click', () => {
+        const icon = alertBtn.querySelector('.material-symbols-outlined');
+        const span = alertBtn.querySelector('span:not(.material-symbols-outlined)');
+        if (alertBtn.dataset.active === 'true') {
+          alertBtn.dataset.active = 'false';
+          alertBtn.classList.remove('bg-surface-container', 'text-primary');
+          alertBtn.classList.add('bg-primary', 'text-on-primary');
+          if (icon) icon.textContent = 'notifications_active';
+          if (span) span.textContent = 'نبّهني عند التوفر';
+        } else {
+          alertBtn.dataset.active = 'true';
+          alertBtn.classList.remove('bg-primary', 'text-on-primary');
+          alertBtn.classList.add('bg-surface-container', 'text-primary');
+          if (icon) icon.textContent = 'check_circle';
+          if (span) span.textContent = 'تم تفعيل التنبيهات';
+        }
+      });
+    }
+
+    const saveBtn = document.getElementById('btn-save');
+    if (saveBtn) {
+      saveBtn.addEventListener('click', () => {
+        const icon = saveBtn.querySelector('.material-symbols-outlined');
+        const span = saveBtn.querySelector('span:not(.material-symbols-outlined)');
+        if (saveBtn.dataset.saved === 'true') {
+          saveBtn.dataset.saved = 'false';
+          if (icon) {
+            icon.textContent = 'bookmark_border';
+            icon.classList.remove('text-primary');
+            icon.classList.add('text-outline');
+          }
+          if (span) span.textContent = 'حفظ في القائمة';
+        } else {
+          saveBtn.dataset.saved = 'true';
+          if (icon) {
+            icon.textContent = 'bookmark';
+            icon.classList.remove('text-outline');
+            icon.classList.add('text-primary');
+          }
+          if (span) span.textContent = 'محفوظة بالمفضلة';
+        }
+      });
+    }
+  })();
+</script></main><footer class="w-full bg-surface-container-lowest shadow-[0_-1px_6px_rgba(20,107,104,0.04)] py-space-xl"><div class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin flex flex-col md:flex-row items-center justify-between gap-space-lg"><div class="flex flex-col items-center md:items-start gap-space-xs"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-primary font-bold">مَدَد</span><span class="text-outline text-body-sm font-body-sm">— دليل توفر الأدوية والمستلزمات الطبية</span></div><p class="text-on-surface-variant font-body-sm text-body-sm text-center md:text-right max-w-md leading-relaxed">منصة إنسانية غير ربحية للتحقق من توافر الدواء والرعاية العاجلة في المراكز الصحية والصيدليات الميدانية.</p></div><nav class="flex flex-wrap items-center justify-center gap-space-lg" data-active-classes="bg-surface-container text-on-surface font-label-md"><a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" data-path="about-madad" href="#">عن مدد</a><a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" data-path="privacy-policy" href="#">الخصوصية</a><a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" data-path="terms-of-service" href="#">الشروط</a><a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" data-path="contact-us" href="#">تواصل معنا</a></nav></div><div class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin mt-space-lg pt-space-md border-t border-outline-variant/30 flex flex-col sm:flex-row items-center justify-between text-outline font-timestamp text-timestamp gap-space-sm"><p>هذه المنصة مخصصة لأغراض الاستجابة الإنسانية وتوثيق المخزون المتاح، وليست منصة للبيع أو التجارة.</p><p>© 2025 مبادرة مدد للاستجابة الصحية. جميع الحقوق محفوظة.</p></div></footer></body></html>

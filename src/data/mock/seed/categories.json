@@ -1,0 +1,13 @@
+[
+{"id":"pain_fever","name_ar":"مسكنات وخافضات حرارة","name_en":"Pain & fever"},
+{"id":"antibiotics","name_ar":"مضادات حيوية","name_en":"Antibiotics"},
+{"id":"diabetes","name_ar":"السكري","name_en":"Diabetes"},
+{"id":"cardio","name_ar":"القلب والضغط والدهون","name_en":"Heart, blood pressure & lipids"},
+{"id":"thyroid","name_ar":"الغدة الدرقية","name_en":"Thyroid"},
+{"id":"respiratory","name_ar":"الجهاز التنفسي","name_en":"Respiratory"},
+{"id":"gastro","name_ar":"الجهاز الهضمي","name_en":"Digestive"},
+{"id":"supplements","name_ar":"فيتامينات ومكملات","name_en":"Vitamins & supplements"},
+{"id":"neuro","name_ar":"الأعصاب والصرع","name_en":"Neurology & epilepsy"},
+{"id":"allergy","name_ar":"الحساسية","name_en":"Allergy"},
+{"id":"steroids","name_ar":"الكورتيزون","name_en":"Corticosteroids"}
+]
