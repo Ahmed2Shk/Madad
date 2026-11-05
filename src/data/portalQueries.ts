@@ -9,6 +9,7 @@ import type {
   Me,
   MedicineRequestInput,
   MemberRole,
+  OAuthProvider,
   OrgProfilePatch,
   Perms,
   RegistrationDraft,
@@ -40,6 +41,13 @@ function setIdentity(qc: QueryClient, me: Me | null) {
 // ---------------------------------------------------------------- auth
 
 export const useMe = () => useQuery({ queryKey: keys.me, queryFn: () => getRepos().then((r) => r.auth.me()) });
+
+/** External sign-in providers turned on in this project (none in mock mode). */
+export const useOAuthProviders = () =>
+  useQuery({ queryKey: ['public', 'oauth-providers'] as const, queryFn: () => getRepos().then((r) => r.auth.oauthProviders()), staleTime: 60 * 60_000 });
+
+export const useOAuthSignIn = () =>
+  useMutation({ mutationFn: ({ provider, from }: { provider: OAuthProvider; from: string | null }) => getRepos().then((r) => r.auth.signInWithOAuth(provider, from)) });
 
 export function useSignIn() {
   const qc = useQueryClient();

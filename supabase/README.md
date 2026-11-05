@@ -17,6 +17,17 @@ The database behind MADAD in `supabase` mode (SPEC §12–13). Mock mode does no
 4. In `.env`: `VITE_DATA_MODE=supabase`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` (the **anon** key only).
 5. For `.github/workflows/keepalive.yml`, add the repository secrets `SUPABASE_URL` and `SUPABASE_ANON_KEY`.
 
+## Sign-in with Google (optional)
+
+The «المتابعة بحساب Google» button appears by itself once Google is on; nothing to change in the app.
+
+1. Google Cloud Console → APIs & Services → Credentials → **Create OAuth client ID** (type *Web application*).
+   Authorized redirect URI: `https://<project-ref>.supabase.co/auth/v1/callback`.
+   The consent screen asks only for email and profile; while it is in *Testing*, add up to 100 test users.
+2. Supabase → Authentication → Sign In / Providers → **Google**: turn it on, paste the Client ID and Secret.
+3. Supabase → Authentication → URL Configuration: set the **Site URL** to the site's address, and add
+   `<site>/auth/callback` to **Redirect URLs** (e.g. `http://localhost:4174/auth/callback` and the Cloudflare Pages address).
+
 After changing a seed JSON file, run `node scripts/gen-seed.mjs` (if needed) and then `node scripts/build-seed.mjs`.
 
 ## Rules the schema enforces

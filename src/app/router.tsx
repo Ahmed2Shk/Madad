@@ -19,6 +19,7 @@ const InfoPage = lazy(() => import('../features/info/InfoPage'));
 const LoginPage = lazy(() => import('../features/auth/LoginPage'));
 const SignupPage = lazy(() => import('../features/auth/SignupPage'));
 const ResetPage = lazy(() => import('../features/auth/ResetPage'));
+const AuthCallbackPage = lazy(() => import('../features/auth/AuthCallbackPage'));
 const ForOrganizationsPage = lazy(() => import('../features/auth/ForOrganizationsPage'));
 const RegisterPage = lazy(() => import('../features/auth/RegisterPage'));
 const StatusPage = lazy(() => import('../features/auth/StatusPage'));
@@ -65,6 +66,7 @@ export const router = createBrowserRouter([
       { path: 'login', element: page(<LoginPage />) },
       { path: 'signup', element: page(<SignupPage />) },
       { path: 'reset', element: page(<ResetPage />) },
+      { path: 'auth/callback', element: page(<AuthCallbackPage />) },
       { path: 'for-organizations', element: page(<ForOrganizationsPage />) },
       { path: 'register/status', element: page(<StatusPage />) },
       { path: 'register/:type', element: page(<RegisterPage />) },

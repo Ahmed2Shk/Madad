@@ -1,7 +1,8 @@
 // Supabase Auth by email and password (SPEC §12: confirmation off in the prototype), organization
 // registration with documents in the private org-docs bucket, and the demo role switcher.
+import { callbackUrl } from '../../lib/authRedirect';
 import { env } from '../../lib/env';
-import type { AuthRepo, DemoRepo, DocumentMeta, Me, RegistrationRepo, SignUpInput } from '../types';
+import type { AuthRepo, DemoRepo, DocumentMeta, Me, OAuthProvider, RegistrationRepo, SignUpInput } from '../types';
 import { auth, db, must, rpc, storage } from './client';
 import { DEMO_EMAILS, DEMO_PASSWORD } from './demoAccounts';
 import { toEvent, toMembership, type OrgDbRow, type PrivateDbRow } from './map';
@@ -66,6 +67,19 @@ export const authRepo: AuthRepo = {
   async requestPasswordReset(email) {
     // The free plan only emails the project team (SPEC §12); the answer is the same either way.
     await auth.resetPasswordForEmail(email.trim().toLowerCase(), { redirectTo: `${window.location.origin}/reset` }).catch(() => undefined);
+  },
+
+  async oauthProviders() {
+    // Public auth settings: the button appears by itself once Google is turned on in Supabase.
+    const res = await fetch(`${env.supabaseUrl}/auth/v1/settings`, { headers: { apikey: env.supabaseAnonKey } });
+    if (!res.ok) return [];
+    const s = (await res.json()) as { external?: Record<string, boolean> };
+    return (['google'] as OAuthProvider[]).filter((p) => s.external?.[p] === true);
+  },
+
+  async signInWithOAuth(provider, from) {
+    const { error } = await auth.signInWithOAuth({ provider, options: { redirectTo: callbackUrl(window.location.origin, from) } });
+    if (error) throw error;
   },
 };
 

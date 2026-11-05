@@ -20,6 +20,8 @@ export const auth = new AuthClient({
   autoRefreshToken: true,
   persistSession: true,
   detectSessionInUrl: true,
+  // PKCE: the provider sends back a one-time code (exchanged here), not tokens in the URL.
+  flowType: 'pkce',
 });
 
 /** Every database and storage request carries the signed-in user's token, or the anon key. */

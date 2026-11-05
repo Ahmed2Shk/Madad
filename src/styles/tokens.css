@@ -41,6 +41,12 @@
   --color-chart-1: #2a78d6;
   --color-chart-2: #eb6834;
 
+  /* Google's own logo colors, only for the «المتابعة بحساب Google» button (Google brand guidelines). */
+  --color-google-blue: #4285f4;
+  --color-google-green: #34a853;
+  --color-google-yellow: #fbbc05;
+  --color-google-red: #ea4335;
+
   /* Type: Arabic first, Latin falls through to Inter via unicode-range */
   --font-sans: 'IBM Plex Sans Arabic', 'Inter', 'Noto Sans Arabic', system-ui, sans-serif;
   --font-weight-normal: 400;

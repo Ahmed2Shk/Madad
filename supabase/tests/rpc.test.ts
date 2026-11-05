@@ -44,6 +44,14 @@ describe('public and patient RPC', () => {
   });
 });
 
+describe('sign-in with Google (0009)', () => {
+  it('takes the profile name from Google metadata, which uses "name"', async () => {
+    const uid = '22222222-3333-4444-8555-666666666666';
+    await db.query(`insert into auth.users (id, email, raw_user_meta_data) values ($1, 'g.user@gmail.test', '{"name":"سلمى من Google","email_verified":true}')`, [uid]);
+    expect((await one<{ full_name: string }>(db, 'select full_name from public.profiles where id = $1', [uid])).full_name).toBe('سلمى من Google');
+  });
+});
+
 describe('pharmacy portal RPC', () => {
   it('stock_add, stock_set_listed, stock_remove and the history they write', async () => {
     const [free] = await rows<{ id: string }>(db,

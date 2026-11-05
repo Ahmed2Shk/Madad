@@ -11,6 +11,7 @@ import { useSignIn } from '../../data/portalQueries';
 import { env } from '../../lib/env';
 import { homeFor } from '../../lib/homeFor';
 import { AuthCard } from './AuthCard';
+import { GoogleSignIn } from './GoogleSignIn';
 
 const schema = z.object({
   email: z.string().trim().email('email'),
@@ -80,6 +81,8 @@ export default function LoginPage() {
           </Link>
         </p>
       </form>
+
+      <GoogleSignIn from={from} />
 
       {env.demo && (
         <aside className="mt-6 space-y-2 rounded-card border border-warn-icon bg-warn-bg p-4 text-meta text-warn-text">

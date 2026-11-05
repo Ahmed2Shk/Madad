@@ -301,7 +301,15 @@
     "sendLink": "Send link",
     "resetSent": "If this email is registered, you will receive a reset link.",
     "resetDemoNote": "The demo sends no emails. Use the demo accounts password.",
-    "backToLogin": "Back to log in"
+    "backToLogin": "Back to log in",
+    "or": "or",
+    "google": "Continue with Google",
+    "googleFailed": "Could not open Google sign-in. Try again or sign in with email.",
+    "callbackTitle": "Signing you in",
+    "callbackWait": "One moment, finishing the Google sign-in…",
+    "callbackFailed": "Google sign-in did not finish",
+    "callbackFailedBody": "It may have been cancelled or timed out. You can try again.",
+    "googleNote": "We only take your name and email from Google."
   },
   "account": {
     "title": "Account and settings",

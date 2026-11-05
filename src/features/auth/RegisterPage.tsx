@@ -23,6 +23,7 @@ import { REQUIRED_DOCS_DEFAULT } from '../../data/requiredDocs';
 import { useLang } from '../../hooks/useLang';
 import { readJson, safeStorage } from '../../lib/storage';
 import { cn } from '../../lib/cn';
+import { GoogleSignIn } from './GoogleSignIn';
 
 const MapPicker = lazy(() => import('../../components/ui/MapPicker'));
 const TYPES: OrgType[] = ['pharmacy', 'hospital', 'medical_point', 'humanitarian'];
@@ -189,6 +190,9 @@ function Wizard({ type }: { type: OrgType }) {
               {f('email', <Field label={t('account.email')} error={errors.email}><input type="email" dir="ltr" autoComplete="email" className={inputClass} value={draft.account.email} onChange={(e) => setAccount({ email: e.target.value })} /></Field>)}
               {f('phone', <Field label={t('account.phone')} error={errors.phone}><input type="tel" dir="ltr" autoComplete="tel" className={inputClass} value={draft.account.phone} onChange={(e) => setAccount({ phone: e.target.value })} /></Field>)}
               {f('password', <Field label={t('auth.password')} hint={t('register.passwordNotSaved')} error={errors.password} className="md:col-span-2"><PasswordInput autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} /></Field>)}
+              <div className="md:col-span-2">
+                <GoogleSignIn from={`/register/${type}`} />
+              </div>
             </div>
           ))}
 

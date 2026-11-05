@@ -9,6 +9,7 @@ import { Button, Field, FieldError, PasswordInput, inputClass } from '../../comp
 import { useSignUp } from '../../data/portalQueries';
 import { homeFor } from '../../lib/homeFor';
 import { AuthCard } from './AuthCard';
+import { GoogleSignIn } from './GoogleSignIn';
 
 const schema = z
   .object({
@@ -88,6 +89,7 @@ export default function SignupPage() {
           </Link>
         </p>
       </form>
+      <GoogleSignIn from={from} />
     </AuthCard>
   );
 }

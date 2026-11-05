@@ -41,6 +41,9 @@ export const authRepo: AuthRepo = {
   },
   // Mock: nothing is sent. In the prototype, Supabase can only email the project team (SPEC §12).
   requestPasswordReset: () => latency(undefined),
+  // Mock mode has no external sign-in: the Google button stays hidden.
+  oauthProviders: () => latency([]),
+  signInWithOAuth: () => Promise.reject(new Error('not_supported')),
 };
 
 export const registrationRepo: RegistrationRepo = {

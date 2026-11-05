@@ -300,7 +300,13 @@ export interface AuthRepo {
   signIn(email: string, password: string): Promise<Me | null>;
   signUp(input: SignUpInput): Promise<{ ok: true; me: Me } | { ok: false; reason: 'email_taken' }>;
   requestPasswordReset(email: string): Promise<void>;
+  /** Sign-in providers turned on for this project besides email (Google: docs/DECISIONS.md). None in mock mode. */
+  oauthProviders(): Promise<OAuthProvider[]>;
+  /** Leaves for the provider's sign-in page; the user returns to /auth/callback, then to `from`. */
+  signInWithOAuth(provider: OAuthProvider, from: string | null): Promise<void>;
 }
+
+export type OAuthProvider = 'google';
 
 export interface DocumentMeta {
   docType: string;
