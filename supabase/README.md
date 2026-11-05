@@ -16,6 +16,8 @@ The database behind MADAD in `supabase` mode (SPEC §12–13). Mock mode does no
    sets `demo_mode`, and loads the same data as mock mode. Never run it on a real project.
 4. In `.env`: `VITE_DATA_MODE=supabase`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` (the **anon** key only).
 5. For `.github/workflows/keepalive.yml`, add the repository secrets `SUPABASE_URL` and `SUPABASE_ANON_KEY`.
+6. Cloudflare Pages builds the public demo with `npm run build -- --mode cloudflare` (output `dist`), which reads
+   the committed `.env.cloudflare` (public URL and anon key only). `.node-version` pins Node 24, as in CI.
 
 ## Sign-in with Google (optional)
 
