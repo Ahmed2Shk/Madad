@@ -2,6 +2,7 @@
 // Pure functions, so both modes hand the screens exactly the same shapes.
 import type { Hours } from '../../lib/hours';
 import type {
+  Announcement,
   AppNotification,
   AvailabilityAlert,
   DosageForm,
@@ -20,6 +21,8 @@ import type {
   PublicSettings,
   Perms,
   Reported,
+  OrgLocation,
+  ServiceItem,
   VerificationEvent,
   VerificationStatus,
 } from '../types';
@@ -48,6 +51,8 @@ export interface OrgDbRow {
   description: string | null;
   verification_status: VerificationStatus;
   suspended_reason: string | null;
+  website?: string | null;
+  locations?: unknown;
   temporarily_closed: boolean;
   closed_reason: string | null;
   info_updated_at: string;
@@ -204,6 +209,7 @@ export interface InquiryDbRow {
   id: string;
   org_id: string;
   medicine_id: string | null;
+  service_id?: string | null;
   subject: string;
   status: InquiryThread['status'];
   patient_name: string;
@@ -217,6 +223,7 @@ export function toThread(q: InquiryDbRow): InquiryThread {
     id: q.id,
     orgId: q.org_id,
     medicineId: q.medicine_id,
+    serviceId: q.service_id ?? null,
     subject: q.subject,
     status: q.status,
     patientName: q.patient_name || '—',
@@ -283,6 +290,7 @@ export function toPublicSettings(rows: { key: string; value: unknown }[]): Publi
     freshHours: int('fresh_hours', 24),
     expireHours: int('expire_hours', 72),
     priceMaxDays: int('price_max_days', 14),
+    programConfirmDays: int('program_confirm_days', 7),
     disclaimerAr: text('disclaimer_ar'),
     disclaimerEn: text('disclaimer_en'),
     requiredDocs: docs && typeof docs === 'object' ? { ...REQUIRED_DOCS_DEFAULT, ...(docs as PublicSettings['requiredDocs']) } : REQUIRED_DOCS_DEFAULT,
@@ -290,11 +298,100 @@ export function toPublicSettings(rows: { key: string; value: unknown }[]): Publi
 }
 
 export function toPlatformSettings(rows: { key: string; value: unknown }[]): PlatformSettings {
-  const { m, int } = settingsMap(rows);
+  const { m } = settingsMap(rows);
   const reasons = m.get('rejection_reasons');
   return {
     ...toPublicSettings(rows),
-    programConfirmDays: int('program_confirm_days', 7),
     rejectionReasons: Array.isArray(reasons) ? reasons.map(String) : [],
   };
+}
+
+export interface ServiceDbRow {
+  id: string;
+  org_id: string;
+  kind: ServiceItem['kind'];
+  name: string;
+  category: string | null;
+  description: string | null;
+  place: string | null;
+  phone: string | null;
+  operating: boolean;
+  beneficiaries: string | null;
+  required_docs: string[] | null;
+  contact: string | null;
+  hours: Hours | null;
+  location: string | null;
+  eligibility: string[] | null;
+  how_to_apply: string | null;
+  starts_on: string | null;
+  ends_on: string | null;
+  program_status: ServiceItem['programStatus'];
+  confirmed_at: string | null;
+  review_status: ServiceItem['reviewStatus'];
+  rejection_reason: string | null;
+  updated_at: string;
+}
+
+export function toService(s: ServiceDbRow): ServiceItem {
+  return {
+    id: s.id,
+    orgId: s.org_id,
+    kind: s.kind,
+    name: s.name,
+    category: (s.category as ServiceItem['category']) ?? null,
+    description: s.description,
+    place: s.place,
+    phone: s.phone,
+    operating: s.operating,
+    beneficiaries: s.beneficiaries,
+    requiredDocs: s.required_docs ?? [],
+    contact: s.contact,
+    hours: s.hours,
+    location: s.location,
+    eligibility: s.eligibility ?? [],
+    howToApply: s.how_to_apply,
+    startsOn: s.starts_on,
+    endsOn: s.ends_on,
+    programStatus: s.program_status,
+    confirmedAt: iso(s.confirmed_at),
+    reviewStatus: s.review_status,
+    rejectionReason: s.rejection_reason,
+    updatedAt: isoOf(s.updated_at),
+  };
+}
+
+export interface AnnouncementDbRow {
+  id: string;
+  org_id: string | null;
+  title: string;
+  body: string;
+  starts_at: string;
+  ends_at: string | null;
+  review_status: Announcement['reviewStatus'];
+  rejection_reason: string | null;
+  created_at: string;
+}
+
+export function toAnnouncement(a: AnnouncementDbRow): Announcement {
+  return {
+    id: a.id,
+    orgId: a.org_id,
+    title: a.title,
+    body: a.body,
+    startsAt: isoOf(a.starts_at),
+    endsAt: iso(a.ends_at),
+    reviewStatus: a.review_status,
+    rejectionReason: a.rejection_reason,
+    createdAt: isoOf(a.created_at),
+  };
+}
+
+/** organizations.locations is jsonb; keep only well-formed entries. */
+export function toLocations(v: unknown): OrgLocation[] {
+  if (!Array.isArray(v)) return [];
+  return v.flatMap((l) =>
+    l && typeof l === 'object' && typeof (l as OrgLocation).name === 'string'
+      ? [{ name: (l as OrgLocation).name, area: String((l as OrgLocation).area ?? ''), hours: ((l as OrgLocation).hours as Hours | null) ?? null }]
+      : [],
+  );
 }

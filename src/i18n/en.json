@@ -39,7 +39,10 @@
     "how2Title": "Compare update times",
     "how2Body": "Every status shows when the pharmacy last reported it. An old report is never shown as confirmed.",
     "how3Title": "Call and go to the pharmacy",
-    "how3Body": "Call to confirm, then go to the pharmacy yourself. Dispensing happens at the pharmacy only."
+    "how3Body": "Call to confirm, then go to the pharmacy yourself. Dispensing happens at the pharmacy only.",
+    "cantFindTitle": "Can't find your medicine?",
+    "cantFindBody": "See hospitals, medical points and organizations offering services and programmes in your area.",
+    "cantFindAction": "Medical directory"
   },
   "search": {
     "fieldLabel": "Medicine, active ingredient or barcode",
@@ -188,7 +191,10 @@
     "notifyAction": "Turn on alert",
     "allGovsAction": "Widen the search",
     "reportShortageAction": "Log the shortage",
-    "suggestAction": "Send suggestion"
+    "suggestAction": "Send suggestion",
+    "nearbyPoints": "Medical points and organizations nearby",
+    "nearbyPointsBody": "Services and programmes that may help. A service does not mean the medicine is available.",
+    "nearbyPointsAction": "Open the directory"
   },
   "alerts": {
     "notifyMe": "Notify me when available",
@@ -210,7 +216,7 @@
     "providers": "Service providers",
     "emptyTitle": "Nothing saved yet",
     "emptyBody": "Save your medicine or pharmacy to reach them quickly.",
-    "providersLater": "The service provider directory is coming soon."
+    "providersEmpty": "Save a hospital or organization from the medical directory to find it here."
   },
   "notifications": {
     "title": "Notifications",
@@ -230,7 +236,12 @@
     },
     "platform": {
       "remindUpdate": "Reminder from the MADAD team: some of your availability reports are old. Update them so they do not show as “Unconfirmed”."
-    }
+    },
+    "open": "Open",
+    "inquiryNew": "New inquiry to {{org}}: “{{subject}}”",
+    "medicineApproved": "The medicine you requested was approved: {{name}}. You can add it now.",
+    "contentApproved": "“{{title}}” was published after review.",
+    "contentRejected": "“{{title}}” was not published: {{reason}}"
   },
   "inquiry": {
     "open": "Send an inquiry",
@@ -240,7 +251,9 @@
     "send": "Send",
     "sent": "Your inquiry was sent. You'll be notified when they reply.",
     "noMedicalInfo": "Do not write personal medical information.",
-    "notAnOrder": "An inquiry never becomes an order or a reservation."
+    "notAnOrder": "An inquiry never becomes an order or a reservation.",
+    "about": "About",
+    "aboutGeneral": "General question"
   },
   "report": {
     "open": "Report a mistake",
@@ -432,7 +445,9 @@
     "docRequired": "This document is required",
     "fileType": "The file must be a PDF or an image",
     "fileSize": "The file is larger than 5MB",
-    "barcode": "Barcode is digits only (8 to 14)"
+    "barcode": "Barcode is digits only (8 to 14)",
+    "website": "Enter the full link, starting with https://",
+    "endBeforeStart": "The end date is before the start date"
   },
   "disclaimer": {
     "full": "Availability is based on the pharmacy's latest reported update. Please call or visit to confirm. Dispensing is subject to the pharmacist's professional judgement and applicable regulations.",
@@ -453,7 +468,8 @@
       "owner": "Pharmacy owner",
       "staff": "Pharmacy staff",
       "reviewer": "Reviewer",
-      "admin": "System admin"
+      "admin": "System admin",
+      "provider": "Organization owner"
     },
     "reset": "Reset demo data",
     "resetTitle": "Reset the demo data?",
@@ -488,7 +504,8 @@
         "inquiries": "Inquiries",
         "profile": "Pharmacy profile",
         "team": "Team",
-        "settings": "Settings"
+        "settings": "Settings",
+        "notifications": "Notifications"
       }
     },
     "admin": {
@@ -514,7 +531,21 @@
     "bannerPending": "Your application is under review. You can set up your medicines now; they will not be public before approval.",
     "bannerNeedsInfo": "Your application needs more information before approval. Nothing is public until then.",
     "viewApplication": "Application status",
-    "viewSite": "View the site"
+    "viewSite": "View the site",
+    "notProviderMember": "Your account is not a member of a hospital, medical point or organization",
+    "provider": {
+      "title": "Organization portal",
+      "nav": {
+        "dashboard": "Overview",
+        "profile": "Profile",
+        "services": "Services and departments",
+        "programs": "Programmes and aid",
+        "announcements": "Announcements",
+        "inquiries": "Inquiries",
+        "preview": "Preview",
+        "team": "Team"
+      }
+    }
   },
   "breadcrumb": {
     "home": "Home",
@@ -676,7 +707,9 @@
     "views": "Views of your page this week",
     "lastWeek_one": "Last week: 1 view",
     "lastWeek_other": "Last week: {{count}} views",
-    "searchesChart": "Searches for your medicines in your governorate, last 7 days"
+    "searchesChart": "Searches for your medicines in your governorate, last 7 days",
+    "reminder_one": "Daily reminder: one report needs an update",
+    "reminder_other": "Daily reminder: {{count}} reports need an update"
   },
   "history": {
     "confirmAll_one": "Confirmed 1 medicine as is",
@@ -1088,5 +1121,235 @@
     "settingsSaved": "Settings saved and applied at once",
     "openDoc": "Open file",
     "docLinkNote": "The link works for one minute. Do not share it."
+  },
+  "program": {
+    "status": {
+      "info": "General information",
+      "active": "Active now",
+      "needs_update": "Needs update",
+      "paused": "Paused",
+      "ended": "Ended"
+    }
+  },
+  "announcement": {
+    "state": {
+      "draft": "Draft",
+      "pending": "Waiting for review",
+      "scheduled": "Scheduled",
+      "published": "Published",
+      "rejected": "Rejected",
+      "expired": "Ended"
+    }
+  },
+  "serviceKind": {
+    "department": "Department",
+    "service": "Service",
+    "program": "Programme"
+  },
+  "serviceCategory": {
+    "emergency": "Emergency",
+    "dialysis": "Dialysis",
+    "maternity": "Maternity care",
+    "chronic": "Chronic diseases",
+    "mental_health": "Mental health",
+    "vaccination": "Vaccination",
+    "rehab": "Rehabilitation",
+    "pediatrics": "Children",
+    "general": "General"
+  },
+  "dir": {
+    "title": "Medical directory",
+    "lead": "Hospitals, medical points and humanitarian organizations, with the services and programmes they published and when. The directory does not show medicine availability.",
+    "tabs": {
+      "all": "All",
+      "hospital": "Hospitals",
+      "medical_point": "Medical points",
+      "humanitarian": "Humanitarian organizations"
+    },
+    "filters": {
+      "area": "Area",
+      "allAreas": "All areas",
+      "category": "Service type",
+      "allCategories": "All services",
+      "openNow": "Open now",
+      "activePrograms": "Active programmes"
+    },
+    "verified": "Verified",
+    "updated": "Last updated",
+    "lastConfirmed": "Last confirmed",
+    "activeCount_one": "one active programme",
+    "activeCount_other": "{{count}} active programmes",
+    "emptyTitle": "No organizations match these filters",
+    "emptyBody": "Try another governorate or clear some filters.",
+    "notFound": "This organization is not available",
+    "notFoundBody": "It may not be approved yet, or it is paused.",
+    "about": "About",
+    "departments": "Departments",
+    "services": "Services",
+    "programs": "Programmes and aid",
+    "announcements": "Announcements",
+    "otherLocations": "Other locations",
+    "website": "Website",
+    "serviceNote": "A service does not mean a specific medicine is available. Call to ask.",
+    "beneficiaries": "Who it is for",
+    "eligibility": "Eligibility",
+    "requiredDocs": "Documents needed",
+    "howToApply": "How to apply",
+    "place": "Where",
+    "extension": "Internal phone",
+    "dates": "Dates",
+    "contactMethod": "How to reach",
+    "operating": "Running",
+    "pausedDept": "Paused",
+    "pendingTag": "Waiting for review",
+    "nothingYet": "This organization has not published services yet.",
+    "previewBanner": "Preview: this is how patients see your page. Items waiting for review show only here."
+  },
+  "provider": {
+    "type": "Type",
+    "registrationNo": "Registration number",
+    "contactPerson": "Contact person",
+    "description": "Description",
+    "addLocation": "Add a location",
+    "noLocations": "No other locations.",
+    "locationName": "Location name",
+    "kind": "Type",
+    "name": "Name",
+    "category": "Category",
+    "programStatus": "Status (required, shown to patients)",
+    "operating": "The department is running now",
+    "onePerLine": "One item per line",
+    "startsOn": "Start date",
+    "endsOn": "End date",
+    "preview": "Preview of what patients see",
+    "untitled": "Untitled",
+    "reviewNote": "Every addition or change is reviewed by the MADAD team before it is published. Changing or confirming a programme status needs no review.",
+    "saveForReview": "Save and send for review",
+    "sentToReview": "Sent for review. Patients see it once approved.",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteTitle": "Delete this item?",
+    "deleteBody": "“{{name}}” will be removed from your page for good.",
+    "deleted": "Deleted.",
+    "add": {
+      "department": "Add a department",
+      "service": "Add a service",
+      "program": "Add a programme"
+    },
+    "addService": "Add a service",
+    "empty": {
+      "services": "No services yet",
+      "programs": "No programmes yet",
+      "announcements": "No announcements yet"
+    },
+    "emptyBody": "Add what your organization offers; it appears in the medical directory after review.",
+    "emptyAnnouncementsBody": "Post a short note about a registration or a campaign. Each one is reviewed first.",
+    "noPublishPerm": "You need the \"publish services, programmes and announcements\" permission to edit here.",
+    "published": "Published",
+    "rejected": "Rejected",
+    "rejectedBecause": "Reason: {{reason}}",
+    "confirmStatus": "Confirm status",
+    "confirmed": "Status confirmed.",
+    "changeStatus": "Change status:",
+    "statusChanged": "Status changed.",
+    "newAnnouncement": "New announcement",
+    "editAnnouncement": "Edit announcement",
+    "title": "Title",
+    "body": "Text",
+    "startsAt": "Starts",
+    "endsAt": "Ends",
+    "saveDraft": "Save as draft",
+    "submitReview": "Send for review",
+    "draftSaved": "Draft saved.",
+    "announcementRules": "No sales, prices or medical advice. Every announcement is reviewed before it is published.",
+    "openPreview": "Open in a new page",
+    "verification": "Verification",
+    "verified": "Your organization is verified and appears in the directory.",
+    "latestInquiries": "Latest inquiries",
+    "noNewInquiries": "No new inquiries.",
+    "inReview": "Announcements waiting for review",
+    "nothingInReview": "Nothing waiting for review.",
+    "quickActions": "Quick actions",
+    "updatePrograms": "Update a programme status",
+    "stat": {
+      "completeness": "Profile complete",
+      "published": "Published services",
+      "active": "Active programmes",
+      "inquiries": "New inquiries",
+      "stale": "Not updated for {{days}} days",
+      "needsConfirm_one": "one programme needs confirming",
+      "needsConfirm_other": "{{count}} programmes need confirming"
+    }
+  },
+  "moderation": {
+    "lead": "New or edited services, programmes and announcements. Patients see none of them before approval.",
+    "emptyTitle": "Nothing waiting for review",
+    "emptyBody": "New additions and changes from organizations appear here.",
+    "announcement": "Announcement",
+    "approve": "Approve",
+    "reject": "Reject",
+    "rejectTitle": "Reject “{{title}}”",
+    "reason": "Reason",
+    "reasonHint": "The organization sees it as written.",
+    "approved": "Approved and published.",
+    "rejected": "Rejected; the organization was told."
+  },
+  "users": {
+    "name": "Name",
+    "type": "Type",
+    "status": "Status",
+    "joined": "Joined",
+    "teamRole": "MADAD team role",
+    "teamRoleFor": "{{name}}'s MADAD team role",
+    "noTeamRole": "No role",
+    "roleSaved": "Role saved.",
+    "types": {
+      "patient": "Patient",
+      "organization": "Organization",
+      "team": "MADAD team"
+    },
+    "allTypes": "All types",
+    "allStatuses": "All statuses",
+    "active": "Active",
+    "suspended": "Suspended",
+    "suspend": "Suspend",
+    "reactivate": "Reactivate",
+    "suspendTitle": "Suspend {{name}}?",
+    "suspendBody": "The account cannot do anything until it is reactivated. Its data stays for the audit.",
+    "reactivateTitle": "Reactivate {{name}}?",
+    "reactivateBody": "The account works again as before.",
+    "saved": "Saved.",
+    "you": "You",
+    "empty": "No users match these filters"
+  },
+  "phNotif": {
+    "prefsLink": "Notification choices",
+    "freshness": "Reports needing an update: {{stale}} · unconfirmed: {{expired}}",
+    "updateNow": "Update now",
+    "emptyTitle": "No notifications",
+    "emptyBody": "New inquiries, verification decisions, approved medicines and platform messages appear here."
+  },
+  "phSettings": {
+    "password": "Password",
+    "newPassword": "New password",
+    "changePassword": "Change password",
+    "passwordChanged": "Password changed.",
+    "sessions": "Active sessions",
+    "thisDevice": "You are signed in on this browser. If you forgot to sign out somewhere else, sign out all other devices here.",
+    "signOutOthers": "Sign out other devices",
+    "othersSignedOut": "All other devices were signed out.",
+    "notifications": "Notifications I get",
+    "pref": {
+      "inquiries": "New inquiry",
+      "verification": "Verification decision",
+      "catalog": "A medicine I requested is approved",
+      "platform": "Platform messages"
+    },
+    "freshnessAlways": "The report freshness notice always shows on the notifications page.",
+    "reminder": "Daily update reminder",
+    "reminderHour": "Hour",
+    "reminderHint": "From this hour, the dashboard shows a reminder if reports need an update.",
+    "noReminder": "No reminder",
+    "saved": "Saved."
   }
 }

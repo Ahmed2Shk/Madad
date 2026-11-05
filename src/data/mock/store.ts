@@ -3,6 +3,7 @@
 import type { Reported } from '../../lib/freshness';
 import type { Hours } from '../../lib/hours';
 import type {
+  Announcement,
   AppNotification,
   AvailabilityAlert,
   DocumentMeta,
@@ -14,9 +15,12 @@ import type {
   MedicineRequest,
   MemberRole,
   NewReport,
+  NotificationPrefs,
+  OrgLocation,
   OrgType,
   Perms,
   PublicSettings,
+  ServiceItem,
   VerificationEvent,
   VerificationStatus,
 } from '../types';
@@ -31,6 +35,8 @@ import inquiriesSeed from './seed/inquiries.json';
 import requestsSeed from './seed/medicine_requests.json';
 import reportsSeed from './seed/reports.json';
 import providersSeed from './seed/providers.json';
+import announcementsSeed from './seed/announcements.json';
+import { DEFAULT_PREFS } from '../providerTypes';
 import { REQUIRED_DOCS_DEFAULT } from '../requiredDocs';
 
 export type { VerificationStatus };
@@ -74,6 +80,8 @@ export interface OrgRow {
   whatsapp: string | null;
   hours: Hours;
   description: string | null;
+  website: string | null;
+  locations: OrgLocation[];
   temporarilyClosed: { reason: string | null } | null;
   verificationStatus: VerificationStatus;
   reviewerNote: string | null;
@@ -139,6 +147,10 @@ export interface UserRow {
   password: string | null;
   platformRole: 'reviewer' | 'super_admin' | null;
   memberships: { orgId: string; memberRole: MemberRole; perms: Perms }[];
+  /** AD-09: a suspended account cannot act. */
+  suspended: boolean;
+  prefs: NotificationPrefs;
+  joinedAt: string;
 }
 
 export interface InquiryRow {
@@ -146,6 +158,7 @@ export interface InquiryRow {
   orgId: string;
   patientId: string;
   medicineId: string | null;
+  serviceId: string | null;
   subject: string;
   status: InquiryStatus;
   messages: { sender: 'patient' | 'org'; body: string; createdAt: string }[];
@@ -169,7 +182,7 @@ type Owned<T> = T & { userId: string };
 export interface MockState {
   version: number;
   seededAt: string;
-  settings: PublicSettings & { programConfirmDays: number; rejectionReasons: string[] };
+  settings: PublicSettings & { rejectionReasons: string[] };
   orgs: OrgRow[];
   stock: StockRow[];
   stockPrivate: StockPrivateRow[];
@@ -189,10 +202,13 @@ export interface MockState {
   notifications: Owned<AppNotification>[];
   inquiries: InquiryRow[];
   audit: AuditRow[];
+  /** Phase 5: departments, services and programmes; announcements (SPEC §9). */
+  services: ServiceItem[];
+  announcements: Announcement[];
 }
 
 const STORAGE_KEY = 'madad.mock.v1';
-const VERSION = 3;
+const VERSION = 4;
 
 const ago = (now: number, minutes: number | null) =>
   minutes == null ? null : new Date(now - minutes * 60_000).toISOString();
@@ -216,6 +232,8 @@ function toProviderOrg(p: (typeof providersSeed)[number], now: number): OrgRow {
     whatsapp: p.whatsapp,
     hours: p.hours as Hours,
     description: p.description,
+    website: p.website,
+    locations: p.locations as OrgLocation[],
     temporarilyClosed: null,
     verificationStatus: p.verification_status as VerificationStatus,
     reviewerNote: null,
@@ -257,6 +275,8 @@ export function seedState(now = Date.now()): MockState {
       whatsapp: p.whatsapp,
       hours: p.hours as Hours,
       description: null,
+      website: null,
+      locations: [],
       temporarilyClosed: null,
       verificationStatus: p.verification_status as VerificationStatus,
       reviewerNote: p.verification_status === 'needs_info' ? 'صورة ترخيص الصيدلية غير واضحة، يُرجى رفعها مجددًا.' : null,
@@ -352,6 +372,9 @@ export function seedState(now = Date.now()): MockState {
       password: u.password,
       platformRole: u.platform_role as UserRow['platformRole'],
       memberships: u.memberships.map((m) => ({ orgId: m.org_id, memberRole: m.member_role as MemberRole, perms: m.perms as Perms })),
+      suspended: false,
+      prefs: { ...DEFAULT_PREFS },
+      joinedAt: new Date(now - 45 * 86_400_000).toISOString(),
     })),
     sessionUserId: null,
     favorites: [],
@@ -368,6 +391,7 @@ export function seedState(now = Date.now()): MockState {
         orgId: q.org_id,
         patientId: q.patient_id,
         medicineId: q.medicine_id,
+        serviceId: null,
         subject: q.subject,
         status: q.status as InquiryStatus,
         messages,
@@ -376,6 +400,48 @@ export function seedState(now = Date.now()): MockState {
       };
     }),
     audit: [],
+    services: providersSeed.flatMap((p) => p.services.map((x) => toService(p.id, x, now))),
+    announcements: announcementsSeed.map((a) => ({
+      id: a.id,
+      orgId: a.org_id,
+      title: a.title,
+      body: a.body,
+      startsAt: ago(now, a.starts_minutes_ago)!,
+      endsAt: a.ends_days == null ? null : new Date(now + a.ends_days * 86_400_000).toISOString(),
+      reviewStatus: a.review_status as Announcement['reviewStatus'],
+      rejectionReason: a.rejection_reason,
+      createdAt: ago(now, a.created_minutes_ago)!,
+    })),
+  };
+}
+
+const dayOffset = (now: number, days: number | null) => (days == null ? null : new Date(now + days * 86_400_000).toISOString().slice(0, 10));
+
+function toService(orgId: string, x: (typeof providersSeed)[number]['services'][number], now: number): ServiceItem {
+  return {
+    id: x.id,
+    orgId,
+    kind: x.kind as ServiceItem['kind'],
+    name: x.name,
+    category: x.category as ServiceItem['category'],
+    description: x.description,
+    place: x.place,
+    phone: x.phone,
+    operating: x.operating,
+    beneficiaries: x.beneficiaries,
+    requiredDocs: x.required_docs,
+    contact: x.contact,
+    hours: x.hours as Hours | null,
+    location: x.location,
+    eligibility: x.eligibility,
+    howToApply: x.how_to_apply,
+    startsOn: dayOffset(now, x.starts_days),
+    endsOn: dayOffset(now, x.ends_days),
+    programStatus: x.program_status as ServiceItem['programStatus'],
+    confirmedAt: ago(now, x.confirmed_minutes_ago),
+    reviewStatus: x.review_status as ServiceItem['reviewStatus'],
+    rejectionReason: x.rejection_reason,
+    updatedAt: ago(now, x.updated_minutes_ago)!,
   };
 }
 

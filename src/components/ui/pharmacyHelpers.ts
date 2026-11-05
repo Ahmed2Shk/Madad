@@ -3,7 +3,7 @@ import { useLang } from '../../hooks/useLang';
 import { directionsUrl, directionsUrlForAddress } from '../../lib/geo';
 
 /** Exact coordinates when published, otherwise the text address (SPEC §11). */
-export function pharmacyDirections(p: PublicPharmacy): string {
+export function pharmacyDirections(p: Pick<PublicPharmacy, 'publicLat' | 'publicLng' | 'addressText'>): string {
   return p.publicLat != null && p.publicLng != null
     ? directionsUrl({ lat: p.publicLat, lng: p.publicLng })
     : directionsUrlForAddress(p.addressText);

@@ -6,6 +6,7 @@ import { auth } from './client';
 import { adminRepo } from './adminRepo';
 import { authRepo, demoRepo, registrationRepo } from './authRepos';
 import { pharmacyPortalRepo } from './portalRepo';
+import { directoryRepo, providerPortalRepo } from './providerRepos';
 import { accountRepo, availabilityRepo, catalogRepo, insightsRepo, orgRepo, reportsRepo, settingsRepo } from './publicRepos';
 
 const listeners = new Set<() => void>();
@@ -43,7 +44,7 @@ function notifying<T extends object>(repo: T, mutators: (keyof T)[]): T {
 export const supabaseRepos: Repos = {
   admin: notifying(adminRepo, [
     'reviewOrg', 'setDocumentStatus', 'suspendOrg', 'reactivateOrg', 'addCatalogMedicine', 'setAliases', 'importCatalog',
-    'reviewRequest', 'remindPharmacy', 'hideReport', 'updateReport', 'updateSettings',
+    'reviewRequest', 'remindPharmacy', 'hideReport', 'updateReport', 'updateSettings', 'moderate', 'setUserSuspended', 'setPlatformRole',
   ]),
   demo: notifying(demoRepo, ['reset']),
   auth: authRepo,
@@ -57,8 +58,10 @@ export const supabaseRepos: Repos = {
   orgs: orgRepo,
   insights: insightsRepo,
   settings: settingsRepo,
-  account: notifying(accountRepo, ['updateProfile', 'toggleFavorite', 'createAlert', 'stopAlert', 'markNotificationsRead', 'sendInquiry', 'deleteAccount']),
+  account: notifying(accountRepo, ['updateProfile', 'toggleFavorite', 'createAlert', 'stopAlert', 'markNotificationsRead', 'sendInquiry', 'deleteAccount', 'changePassword', 'updatePrefs']),
   reports: reportsRepo,
+  directory: directoryRepo,
+  providerPortal: notifying(providerPortalRepo, ['saveService', 'deleteService', 'setProgramStatus', 'saveAnnouncement', 'deleteAnnouncement', 'updateProfile']),
   subscribe(listener) {
     listeners.add(listener);
     return () => void listeners.delete(listener);

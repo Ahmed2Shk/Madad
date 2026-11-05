@@ -1,5 +1,10 @@
 import {
   Activity,
+  Bell,
+  Eye,
+  HandHeart,
+  Megaphone,
+  Stethoscope,
   BookOpen,
   Building2,
   CirclePlus,
@@ -21,6 +26,7 @@ import type { PortalNavItem } from './PortalShell';
 
 const ph = '/pharmacy-portal';
 const ad = '/admin';
+const pr = '/provider';
 
 /** SPEC §8 sidebar order. */
 export const pharmacyNav: PortalNavItem[] = [
@@ -32,6 +38,7 @@ export const pharmacyNav: PortalNavItem[] = [
   { to: `${ph}/inquiries`, key: 'portal.pharmacy.nav.inquiries', Icon: MessageSquare },
   { to: `${ph}/profile`, key: 'portal.pharmacy.nav.profile', Icon: Store },
   { to: `${ph}/team`, key: 'portal.pharmacy.nav.team', Icon: Users },
+  { to: `${ph}/notifications`, key: 'portal.pharmacy.nav.notifications', Icon: Bell },
   { to: `${ph}/settings`, key: 'portal.pharmacy.nav.settings', Icon: Settings },
 ];
 
@@ -48,4 +55,16 @@ export const adminNav: PortalNavItem[] = [
   { to: `${ad}/users`, key: 'portal.admin.nav.users', Icon: Users },
   { to: `${ad}/audit`, key: 'portal.admin.nav.audit', Icon: ScrollText },
   { to: `${ad}/settings`, key: 'portal.admin.nav.settings', Icon: Settings },
+];
+
+/** SPEC §9 provider portal: one portal for hospitals, medical points and humanitarian organizations. */
+export const providerNav: PortalNavItem[] = [
+  { to: pr, key: 'portal.provider.nav.dashboard', Icon: LayoutDashboard },
+  { to: `${pr}/profile`, key: 'portal.provider.nav.profile', Icon: Building2 },
+  { to: `${pr}/services`, key: 'portal.provider.nav.services', Icon: Stethoscope },
+  { to: `${pr}/programs`, key: 'portal.provider.nav.programs', Icon: HandHeart },
+  { to: `${pr}/announcements`, key: 'portal.provider.nav.announcements', Icon: Megaphone },
+  { to: `${pr}/inquiries`, key: 'portal.provider.nav.inquiries', Icon: MessageSquare },
+  { to: `${pr}/preview`, key: 'portal.provider.nav.preview', Icon: Eye },
+  { to: `${pr}/team`, key: 'portal.provider.nav.team', Icon: Users },
 ];

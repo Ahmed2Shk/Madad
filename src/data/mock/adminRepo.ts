@@ -6,6 +6,8 @@ import { likelyDuplicates } from '../../lib/similarity';
 import { suppress, MIN_CELL } from '../../lib/suppression';
 import type {
   AdminOrgRow,
+  AdminUser,
+  ModerationItem,
   AdminRepo,
   AuditEntry,
   GovId,
@@ -63,7 +65,7 @@ function toCatalogRow(id: string, m: MedicineRequestInput & { aliases: string[] 
   };
 }
 
-function notifyMembers(s: MockState, orgId: string, kind: 'verification' | 'platform', data: Record<string, string>, link: string | null) {
+function notifyMembers(s: MockState, orgId: string, kind: 'verification' | 'platform' | 'medicine_approved' | 'content_review', data: Record<string, string>, link: string | null) {
   const now = new Date().toISOString();
   for (const u of s.users)
     if (u.memberships.some((m) => m.orgId === orgId))
@@ -328,6 +330,8 @@ export const adminRepo: AdminRepo = {
       if (decision === 'approve') {
         s.catalogAdditions.push(toCatalogRow(slug(s, r.nameEn), { ...r, aliases: [] }));
         r.status = 'approved';
+        // PH-09 «اعتماد دواء مطلوب».
+        notifyMembers(s, r.orgId, 'medicine_approved', { nameAr: r.nameAr, nameEn: r.nameEn }, '/pharmacy-portal/medicines/add');
       } else if (decision === 'merge') {
         if (!mergeInto) throw new Error('merge_target_required');
         const target = currentCatalog().medicines.find((m) => m.id === mergeInto);
@@ -479,6 +483,79 @@ export const adminRepo: AdminRepo = {
       const before = structuredClone(s.settings);
       s.settings = next;
       audit(s, 'settings.update', 'settings', 'platform', before, patch);
+    });
+    return latency(undefined);
+  },
+
+  moderationQueue() {
+    requirePlatform('reviewer');
+    const s = store.get();
+    const org = (id: string | null) => s.orgs.find((o) => o.id === id);
+    const services: ModerationItem[] = s.services
+      .filter((x) => x.reviewStatus === 'pending')
+      .map((x) => ({ kind: 'service', id: x.id, orgId: x.orgId, orgNameAr: org(x.orgId)?.nameAr ?? '—', orgNameEn: org(x.orgId)?.nameEn ?? '—', serviceKind: x.kind, title: x.name, body: x.description, status: x.reviewStatus, submittedAt: x.updatedAt }));
+    const announcements: ModerationItem[] = s.announcements
+      .filter((a) => a.reviewStatus === 'pending' && a.orgId)
+      .map((a) => ({ kind: 'announcement', id: a.id, orgId: a.orgId!, orgNameAr: org(a.orgId)?.nameAr ?? '—', orgNameEn: org(a.orgId)?.nameEn ?? '—', serviceKind: null, title: a.title, body: a.body, status: a.reviewStatus, submittedAt: a.createdAt }));
+    return latency([...services, ...announcements].sort((a, b) => a.submittedAt.localeCompare(b.submittedAt)));
+  },
+
+  moderate(kind, id, decision, reason) {
+    requirePlatform('reviewer');
+    if (decision === 'reject' && !reason.trim()) throw new Error('note_required');
+    store.mutate((s) => {
+      const target = kind === 'service' ? s.services.find((x) => x.id === id) : s.announcements.find((a) => a.id === id);
+      if (!target || target.reviewStatus !== 'pending' || !target.orgId) return;
+      target.reviewStatus = decision === 'approve' ? 'approved' : 'rejected';
+      target.rejectionReason = decision === 'reject' ? reason.trim() : null;
+      const title = 'name' in target ? target.name : target.title;
+      notifyMembers(s, target.orgId, 'content_review', { status: target.reviewStatus, title, reason: target.rejectionReason ?? '' }, kind === 'service' ? '/provider/services' : '/provider/announcements');
+      audit(s, `moderation.${decision}`, kind, id, { status: 'pending' }, { status: target.reviewStatus, note: target.rejectionReason });
+    });
+    return latency(undefined);
+  },
+
+  users() {
+    requirePlatform('super_admin');
+    const s = store.get();
+    const rows: AdminUser[] = s.users.map((u) => ({
+      userId: u.id,
+      displayName: u.displayName,
+      email: u.email,
+      type: u.platformRole ? 'team' : u.memberships.length ? 'organization' : 'patient',
+      platformRole: u.platformRole,
+      memberships: u.memberships.flatMap((m) => {
+        const o = s.orgs.find((x) => x.id === m.orgId);
+        return o ? [{ orgId: o.id, orgNameAr: o.nameAr, orgNameEn: o.nameEn, role: m.memberRole }] : [];
+      }),
+      suspended: u.suspended,
+      isDemo: true,
+      joinedAt: u.joinedAt,
+    }));
+    return latency(rows.sort((a, b) => b.joinedAt.localeCompare(a.joinedAt)));
+  },
+
+  setUserSuspended(userId, suspended) {
+    requirePlatform('super_admin');
+    store.mutate((s) => {
+      if (userId === s.sessionUserId) throw new AccessError('forbidden');
+      const u = s.users.find((x) => x.id === userId);
+      if (!u || u.suspended === suspended) return;
+      u.suspended = suspended;
+      audit(s, suspended ? 'user.suspend' : 'user.reactivate', 'profile', userId, { suspended: !suspended }, { suspended });
+    });
+    return latency(undefined);
+  },
+
+  setPlatformRole(userId, role) {
+    requirePlatform('super_admin');
+    store.mutate((s) => {
+      if (userId === s.sessionUserId) throw new AccessError('forbidden');
+      const u = s.users.find((x) => x.id === userId);
+      if (!u || u.platformRole === role) return;
+      const before = u.platformRole;
+      u.platformRole = role;
+      audit(s, 'user.platform_role', 'profile', userId, { platformRole: before }, { platformRole: role });
     });
     return latency(undefined);
   },

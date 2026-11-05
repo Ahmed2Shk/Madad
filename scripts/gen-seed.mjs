@@ -328,7 +328,31 @@ for (let i = 0; i < 1500; i++) {
 search_logs.sort((a, b) => a.minutes_ago - b.minutes_ago);
 
 // ---------------------------------------------------------------- service providers (6, phase 5)
-const provider = (id, type, name_ar, name_en, g, area, services) => {
+// Literal data only (no PRNG calls here), so editing it never shifts the generated rows after it.
+// Times are relative: *_minutes_ago, and dates as *_days (negative = in the past).
+const svc = (s) => ({
+  review_status: 'approved',
+  rejection_reason: null,
+  category: null,
+  description: null,
+  place: null,
+  phone: null,
+  operating: true,
+  beneficiaries: null,
+  required_docs: [],
+  contact: null,
+  hours: null,
+  location: null,
+  eligibility: [],
+  how_to_apply: null,
+  starts_days: null,
+  ends_days: null,
+  program_status: null,
+  confirmed_minutes_ago: null,
+  ...s,
+  updated_minutes_ago: s.updated_minutes_ago ?? s.confirmed_minutes_ago ?? 10 * DAY,
+});
+const provider = (id, type, name_ar, name_en, g, area, extra, services) => {
   const G = govById[g];
   return {
     id,
@@ -344,38 +368,74 @@ const provider = (id, type, name_ar, name_en, g, area, services) => {
     whatsapp: null,
     hours: weekly('08:00', '16:00'),
     description: null,
+    website: null,
+    locations: [],
     verification_status: 'approved',
     is_demo: true,
     private: { license_no: `DEMO-ORG-${id}`, exact_lat: G.center.lat, exact_lng: G.center.lng, contact_person: 'مسؤول تجريبي' },
-    services: services.map((s, i) => ({ id: `${id}-s${i + 1}`, review_status: 'approved', eligibility: [], required_docs: [], ...s })),
+    ...extra,
+    services: services.map((s, i) => ({ id: `${id}-s${i + 1}`, ...svc(s) })),
   };
 };
 const providers = [
-  provider('pr-nakheel', 'hospital', 'مستشفى النخيل (تجريبي)', 'Al-Nakheel Hospital (demo)', 'khan_younis', 'center', [
-    { kind: 'department', name: 'قسم الطوارئ', category: 'emergency', program_status: null, confirmed_minutes_ago: 3 * DAY },
-    { kind: 'department', name: 'قسم غسيل الكلى', category: 'dialysis', program_status: null, confirmed_minutes_ago: 9 * DAY },
-    { kind: 'service', name: 'عيادة السكري', category: 'chronic', program_status: null, confirmed_minutes_ago: 2 * DAY },
-  ]),
-  provider('pr-karma', 'hospital', 'مستشفى الكرمة (تجريبي)', 'Al-Karma Hospital (demo)', 'gaza', 'east', [
-    { kind: 'department', name: 'قسم الولادة', category: 'maternity', program_status: null, confirmed_minutes_ago: 5 * DAY },
-    { kind: 'service', name: 'عيادة الأطفال', category: 'chronic', program_status: null, confirmed_minutes_ago: 12 * DAY },
-  ]),
-  provider('pr-amal-point', 'medical_point', 'نقطة الأمل الطبية (تجريبي)', 'Al-Amal Medical Point (demo)', 'deir_al_balah', 'center', [
-    { kind: 'service', name: 'تطعيم الأطفال', category: 'vaccination', program_status: null, confirmed_minutes_ago: DAY },
-    { kind: 'program', name: 'متابعة الحوامل', category: 'maternity', program_status: 'active', confirmed_minutes_ago: 2 * DAY, eligibility: ['حامل في أي شهر', 'مقيمة في المحافظة'] },
-  ]),
-  provider('pr-mobile-care', 'medical_point', 'نقطة الرعاية المتنقلة (تجريبي)', 'Mobile Care Point (demo)', 'rafah', 'west', [
-    { kind: 'service', name: 'فحص ضغط وسكر', category: 'chronic', program_status: null, confirmed_minutes_ago: 4 * DAY },
-    { kind: 'program', name: 'عيادة متنقلة أسبوعية', category: 'chronic', program_status: 'active', confirmed_minutes_ago: 9 * DAY },
-  ]),
-  provider('pr-sanad', 'humanitarian', 'جمعية سند الطبية (تجريبي)', 'Sanad Medical Society (demo)', 'khan_younis', 'west', [
-    { kind: 'program', name: 'دعم مرضى الأمراض المزمنة', category: 'chronic', program_status: 'active', confirmed_minutes_ago: 3 * DAY, eligibility: ['مريض بمرض مزمن', 'تقرير طبي حديث'], required_docs: ['هوية', 'تقرير طبي'] },
-    { kind: 'program', name: 'الدعم النفسي للأطفال', category: 'mental_health', program_status: 'paused', confirmed_minutes_ago: 20 * DAY },
-  ]),
-  provider('pr-rafeeq', 'humanitarian', 'مؤسسة رفيق للإغاثة (تجريبي)', 'Rafeeq Relief Foundation (demo)', 'north_gaza', 'center', [
-    { kind: 'program', name: 'توزيع مستلزمات طبية', category: 'chronic', program_status: 'info', confirmed_minutes_ago: 6 * DAY },
-    { kind: 'program', name: 'برنامج التأهيل الحركي', category: 'rehab', program_status: 'ended', confirmed_minutes_ago: 40 * DAY },
-  ]),
+  provider('pr-nakheel', 'hospital', 'مستشفى النخيل (تجريبي)', 'Al-Nakheel Hospital (demo)', 'khan_younis', 'center',
+    { description: 'مستشفى عام تجريبي يقدم الطوارئ وغسيل الكلى وعيادات الأمراض المزمنة.', hours: weekly('00:00', '23:59', ['00:00', '23:59']) },
+    [
+      { kind: 'department', name: 'قسم الطوارئ', category: 'emergency', description: 'استقبال الحالات الطارئة على مدار الساعة.', place: 'المبنى الرئيسي، الطابق الأرضي', phone: '101', hours: weekly('00:00', '23:59', ['00:00', '23:59']), confirmed_minutes_ago: 3 * DAY },
+      { kind: 'department', name: 'قسم غسيل الكلى', category: 'dialysis', description: 'جلسات غسيل كلى بمواعيد مسبقة.', place: 'المبنى ب، الطابق الثاني', phone: '214', hours: weekly('07:00', '19:00'), operating: false, confirmed_minutes_ago: 9 * DAY },
+      { kind: 'service', name: 'عيادة السكري', category: 'chronic', description: 'متابعة دورية لمرضى السكري.', beneficiaries: 'مرضى السكري البالغون', required_docs: ['هوية شخصية', 'ملف طبي سابق إن وجد'], contact: 'الاتصال بالمستشفى صباحًا', hours: weekly('08:00', '14:00'), location: 'العيادات الخارجية', confirmed_minutes_ago: 2 * DAY },
+    ]),
+  provider('pr-karma', 'hospital', 'مستشفى الكرمة (تجريبي)', 'Al-Karma Hospital (demo)', 'gaza', 'east',
+    { description: 'مستشفى تجريبي للولادة ورعاية الأطفال.' },
+    [
+      { kind: 'department', name: 'قسم الولادة', category: 'maternity', description: 'ولادة طبيعية وقيصرية ومتابعة بعد الولادة.', place: 'الجناح الشرقي', phone: '305', hours: weekly('00:00', '23:59', ['00:00', '23:59']), confirmed_minutes_ago: 5 * DAY },
+      { kind: 'service', name: 'عيادة الأطفال', category: 'pediatrics', description: 'كشف ومتابعة للأطفال حتى 12 سنة.', beneficiaries: 'الأطفال حتى 12 سنة', required_docs: ['شهادة ميلاد الطفل'], hours: weekly('08:00', '13:00'), confirmed_minutes_ago: 12 * DAY },
+      // Edited and waiting for review in AD-08: not public yet.
+      { kind: 'service', name: 'عيادة التغذية', category: 'general', description: 'استشارات تغذية للأمهات والأطفال.', beneficiaries: 'الأمهات والأطفال', review_status: 'pending', updated_minutes_ago: 5 * HOUR },
+    ]),
+  provider('pr-amal-point', 'medical_point', 'نقطة الأمل الطبية (تجريبي)', 'Al-Amal Medical Point (demo)', 'deir_al_balah', 'center',
+    {
+      description: 'نقطة طبية تجريبية للتطعيم ومتابعة الحوامل.',
+      locations: [{ name: 'فرع السوق', area: 'east', hours: weekly('09:00', '13:00') }],
+    },
+    [
+      { kind: 'service', name: 'تطعيم الأطفال', category: 'vaccination', description: 'التطعيمات الأساسية حسب الجدول الوطني.', beneficiaries: 'الأطفال حتى 6 سنوات', required_docs: ['بطاقة التطعيم'], hours: weekly('08:00', '12:00'), confirmed_minutes_ago: DAY },
+      { kind: 'program', name: 'متابعة الحوامل', category: 'maternity', description: 'فحوصات دورية للحوامل مجانًا.', beneficiaries: 'الحوامل', eligibility: ['حامل في أي شهر', 'مقيمة في المحافظة'], required_docs: ['هوية شخصية'], how_to_apply: 'الحضور إلى النقطة صباحًا مع الهوية.', program_status: 'active', starts_days: -60, confirmed_minutes_ago: 2 * DAY },
+    ]),
+  provider('pr-mobile-care', 'medical_point', 'نقطة الرعاية المتنقلة (تجريبي)', 'Mobile Care Point (demo)', 'rafah', 'west',
+    { description: 'فريق طبي تجريبي يتنقل بين الأحياء.' },
+    [
+      { kind: 'service', name: 'فحص ضغط وسكر', category: 'chronic', description: 'قياس الضغط والسكر مجانًا.', beneficiaries: 'الجميع', confirmed_minutes_ago: 4 * DAY },
+      // Active but not confirmed for 9 days: patients see «يحتاج تحديث» (phase 5 acceptance).
+      { kind: 'program', name: 'عيادة متنقلة أسبوعية', category: 'chronic', description: 'زيارة أسبوعية لأحياء رفح الغربية.', beneficiaries: 'سكان الأحياء الغربية', eligibility: ['مقيم في رفح'], how_to_apply: 'متابعة الإعلانات لمعرفة مكان الزيارة.', program_status: 'active', starts_days: -120, confirmed_minutes_ago: 9 * DAY },
+    ]),
+  provider('pr-sanad', 'humanitarian', 'جمعية سند الطبية (تجريبي)', 'Sanad Medical Society (demo)', 'khan_younis', 'west',
+    {
+      description: 'جمعية تجريبية تدعم مرضى الأمراض المزمنة والأطفال.',
+      website: 'https://sanad.example.org',
+      locations: [{ name: 'مكتب المواصي', area: 'west', hours: weekly('09:00', '14:00') }],
+    },
+    [
+      { kind: 'program', name: 'دعم مرضى الأمراض المزمنة', category: 'chronic', description: 'مساعدة في الوصول إلى المتابعة الطبية.', beneficiaries: 'مرضى الأمراض المزمنة', eligibility: ['مريض بمرض مزمن', 'تقرير طبي حديث'], required_docs: ['هوية', 'تقرير طبي'], how_to_apply: 'تعبئة طلب في مكتب الجمعية.', program_status: 'active', starts_days: -90, ends_days: 90, confirmed_minutes_ago: 3 * DAY },
+      { kind: 'program', name: 'الدعم النفسي للأطفال', category: 'mental_health', description: 'جلسات دعم نفسي جماعية.', beneficiaries: 'الأطفال من 6 إلى 14 سنة', program_status: 'paused', confirmed_minutes_ago: 20 * DAY },
+      // New and waiting for review in AD-08.
+      { kind: 'program', name: 'جلسات توعية بالسكري', category: 'chronic', description: 'جلسات أسبوعية للتوعية الصحية.', beneficiaries: 'مرضى السكري وذووهم', program_status: 'info', review_status: 'pending', confirmed_minutes_ago: 3 * HOUR },
+    ]),
+  provider('pr-rafeeq', 'humanitarian', 'مؤسسة رفيق للإغاثة (تجريبي)', 'Rafeeq Relief Foundation (demo)', 'north_gaza', 'center',
+    { description: 'مؤسسة إغاثة تجريبية.' },
+    [
+      { kind: 'program', name: 'توزيع مستلزمات طبية', category: 'general', description: 'معلومات عن آلية التوزيع عند توفرها.', program_status: 'info', confirmed_minutes_ago: 6 * DAY },
+      { kind: 'program', name: 'برنامج التأهيل الحركي', category: 'rehab', description: 'جلسات علاج طبيعي.', program_status: 'ended', starts_days: -200, ends_days: -20, confirmed_minutes_ago: 40 * DAY },
+    ]),
+];
+
+// Announcements (PR-05 → AD-08). One per state, plus a MADAD platform announcement.
+const announcements = [
+  { id: 'ann-1', org_id: 'pr-sanad', title: 'تسجيل جديد في برنامج الأمراض المزمنة', body: 'يُفتح التسجيل أسبوعيًا يومي الأحد والثلاثاء في مكتب الجمعية.', review_status: 'approved', rejection_reason: null, starts_minutes_ago: 2 * DAY, ends_days: 20, created_minutes_ago: 3 * DAY },
+  { id: 'ann-2', org_id: 'pr-amal-point', title: 'حملة تطعيم', body: 'حملة تطعيم للأطفال الأسبوع القادم في فرع السوق.', review_status: 'pending', rejection_reason: null, starts_minutes_ago: -DAY, ends_days: 10, created_minutes_ago: 4 * HOUR },
+  { id: 'ann-3', org_id: 'pr-nakheel', title: 'خصم على الأدوية', body: 'خصومات على أدوية الضغط.', review_status: 'rejected', rejection_reason: 'لا ننشر عروض بيع أو أسعار (القسم 2).', starts_minutes_ago: DAY, ends_days: 5, created_minutes_ago: 2 * DAY },
+  { id: 'ann-4', org_id: 'pr-sanad', title: 'مسودة: يوم طبي مجاني', body: 'تفاصيل اليوم الطبي تُعلن لاحقًا.', review_status: 'draft', rejection_reason: null, starts_minutes_ago: -3 * DAY, ends_days: 7, created_minutes_ago: HOUR },
+  { id: 'ann-5', org_id: null, title: 'مدد: بيانات تجريبية', body: 'كل المؤسسات والبيانات في هذا العرض تجريبية.', review_status: 'approved', rejection_reason: null, starts_minutes_ago: 7 * DAY, ends_days: null, created_minutes_ago: 7 * DAY },
 ];
 
 // ---------------------------------------------------------------- demo users
@@ -487,6 +547,7 @@ write('stock_history.json', stock_history);
 write('inquiries.json', inquiries);
 write('medicine_requests.json', medicine_requests);
 write('reports.json', reports);
+write('announcements.json', announcements);
 
 // Public offline catalog for suggestions (SPEC §11): approved medicines only, compact keys.
 writeFileSync(

@@ -1,0 +1,7 @@
+[
+{"id":"ann-1","org_id":"pr-sanad","title":"تسجيل جديد في برنامج الأمراض المزمنة","body":"يُفتح التسجيل أسبوعيًا يومي الأحد والثلاثاء في مكتب الجمعية.","review_status":"approved","rejection_reason":null,"starts_minutes_ago":2880,"ends_days":20,"created_minutes_ago":4320},
+{"id":"ann-2","org_id":"pr-amal-point","title":"حملة تطعيم","body":"حملة تطعيم للأطفال الأسبوع القادم في فرع السوق.","review_status":"pending","rejection_reason":null,"starts_minutes_ago":-1440,"ends_days":10,"created_minutes_ago":240},
+{"id":"ann-3","org_id":"pr-nakheel","title":"خصم على الأدوية","body":"خصومات على أدوية الضغط.","review_status":"rejected","rejection_reason":"لا ننشر عروض بيع أو أسعار (القسم 2).","starts_minutes_ago":1440,"ends_days":5,"created_minutes_ago":2880},
+{"id":"ann-4","org_id":"pr-sanad","title":"مسودة: يوم طبي مجاني","body":"تفاصيل اليوم الطبي تُعلن لاحقًا.","review_status":"draft","rejection_reason":null,"starts_minutes_ago":-4320,"ends_days":7,"created_minutes_ago":60},
+{"id":"ann-5","org_id":null,"title":"مدد: بيانات تجريبية","body":"كل المؤسسات والبيانات في هذا العرض تجريبية.","review_status":"approved","rejection_reason":null,"starts_minutes_ago":10080,"ends_days":null,"created_minutes_ago":10080}
+]

@@ -5,6 +5,8 @@ export type { Reported } from '../lib/freshness';
 import type { Hours } from '../lib/hours';
 import type { Searchable } from '../lib/search';
 import type { SuppressedMatrix } from '../lib/suppression';
+import type { AdminUser, DirectoryRepo, ModerationItem, NotificationPrefs, ProviderPortalRepo } from './providerTypes';
+export * from './providerTypes';
 
 export type GovId = string;
 /** 'all' searches every governorate. */
@@ -115,6 +117,8 @@ export interface PublicSettings extends FreshnessSettings {
   disclaimerAr: string | null;
   disclaimerEn: string | null;
   requiredDocs: Record<OrgType, string[]>;
+  /** «نشط الآن» needs a confirmation this often (SPEC §9 PR-04, AD-11). */
+  programConfirmDays: number;
 }
 
 export interface SearchLogEntry {
@@ -155,7 +159,7 @@ export interface AvailabilityAlert {
   notifiedAt: string | null;
 }
 
-export type NotificationKind = 'alert_met' | 'inquiry_reply' | 'verification' | 'platform';
+export type NotificationKind = 'alert_met' | 'inquiry_reply' | 'verification' | 'platform' | 'inquiry_new' | 'medicine_approved' | 'content_review';
 
 export interface AppNotification {
   id: string;
@@ -170,6 +174,8 @@ export interface AppNotification {
 export interface NewInquiry {
   orgId: string;
   medicineId: string | null;
+  /** A service or programme the question is about (P-08); null for pharmacies. */
+  serviceId?: string | null;
   subject: string;
   body: string;
 }
@@ -184,7 +190,7 @@ export type ReportReason =
   | 'suggest_medicine';
 
 export interface NewReport {
-  entityType: 'pharmacy' | 'medicine' | 'availability' | 'catalog';
+  entityType: 'pharmacy' | 'medicine' | 'availability' | 'catalog' | 'organization';
   entityId: string;
   reason: ReportReason;
   details: string;
@@ -240,6 +246,12 @@ export interface AccountRepo {
   sendInquiry(inquiry: NewInquiry): Promise<void>;
   exportData(): Promise<unknown>;
   deleteAccount(): Promise<void>;
+  /** PH-10: a new password for the signed-in account. */
+  changePassword(newPassword: string): Promise<void>;
+  /** PH-10 sessions: signs out everywhere except this browser. */
+  signOutOtherDevices(): Promise<void>;
+  prefs(): Promise<NotificationPrefs>;
+  updatePrefs(patch: Partial<NotificationPrefs>): Promise<NotificationPrefs>;
 }
 
 export interface ReportsRepo {
@@ -259,6 +271,8 @@ export interface Repos {
   settings: SettingsRepo;
   account: AccountRepo;
   reports: ReportsRepo;
+  directory: DirectoryRepo;
+  providerPortal: ProviderPortalRepo;
   /** Fires when data changes outside the current query (another tab, a portal update). */
   subscribe(listener: () => void): () => void;
 }
@@ -403,6 +417,7 @@ export interface InquiryThread {
   id: string;
   orgId: string;
   medicineId: string | null;
+  serviceId: string | null;
   subject: string;
   status: InquiryStatus;
   /** Display name only (SPEC §2 rule 8). */
@@ -612,7 +627,6 @@ export interface AuditEntry {
 }
 
 export interface PlatformSettings extends PublicSettings {
-  programConfirmDays: number;
   rejectionReasons: string[];
 }
 
@@ -645,6 +659,13 @@ export interface AdminRepo {
   audit(): Promise<AuditEntry[]>;
   settings(): Promise<PlatformSettings>;
   updateSettings(patch: Partial<PlatformSettings>): Promise<void>;
+  /** AD-08: new or edited services, programmes and announcements. */
+  moderationQueue(): Promise<ModerationItem[]>;
+  moderate(kind: ModerationItem['kind'], id: string, decision: 'approve' | 'reject', reason: string): Promise<void>;
+  /** AD-09, system admin only. */
+  users(): Promise<AdminUser[]>;
+  setUserSuspended(userId: string, suspended: boolean): Promise<void>;
+  setPlatformRole(userId: string, role: 'reviewer' | 'super_admin' | null): Promise<void>;
 }
 
 /** Demo mode only (VITE_DEMO=true): the floating role switcher and data reset (SPEC §4). */

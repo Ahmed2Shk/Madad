@@ -5,6 +5,8 @@ import { likelyDuplicates } from '../../lib/similarity';
 import { GOVERNORATES } from '../governorates';
 import type {
   AdminOrgRow,
+  AdminUser,
+  ModerationItem,
   AdminOverview,
   AdminReport,
   AdminRepo,
@@ -348,5 +350,44 @@ export const adminRepo: AdminRepo = {
 
   async updateSettings(patch) {
     await rpc('update_settings', { patch });
+  },
+
+  async moderationQueue() {
+    const [services, announcements] = await Promise.all([
+      db.from('services').select('id, org_id, kind, name, description, review_status, updated_at, organizations(name_ar, name_en)').eq('review_status', 'pending'),
+      db.from('announcements').select('id, org_id, title, body, review_status, created_at, organizations(name_ar, name_en)').eq('review_status', 'pending').not('org_id', 'is', null),
+    ]);
+    type Org = { name_ar: string; name_en: string } | { name_ar: string; name_en: string }[] | null;
+    const org = (o: Org) => (Array.isArray(o) ? o[0] : o) ?? { name_ar: '—', name_en: '—' };
+    type S = { id: string; org_id: string; kind: ModerationItem['serviceKind']; name: string; description: string | null; review_status: ModerationItem['status']; updated_at: string; organizations: Org };
+    type A = { id: string; org_id: string; title: string; body: string; review_status: ModerationItem['status']; created_at: string; organizations: Org };
+    const items: ModerationItem[] = [
+      ...(must(services) as unknown as S[]).map((x): ModerationItem => ({
+        kind: 'service', id: x.id, orgId: x.org_id, orgNameAr: org(x.organizations).name_ar, orgNameEn: org(x.organizations).name_en,
+        serviceKind: x.kind, title: x.name, body: x.description, status: x.review_status, submittedAt: new Date(x.updated_at).toISOString(),
+      })),
+      ...(must(announcements) as unknown as A[]).map((x): ModerationItem => ({
+        kind: 'announcement', id: x.id, orgId: x.org_id, orgNameAr: org(x.organizations).name_ar, orgNameEn: org(x.organizations).name_en,
+        serviceKind: null, title: x.title, body: x.body, status: x.review_status, submittedAt: new Date(x.created_at).toISOString(),
+      })),
+    ];
+    return items.sort((a, b) => a.submittedAt.localeCompare(b.submittedAt));
+  },
+
+  async moderate(kind, id, decision, reason) {
+    await rpc('moderate_content', { kind, id, decision, reason });
+  },
+
+  async users() {
+    const rows = await rpc<(AdminUser & { joinedAt: string })[]>('admin_users');
+    return rows.map((u) => ({ ...u, joinedAt: new Date(u.joinedAt).toISOString() }));
+  },
+
+  async setUserSuspended(userId, suspended) {
+    await rpc('set_user_suspended', { target: userId, suspended });
+  },
+
+  async setPlatformRole(userId, role) {
+    await rpc('set_platform_role', { target: userId, role });
   },
 };

@@ -8,6 +8,9 @@ import { useCatalog } from '../../data/queries';
 import { useLang } from '../../hooks/useLang';
 import { formatDateTime } from '../../lib/format';
 import { usePharmacyCtx } from './context';
+import { usePrefs } from '../../data/providerQueries';
+import { useNow } from '../../hooks/useNow';
+import { localDayMinutes } from '../../lib/hours';
 import { HistoryLine } from './HistoryLine';
 
 export default function DashboardPage() {
@@ -39,6 +42,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      <DailyReminder needsUpdate={(overview.data?.stale ?? 0) + (overview.data?.expired ?? 0)} />
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-page">{t('dashboard.title')}</h1>
         <div className="flex flex-wrap gap-2">
@@ -160,5 +164,25 @@ export default function DashboardPage() {
         </figure>
       </section>
     </div>
+  );
+}
+
+/** PH-10 daily reminder: from the chosen hour (Palestine time), while some reports need updating. */
+function DailyReminder({ needsUpdate }: { needsUpdate: number }) {
+  const { t } = useTranslation();
+  const now = useNow();
+  const prefs = usePrefs();
+  const hour = prefs.data?.reminderHour;
+  if (hour == null || needsUpdate === 0 || localDayMinutes(now).minutes < hour * 60) return null;
+  return (
+    <p role="status" className="flex flex-wrap items-center justify-between gap-3 rounded-card bg-warn-bg p-3 text-warn-text">
+      <span className="flex items-center gap-2 font-medium">
+        <Clock aria-hidden className="size-5 text-warn-icon" />
+        {t('dashboard.reminder', { count: needsUpdate })}
+      </span>
+      <Link to="/pharmacy-portal/update?filter=needs" className={buttonClass('primary', 'sm')}>
+        {t('phNotif.updateNow')}
+      </Link>
+    </p>
   );
 }

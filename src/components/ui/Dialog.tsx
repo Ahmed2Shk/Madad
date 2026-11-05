@@ -49,7 +49,7 @@ export function Dialog({
       className={cn(
         'bg-surface p-0 text-ink shadow-dialog backdrop:bg-ink/40',
         side
-          ? 'my-0 ms-auto me-0 h-dvh max-h-dvh w-full max-w-md rounded-none'
+          ? cn('my-0 ms-auto me-0 h-dvh max-h-dvh w-full rounded-none', size === 'lg' ? 'max-w-4xl' : 'max-w-md')
           : cn('m-auto w-[calc(100%-2rem)] rounded-dialog', { sm: 'max-w-sm', md: 'max-w-lg', lg: 'max-w-2xl' }[size]),
       )}
     >

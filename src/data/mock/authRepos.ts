@@ -1,5 +1,6 @@
 // Mock sign-in, sign-up and organization registration (A-02..A-06). Supabase Auth replaces this in phase 4.
 import { DEFAULT_PERMS } from '../perms';
+import { DEFAULT_PREFS } from '../providerTypes';
 import type { AuthRepo, RegistrationRepo } from '../types';
 import { AccessError, currentUser, latency, requireOwner, requireUser, toMe } from './access';
 import { audit, newId, store } from './store';
@@ -32,6 +33,9 @@ export const authRepo: AuthRepo = {
         password: input.password,
         platformRole: null,
         memberships: [],
+        suspended: false,
+        prefs: { ...DEFAULT_PREFS },
+        joinedAt: new Date().toISOString(),
       };
       s.users.push(u);
       s.sessionUserId = u.id;
@@ -69,6 +73,8 @@ export const registrationRepo: RegistrationRepo = {
         whatsapp: draft.org.whatsapp.trim() || null,
         hours: draft.org.hours,
         description: null,
+        website: null,
+        locations: [],
         temporarilyClosed: null,
         verificationStatus: 'pending',
         reviewerNote: null,
@@ -100,6 +106,9 @@ export const registrationRepo: RegistrationRepo = {
           password: draft.account.password,
           platformRole: null,
           memberships: [membership],
+          suspended: false,
+          prefs: { ...DEFAULT_PREFS },
+          joinedAt: now,
         });
         s.sessionUserId = userId;
       }

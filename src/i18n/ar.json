@@ -43,7 +43,10 @@
     "how2Title": "قارن وقت التحديث",
     "how2Body": "كل حالة تظهر مع وقت آخر بلاغ من الصيدلية. البلاغ القديم لا يظهر مؤكدًا أبدًا.",
     "how3Title": "اتصل واذهب للصيدلية",
-    "how3Body": "اتصل للتأكد ثم توجّه للصيدلية بنفسك. الصرف يتم داخل الصيدلية فقط."
+    "how3Body": "اتصل للتأكد ثم توجّه للصيدلية بنفسك. الصرف يتم داخل الصيدلية فقط.",
+    "cantFindTitle": "لا تجد دواءك؟",
+    "cantFindBody": "اعرف المستشفيات والنقاط الطبية والمؤسسات التي تقدم خدمات وبرامج في منطقتك.",
+    "cantFindAction": "الدليل الطبي"
   },
   "search": {
     "fieldLabel": "اسم الدواء أو المادة الفعالة أو الباركود",
@@ -204,7 +207,10 @@
     "notifyAction": "فعّل التنبيه",
     "allGovsAction": "وسّع البحث",
     "reportShortageAction": "سجّل النقص",
-    "suggestAction": "أرسل الاقتراح"
+    "suggestAction": "أرسل الاقتراح",
+    "nearbyPoints": "نقاط طبية ومؤسسات قريبة",
+    "nearbyPointsBody": "خدمات وبرامج قد تساعدك. وجود الخدمة لا يعني توفر الدواء.",
+    "nearbyPointsAction": "افتح الدليل"
   },
   "alerts": {
     "notifyMe": "نبّهني عند التوفر",
@@ -226,7 +232,7 @@
     "providers": "مقدّمو الخدمات",
     "emptyTitle": "لا شيء محفوظ بعد",
     "emptyBody": "احفظ دواءك أو صيدليتك لتصل إليهما بسرعة.",
-    "providersLater": "دليل مقدّمي الخدمات قادم قريبًا."
+    "providersEmpty": "احفظ مستشفى أو مؤسسة من الدليل الطبي لتجدها هنا."
   },
   "notifications": {
     "title": "الإشعارات",
@@ -246,7 +252,12 @@
     },
     "platform": {
       "remindUpdate": "تذكير من فريق مدد: بعض بلاغات التوفر عندك قديمة. حدّثها حتى لا تظهر «غير مؤكد»."
-    }
+    },
+    "open": "عرض",
+    "inquiryNew": "استفسار جديد إلى {{org}}: «{{subject}}»",
+    "medicineApproved": "اعتُمد الدواء الذي طلبته: {{name}}. يمكنك إضافته لأدويتك الآن.",
+    "contentApproved": "نُشر «{{title}}» بعد المراجعة.",
+    "contentRejected": "لم يُنشر «{{title}}»: {{reason}}"
   },
   "inquiry": {
     "open": "أرسل استفسارًا",
@@ -256,7 +267,9 @@
     "send": "إرسال",
     "sent": "وصل استفسارك. سيصلك إشعار عند الرد.",
     "noMedicalInfo": "لا تكتب معلومات طبية شخصية.",
-    "notAnOrder": "الاستفسار لا يتحول إلى طلب أو حجز."
+    "notAnOrder": "الاستفسار لا يتحول إلى طلب أو حجز.",
+    "about": "بخصوص",
+    "aboutGeneral": "سؤال عام"
   },
   "report": {
     "open": "أبلغ عن خطأ",
@@ -448,7 +461,9 @@
     "docRequired": "هذه الوثيقة مطلوبة",
     "fileType": "الملف يجب أن يكون PDF أو صورة",
     "fileSize": "حجم الملف أكبر من 5MB",
-    "barcode": "الباركود أرقام فقط (8 إلى 14 رقمًا)"
+    "barcode": "الباركود أرقام فقط (8 إلى 14 رقمًا)",
+    "website": "اكتب الرابط كاملًا يبدأ بـ https://",
+    "endBeforeStart": "تاريخ الانتهاء قبل تاريخ البدء"
   },
   "disclaimer": {
     "full": "تعتمد معلومات التوفر على آخر تحديث أبلغت عنه الصيدلية. يُرجى الاتصال بالصيدلية أو زيارتها للتأكد. يخضع الصرف لتقدير الصيدلي المهني والأنظمة المعمول بها.",
@@ -469,7 +484,8 @@
       "owner": "مالك صيدلية",
       "staff": "موظف صيدلية",
       "reviewer": "مراجِع",
-      "admin": "مدير نظام"
+      "admin": "مدير نظام",
+      "provider": "مالك مؤسسة"
     },
     "reset": "إعادة ضبط بيانات العرض",
     "resetTitle": "إعادة ضبط بيانات العرض؟",
@@ -504,7 +520,8 @@
         "inquiries": "الاستفسارات",
         "profile": "ملف الصيدلية",
         "team": "الفريق",
-        "settings": "الإعدادات"
+        "settings": "الإعدادات",
+        "notifications": "الإشعارات"
       }
     },
     "admin": {
@@ -530,7 +547,21 @@
     "bannerPending": "طلبك قيد المراجعة. يمكنك إعداد أدويتك الآن، ولن تظهر للعامة قبل الاعتماد.",
     "bannerNeedsInfo": "طلبك يحتاج استكمال قبل الاعتماد. لن يظهر شيء للعامة حتى ذلك.",
     "viewApplication": "حالة الطلب",
-    "viewSite": "عرض الموقع"
+    "viewSite": "عرض الموقع",
+    "notProviderMember": "حسابك ليس عضوًا في مستشفى أو نقطة طبية أو مؤسسة",
+    "provider": {
+      "title": "بوابة المؤسسة",
+      "nav": {
+        "dashboard": "نظرة عامة",
+        "profile": "الملف التعريفي",
+        "services": "الخدمات والأقسام",
+        "programs": "البرامج والمساعدات",
+        "announcements": "الإعلانات",
+        "inquiries": "الاستفسارات",
+        "preview": "المعاينة",
+        "team": "الفريق"
+      }
+    }
   },
   "breadcrumb": {
     "home": "الرئيسية",
@@ -704,7 +735,13 @@
     "lastWeek_few": "الأسبوع الماضي: {{count}} مشاهدات",
     "lastWeek_many": "الأسبوع الماضي: {{count}} مشاهدة",
     "lastWeek_other": "الأسبوع الماضي: {{count}} مشاهدة",
-    "searchesChart": "عمليات البحث على أدويتك في محافظتك، آخر 7 أيام"
+    "searchesChart": "عمليات البحث على أدويتك في محافظتك، آخر 7 أيام",
+    "reminder_zero": "كل الأدوية حديثة",
+    "reminder_one": "تذكير يومي: بلاغ واحد يحتاج تحديثًا",
+    "reminder_two": "تذكير يومي: بلاغان يحتاجان تحديثًا",
+    "reminder_few": "تذكير يومي: {{count}} بلاغات تحتاج تحديثًا",
+    "reminder_many": "تذكير يومي: {{count}} بلاغًا يحتاج تحديثًا",
+    "reminder_other": "تذكير يومي: {{count}} بلاغ يحتاج تحديثًا"
   },
   "history": {
     "confirmAll_zero": "تأكيد الكل",
@@ -1155,5 +1192,243 @@
     "settingsSaved": "حُفظت الإعدادات وطُبّقت فورًا",
     "openDoc": "فتح الملف",
     "docLinkNote": "الرابط صالح لدقيقة واحدة، ولا يُشارك."
+  },
+  "program": {
+    "status": {
+      "info": "معلومات عامة",
+      "active": "نشط الآن",
+      "needs_update": "يحتاج تحديث",
+      "paused": "متوقف مؤقتًا",
+      "ended": "منتهي"
+    }
+  },
+  "announcement": {
+    "state": {
+      "draft": "مسودة",
+      "pending": "بانتظار المراجعة",
+      "scheduled": "مجدول",
+      "published": "منشور",
+      "rejected": "مرفوض",
+      "expired": "منتهي"
+    }
+  },
+  "serviceKind": {
+    "department": "قسم",
+    "service": "خدمة",
+    "program": "برنامج"
+  },
+  "serviceCategory": {
+    "emergency": "طوارئ",
+    "dialysis": "غسيل كلى",
+    "maternity": "رعاية أمومة",
+    "chronic": "أمراض مزمنة",
+    "mental_health": "صحة نفسية",
+    "vaccination": "تطعيم",
+    "rehab": "تأهيل",
+    "pediatrics": "أطفال",
+    "general": "عام"
+  },
+  "dir": {
+    "title": "الدليل الطبي",
+    "lead": "مستشفيات ونقاط طبية ومؤسسات إنسانية، مع ما نشرته من خدمات وبرامج ووقت آخر تحديث. الدليل لا يعرض توفر الأدوية.",
+    "tabs": {
+      "all": "الكل",
+      "hospital": "مستشفيات",
+      "medical_point": "نقاط طبية",
+      "humanitarian": "مؤسسات إنسانية"
+    },
+    "filters": {
+      "area": "المنطقة",
+      "allAreas": "كل المناطق",
+      "category": "نوع الخدمة",
+      "allCategories": "كل الخدمات",
+      "openNow": "يعمل الآن",
+      "activePrograms": "برامج نشطة"
+    },
+    "verified": "موثّق",
+    "updated": "آخر تحديث",
+    "lastConfirmed": "آخر تأكيد",
+    "activeCount_zero": "لا برامج نشطة",
+    "activeCount_one": "برنامج نشط واحد",
+    "activeCount_two": "برنامجان نشطان",
+    "activeCount_few": "{{count}} برامج نشطة",
+    "activeCount_many": "{{count}} برنامجًا نشطًا",
+    "activeCount_other": "{{count}} برنامج نشط",
+    "emptyTitle": "لا توجد مؤسسات بهذه الفلاتر",
+    "emptyBody": "جرّب محافظة أخرى أو ألغِ بعض الفلاتر.",
+    "notFound": "هذه المؤسسة غير متاحة",
+    "notFoundBody": "ربما لم تُعتمد بعد أو أُوقفت مؤقتًا.",
+    "about": "نبذة",
+    "departments": "الأقسام",
+    "services": "الخدمات",
+    "programs": "البرامج والمساعدات",
+    "announcements": "الإعلانات",
+    "otherLocations": "مواقع أخرى",
+    "website": "الموقع الإلكتروني",
+    "serviceNote": "وجود الخدمة لا يعني توفر دواء معيّن. اتصل للاستفسار.",
+    "beneficiaries": "الفئة المستهدفة",
+    "eligibility": "شروط الأهلية",
+    "requiredDocs": "الوثائق المطلوبة",
+    "howToApply": "طريقة التقديم",
+    "place": "المكان",
+    "extension": "الهاتف الداخلي",
+    "dates": "المدة",
+    "contactMethod": "طريقة التواصل",
+    "operating": "يعمل",
+    "pausedDept": "متوقف مؤقتًا",
+    "pendingTag": "بانتظار المراجعة",
+    "nothingYet": "لم تنشر هذه المؤسسة خدمات بعد.",
+    "previewBanner": "معاينة: هكذا يرى المرضى صفحتك. العناصر التي تنتظر المراجعة تظهر هنا فقط."
+  },
+  "provider": {
+    "type": "النوع",
+    "registrationNo": "رقم التسجيل",
+    "contactPerson": "الشخص المسؤول",
+    "description": "الوصف",
+    "addLocation": "أضف موقعًا",
+    "noLocations": "لا مواقع إضافية.",
+    "locationName": "اسم الموقع",
+    "kind": "النوع",
+    "name": "الاسم",
+    "category": "التصنيف",
+    "programStatus": "الحالة (إلزامية وظاهرة للمرضى)",
+    "operating": "القسم يعمل الآن",
+    "onePerLine": "بند في كل سطر",
+    "startsOn": "تاريخ البدء",
+    "endsOn": "تاريخ الانتهاء",
+    "preview": "معاينة ما سيراه المريض",
+    "untitled": "بلا اسم",
+    "reviewNote": "أي إضافة أو تعديل يُراجعه فريق مدد قبل النشر. تغيير حالة البرنامج وتأكيدها لا يحتاجان مراجعة.",
+    "saveForReview": "حفظ وإرسال للمراجعة",
+    "sentToReview": "أُرسل للمراجعة. سيظهر للمرضى بعد الاعتماد.",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "deleteTitle": "حذف العنصر؟",
+    "deleteBody": "سيُحذف «{{name}}» من صفحتك نهائيًا.",
+    "deleted": "حُذف.",
+    "add": {
+      "department": "إضافة قسم",
+      "service": "إضافة خدمة",
+      "program": "إضافة برنامج"
+    },
+    "addService": "إضافة خدمة",
+    "empty": {
+      "services": "لا خدمات بعد",
+      "programs": "لا برامج بعد",
+      "announcements": "لا إعلانات بعد"
+    },
+    "emptyBody": "أضف ما تقدمه مؤسستك ليظهر في الدليل الطبي بعد المراجعة.",
+    "emptyAnnouncementsBody": "انشر إعلانًا قصيرًا عن تسجيل أو حملة. كل إعلان يُراجع قبل نشره.",
+    "noPublishPerm": "تحتاج صلاحية «نشر خدمات وبرامج وإعلانات» للتعديل هنا.",
+    "published": "منشور",
+    "rejected": "مرفوض",
+    "rejectedBecause": "سبب الرفض: {{reason}}",
+    "confirmStatus": "تأكيد الحالة",
+    "confirmed": "أُكّدت الحالة.",
+    "changeStatus": "تغيير الحالة:",
+    "statusChanged": "تغيّرت الحالة.",
+    "newAnnouncement": "إعلان جديد",
+    "editAnnouncement": "تعديل الإعلان",
+    "title": "العنوان",
+    "body": "النص",
+    "startsAt": "يبدأ",
+    "endsAt": "ينتهي",
+    "saveDraft": "حفظ كمسودة",
+    "submitReview": "إرسال للمراجعة",
+    "draftSaved": "حُفظت المسودة.",
+    "announcementRules": "بلا عروض بيع أو أسعار أو نصائح طبية. يُراجع الإعلان قبل نشره.",
+    "openPreview": "افتح في صفحة جديدة",
+    "verification": "حالة التوثيق",
+    "verified": "المؤسسة موثّقة وتظهر في الدليل.",
+    "latestInquiries": "آخر الاستفسارات",
+    "noNewInquiries": "لا استفسارات جديدة.",
+    "inReview": "إعلانات بانتظار المراجعة",
+    "nothingInReview": "لا شيء بانتظار المراجعة.",
+    "quickActions": "أفعال سريعة",
+    "updatePrograms": "تحديث حالة برنامج",
+    "stat": {
+      "completeness": "اكتمال الملف",
+      "published": "خدمات منشورة",
+      "active": "برامج نشطة",
+      "inquiries": "استفسارات جديدة",
+      "stale": "لم تُحدَّث منذ {{days}} يومًا",
+      "needsConfirm_zero": "",
+      "needsConfirm_one": "برنامج يحتاج تأكيدًا",
+      "needsConfirm_two": "برنامجان يحتاجان تأكيدًا",
+      "needsConfirm_few": "{{count}} برامج تحتاج تأكيدًا",
+      "needsConfirm_many": "{{count}} برنامجًا يحتاج تأكيدًا",
+      "needsConfirm_other": "{{count}} برنامج يحتاج تأكيدًا"
+    }
+  },
+  "moderation": {
+    "lead": "خدمات وبرامج وإعلانات جديدة أو معدّلة. لا يظهر شيء منها للمرضى قبل الاعتماد.",
+    "emptyTitle": "لا شيء بانتظار المراجعة",
+    "emptyBody": "ستظهر هنا الإضافات والتعديلات الجديدة من المؤسسات.",
+    "announcement": "إعلان",
+    "approve": "اعتماد",
+    "reject": "رفض",
+    "rejectTitle": "رفض «{{title}}»",
+    "reason": "سبب الرفض",
+    "reasonHint": "تراه المؤسسة كما تكتبه.",
+    "approved": "اعتُمد ونُشر.",
+    "rejected": "رُفض وأُبلغت المؤسسة."
+  },
+  "users": {
+    "name": "الاسم",
+    "type": "النوع",
+    "status": "الحالة",
+    "joined": "تاريخ الانضمام",
+    "teamRole": "دور في فريق مدد",
+    "teamRoleFor": "دور {{name}} في فريق مدد",
+    "noTeamRole": "لا دور",
+    "roleSaved": "حُفظ الدور.",
+    "types": {
+      "patient": "مريض",
+      "organization": "مؤسسة",
+      "team": "فريق مدد"
+    },
+    "allTypes": "كل الأنواع",
+    "allStatuses": "كل الحالات",
+    "active": "نشط",
+    "suspended": "معلّق",
+    "suspend": "تعليق",
+    "reactivate": "تفعيل",
+    "suspendTitle": "تعليق حساب {{name}}؟",
+    "suspendBody": "لن يستطيع الحساب أي فعل حتى يُفعَّل من جديد. بياناته تبقى للتدقيق.",
+    "reactivateTitle": "تفعيل حساب {{name}}؟",
+    "reactivateBody": "يعود الحساب للعمل كما كان.",
+    "saved": "حُفظ.",
+    "you": "حسابك",
+    "empty": "لا مستخدمين بهذه الفلاتر"
+  },
+  "phNotif": {
+    "prefsLink": "تفضيلات الإشعارات",
+    "freshness": "بلاغات تحتاج تحديث: {{stale}} · غير مؤكدة: {{expired}}",
+    "updateNow": "حدّث الآن",
+    "emptyTitle": "لا إشعارات",
+    "emptyBody": "ستصلك هنا الاستفسارات الجديدة وقرارات التوثيق واعتماد الأدوية ورسائل المنصة."
+  },
+  "phSettings": {
+    "password": "كلمة المرور",
+    "newPassword": "كلمة مرور جديدة",
+    "changePassword": "تغيير كلمة المرور",
+    "passwordChanged": "تغيّرت كلمة المرور.",
+    "sessions": "الجلسات النشطة",
+    "thisDevice": "أنت مسجّل الدخول على هذا المتصفح. إن نسيت الخروج من جهاز آخر، أخرج كل الأجهزة الأخرى من هنا.",
+    "signOutOthers": "تسجيل الخروج من الأجهزة الأخرى",
+    "othersSignedOut": "خرجت كل الأجهزة الأخرى.",
+    "notifications": "ما يصلني من إشعارات",
+    "pref": {
+      "inquiries": "استفسار جديد",
+      "verification": "قرار التوثيق",
+      "catalog": "اعتماد دواء طلبته",
+      "platform": "رسائل المنصة"
+    },
+    "freshnessAlways": "تنبيه انتهاء حداثة البلاغات يظهر دائمًا في صفحة الإشعارات.",
+    "reminder": "تذكير يومي بالتحديث",
+    "reminderHour": "الساعة",
+    "reminderHint": "يظهر التذكير في لوحة التحكم من هذه الساعة إذا كانت هناك بلاغات تحتاج تحديثًا.",
+    "noReminder": "بلا تذكير",
+    "saved": "حُفظ."
   }
 }

@@ -9,20 +9,26 @@ import { useLang } from '../../hooks/useLang';
 import { NoAccess } from '../../features/pharmacy-portal/NoAccess';
 import { PharmacyContext, type PharmacyCtx } from '../../features/pharmacy-portal/context';
 import { PortalShell } from './PortalShell';
-import { pharmacyNav } from './navs';
+import { pharmacyNav, providerNav } from './navs';
 
 /**
  * Pharmacy portal shell (SPEC §8): signed-in pharmacy members only. Unverified pharmacies get the
  * full portal with a "under review" banner; nothing they do is public until approval.
  */
 export default function PharmacyShell() {
+  return <OrgShell kind="pharmacy" />;
+}
+
+/** Shared by the pharmacy portal and the provider portal (SPEC §9: same components, different texts). */
+export function OrgShell({ kind }: { kind: 'pharmacy' | 'provider' }) {
   const { t } = useTranslation();
   const { pick } = useLang();
   const location = useLocation();
   const navigate = useNavigate();
   const me = useMe();
   const signOut = useSignOut();
-  const membership = me.data?.memberships.find((m) => m.orgType === 'pharmacy');
+  const membership = me.data?.memberships.find((m) => (kind === 'pharmacy' ? m.orgType === 'pharmacy' : m.orgType !== 'pharmacy'));
+  const titleKey = kind === 'pharmacy' ? 'portal.pharmacy.title' : 'portal.provider.title';
 
   const ctx = useMemo<PharmacyCtx | null>(
     () => (membership ? { orgId: membership.orgId, membership, can: (p) => membership.perms[p] === true } : null),
@@ -33,8 +39,8 @@ export default function PharmacyShell() {
   if (!me.data) return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   if (!membership || !ctx)
     return (
-      <PortalShell titleKey="portal.pharmacy.title" nav={[]}>
-        <NoAccess messageKey="portal.notPharmacyMember" />
+      <PortalShell titleKey={titleKey} nav={[]}>
+        <NoAccess messageKey={kind === 'pharmacy' ? 'portal.notPharmacyMember' : 'portal.notProviderMember'} />
       </PortalShell>
     );
 
@@ -44,8 +50,8 @@ export default function PharmacyShell() {
   return (
     <PharmacyContext.Provider value={ctx}>
       <PortalShell
-        titleKey="portal.pharmacy.title"
-        nav={pharmacyNav}
+        titleKey={titleKey}
+        nav={kind === 'pharmacy' ? pharmacyNav : providerNav}
         headerExtra={
           <div className="flex items-center gap-3">
             <span className="truncate text-section">{orgName}</span>

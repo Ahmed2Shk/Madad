@@ -15,6 +15,7 @@ const ROLES: { key: string; userId: string | null; email: string | null; home: s
   { key: 'patient', userId: 'u-patient', email: 'patient@madad.test', home: '/' },
   { key: 'owner', userId: 'u-ph-owner', email: 'owner@madad.test', home: '/pharmacy-portal' },
   { key: 'staff', userId: 'u-ph-staff', email: 'staff@madad.test', home: '/pharmacy-portal' },
+  { key: 'provider', userId: 'u-org-owner', email: 'org@madad.test', home: '/provider' },
   { key: 'reviewer', userId: 'u-reviewer', email: 'reviewer@madad.test', home: '/admin' },
   { key: 'admin', userId: 'u-admin', email: 'admin@madad.test', home: '/admin' },
 ];

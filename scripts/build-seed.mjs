@@ -21,6 +21,7 @@ const inquiries = seed('inquiries');
 const requests = seed('medicine_requests');
 const reports = seed('reports');
 const users = seed('users');
+const announcements = seed('announcements');
 
 export const uuidOf = (id) => {
   const h = createHash('md5').update(`madad:${id}`).digest('hex');
@@ -33,6 +34,8 @@ const bool = (v) => (v ? 'true' : 'false');
 const json = (v) => `${q(JSON.stringify(v))}::jsonb`;
 const arr = (xs) => (xs?.length ? `array[${xs.map(q).join(', ')}]::text[]` : `'{}'::text[]`);
 const ago = (minutes) => (minutes == null ? 'null' : `now() - interval '${Number(minutes)} minutes'`);
+/** Days from today as a date (negative = in the past). */
+const days = (n) => (n == null ? 'null' : `((now() at time zone 'utc')::date + ${Number(n)})`);
 const id = (textId) => `'${uuidOf(textId)}'::uuid`;
 
 const orgIds = new Set([...pharmacies, ...providers].map((o) => o.id));
@@ -90,6 +93,8 @@ const orgRow = (o, infoMinutes) => [
   q(o.verification_status),
   ago(infoMinutes),
   bool(o.is_demo),
+  q(o.website ?? null),
+  json(o.locations ?? []),
 ];
 
 const PROVIDER_INFO_MINUTES = 10 * 24 * 60;
@@ -120,7 +125,7 @@ const body = [
   ),
   insert(
     'organizations',
-    ['id', 'type', 'name_ar', 'name_en', 'governorate', 'area', 'address_text', 'landmark', 'location_precision', 'phone', 'whatsapp', 'hours', 'description', 'verification_status', 'info_updated_at', 'is_demo'],
+    ['id', 'type', 'name_ar', 'name_en', 'governorate', 'area', 'address_text', 'landmark', 'location_precision', 'phone', 'whatsapp', 'hours', 'description', 'verification_status', 'info_updated_at', 'is_demo', 'website', 'locations'],
     [...pharmacies.map((p) => orgRow(p, p.info_updated_minutes_ago)), ...providers.map((p) => orgRow(p, PROVIDER_INFO_MINUTES))],
   ),
   insert(
@@ -171,12 +176,24 @@ const body = [
   ),
   insert(
     'services',
-    ['id', 'org_id', 'kind', 'name', 'category', 'eligibility', 'required_docs', 'program_status', 'confirmed_at', 'review_status', 'is_demo'],
+    ['id', 'org_id', 'kind', 'name', 'category', 'description', 'place', 'phone', 'operating', 'beneficiaries', 'eligibility', 'required_docs', 'contact', 'hours', 'location',
+      'how_to_apply', 'starts_on', 'ends_on', 'program_status', 'confirmed_at', 'review_status', 'rejection_reason', 'updated_at', 'is_demo'],
     providers.flatMap((p) =>
       (p.services ?? []).map((s) => [
-        id(s.id), id(p.id), q(s.kind), q(s.name), q(s.category), arr(s.eligibility), arr(s.required_docs), q(s.program_status), ago(s.confirmed_minutes_ago), q(s.review_status), 'true',
+        id(s.id), id(p.id), q(s.kind), q(s.name), q(s.category), q(s.description), q(s.place), q(s.phone), bool(s.operating ?? true), q(s.beneficiaries),
+        arr(s.eligibility), arr(s.required_docs), q(s.contact), s.hours ? json(s.hours) : 'null', q(s.location), q(s.how_to_apply),
+        days(s.starts_days), days(s.ends_days), q(s.program_status), ago(s.confirmed_minutes_ago), q(s.review_status), q(s.rejection_reason),
+        ago(s.updated_minutes_ago ?? s.confirmed_minutes_ago ?? 14400), 'true',
       ]),
     ),
+  ),
+  insert(
+    'announcements',
+    ['id', 'org_id', 'title', 'body', 'starts_at', 'ends_at', 'review_status', 'rejection_reason', 'is_demo', 'created_at'],
+    announcements.map((a) => [
+      id(a.id), a.org_id ? id(a.org_id) : 'null', q(a.title), q(a.body), ago(a.starts_minutes_ago),
+      a.ends_days == null ? 'null' : `now() + interval '${Number(a.ends_days)} days'`, q(a.review_status), q(a.rejection_reason), 'true', ago(a.created_minutes_ago),
+    ]),
   ),
   insert(
     'medicines',

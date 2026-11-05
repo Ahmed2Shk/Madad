@@ -3,7 +3,6 @@ import { createBrowserRouter } from 'react-router';
 import { PublicShell } from './shells/PublicShell';
 import HomePage from '../features/search/HomePage';
 import NotFound from './NotFound';
-import UnderConstruction from './UnderConstruction';
 import { CardSkeleton } from '../components/ui';
 
 // Every page but the home page is its own chunk, and the portals load separately,
@@ -42,11 +41,20 @@ const UnmetDemandPage = lazy(() => import('../features/admin/UnmetDemandPage'));
 const ReportsPage = lazy(() => import('../features/admin/ReportsPage'));
 const AuditPage = lazy(() => import('../features/admin/AuditPage'));
 const SettingsPage = lazy(() => import('../features/admin/SettingsPage'));
+const ModerationPage = lazy(() => import('../features/admin/ModerationPage'));
+const UsersPage = lazy(() => import('../features/admin/UsersPage'));
+const PharmacyNotificationsPage = lazy(() => import('../features/pharmacy-portal/NotificationsPage'));
+const PharmacySettingsPage = lazy(() => import('../features/pharmacy-portal/SettingsPage'));
+const DirectoryPage = lazy(() => import('../features/directory/DirectoryPage'));
+const ProviderPage = lazy(() => import('../features/directory/ProviderPage'));
+const ProviderShell = lazy(() => import('./shells/ProviderShell'));
+const ProviderDashboardPage = lazy(() => import('../features/provider-portal/DashboardPage'));
+const ProviderProfilePage = lazy(() => import('../features/provider-portal/ProfilePage'));
+const ProviderServicesPage = lazy(() => import('../features/provider-portal/ServicesPage'));
+const ProviderAnnouncementsPage = lazy(() => import('../features/provider-portal/AnnouncementsPage'));
+const ProviderPreviewPage = lazy(() => import('../features/provider-portal/PreviewPage'));
 
 const page = (node: ReactNode) => <Suspense fallback={<CardSkeleton />}>{node}</Suspense>;
-
-// Screens of later phases (P-07/P-08 and the provider portal arrive in phase 5).
-const placeholders = ['directory', 'org/:id', 'provider'];
 
 export const router = createBrowserRouter([
   {
@@ -70,7 +78,8 @@ export const router = createBrowserRouter([
       { path: 'for-organizations', element: page(<ForOrganizationsPage />) },
       { path: 'register/status', element: page(<StatusPage />) },
       { path: 'register/:type', element: page(<RegisterPage />) },
-      ...placeholders.map((path) => ({ path, element: <UnderConstruction /> })),
+      { path: 'directory', element: page(<DirectoryPage />) },
+      { path: 'org/:id', element: page(<ProviderPage />) },
       { path: '*', element: <NotFound /> },
     ],
   },
@@ -86,9 +95,8 @@ export const router = createBrowserRouter([
       { path: 'inquiries', element: page(<InquiriesPage />) },
       { path: 'profile', element: page(<ProfilePage />) },
       { path: 'team', element: page(<TeamPage />) },
-      // PH-09 and PH-10 arrive in phase 5 (docs/DECISIONS.md).
-      { path: 'notifications', element: <UnderConstruction /> },
-      { path: 'settings', element: <UnderConstruction /> },
+      { path: 'notifications', element: page(<PharmacyNotificationsPage />) },
+      { path: 'settings', element: page(<PharmacySettingsPage />) },
     ],
   },
   {
@@ -104,9 +112,23 @@ export const router = createBrowserRouter([
       { path: 'reports', element: page(<ReportsPage />) },
       { path: 'audit', element: page(<AuditPage />) },
       { path: 'settings', element: page(<SettingsPage />) },
-      // AD-08 and AD-09 arrive in phase 5.
-      { path: 'moderation', element: <UnderConstruction /> },
-      { path: 'users', element: <UnderConstruction /> },
+      { path: 'moderation', element: page(<ModerationPage />) },
+      { path: 'users', element: page(<UsersPage />) },
+    ],
+  },
+  {
+    // SPEC §9: one portal for hospitals, medical points and humanitarian organizations.
+    path: '/provider',
+    element: page(<ProviderShell />),
+    children: [
+      { index: true, element: page(<ProviderDashboardPage />) },
+      { path: 'profile', element: page(<ProviderProfilePage />) },
+      { path: 'services', element: page(<ProviderServicesPage mode="services" />) },
+      { path: 'programs', element: page(<ProviderServicesPage mode="programs" />) },
+      { path: 'announcements', element: page(<ProviderAnnouncementsPage />) },
+      { path: 'inquiries', element: page(<InquiriesPage />) },
+      { path: 'preview', element: page(<ProviderPreviewPage />) },
+      { path: 'team', element: page(<TeamPage />) },
     ],
   },
 ]);

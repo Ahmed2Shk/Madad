@@ -1,5 +1,5 @@
 // P-05 لا نتائج / غير متوفر — the most common state, so it must feel useful (SPEC §7).
-import { Bell, Flag, Globe, Lightbulb, SearchX, ShieldCheck } from 'lucide-react';
+import { Bell, Building2, Flag, Globe, Lightbulb, SearchX, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -105,7 +105,13 @@ export function NotReported({ medicine, gov, allGovsUrl }: { medicine: Medicine;
             to={allGovsUrl}
           />
         )}
-        {/* "نقاط طبية ومؤسسات قريبة" stays hidden until P-07 ships in phase 5. */}
+        <ActionCard
+          icon={Building2}
+          title={t('noResults.nearbyPoints')}
+          body={t('noResults.nearbyPointsBody')}
+          action={t('noResults.nearbyPointsAction')}
+          to={`/directory?gov=${gov}`}
+        />
         <ActionCard
           icon={Flag}
           title={t('noResults.reportShortage')}

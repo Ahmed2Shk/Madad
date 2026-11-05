@@ -1,6 +1,7 @@
 // P-09 إرسال استفسار — needs an account; an inquiry never becomes an order or a reservation.
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CircleAlert, ShieldAlert } from 'lucide-react';
+import { useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
@@ -21,6 +22,7 @@ export function InquiryDialog({
   orgName,
   medicineId,
   medicineName,
+  services,
 }: {
   open: boolean;
   onClose: () => void;
@@ -28,6 +30,8 @@ export function InquiryDialog({
   orgName: string;
   medicineId: string | null;
   medicineName?: string;
+  /** P-08: the question may be about one of the provider's services or programmes (PR-06). */
+  services?: { id: string; name: string }[];
 }) {
   const { t } = useTranslation();
   const toast = useToast();
@@ -39,9 +43,10 @@ export function InquiryDialog({
   });
   const length = useWatch({ control, name: 'body' })?.length ?? 0;
   const err = (k: keyof Form) => formState.errors[k]?.message;
+  const [serviceId, setServiceId] = useState('');
 
   const onSubmit = handleSubmit(async (f) => {
-    await send.mutateAsync({ orgId, medicineId, subject: f.subject, body: f.body });
+    await send.mutateAsync({ orgId, medicineId, serviceId: serviceId || null, subject: f.subject, body: f.body });
     toast(t('inquiry.sent'));
     reset();
     onClose();
@@ -68,6 +73,21 @@ export function InquiryDialog({
           <ShieldAlert aria-hidden className="mt-0.5 size-4 shrink-0 text-warn-icon" />
           {t('inquiry.noMedicalInfo')}
         </p>
+        {services && services.length > 0 && (
+          <div>
+            <label htmlFor="inq-service" className="font-medium">
+              {t('inquiry.about')}
+            </label>
+            <select id="inq-service" value={serviceId} onChange={(e) => setServiceId(e.target.value)} className="mt-1 min-h-11 w-full rounded-control border border-border bg-surface px-3">
+              <option value="">{t('inquiry.aboutGeneral')}</option>
+              {services.map((x) => (
+                <option key={x.id} value={x.id}>
+                  {x.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         <div>
           <label htmlFor="inq-subject" className="font-medium">
             {t('inquiry.subject')}

@@ -1,11 +1,12 @@
 // P-10 المفضلة — every saved item shows its current state and time.
-import { Heart, Pill, Store } from 'lucide-react';
+import { Building2, Heart, Pill, Store } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { AvailabilityStatus, CardSkeleton, EmptyState, Freshness, Tabs, buttonClass, useAreaLabel } from '../../components/ui';
 import type { Favorite, FavoriteType } from '../../data';
 import { useCatalog, useFavorites, useFreshnessSettings, usePharmacies, usePharmaciesFor } from '../../data/queries';
+import { useProvider } from '../../data/providerQueries';
 import { useLang } from '../../hooks/useLang';
 import { useNow } from '../../hooks/useNow';
 import { usePreferences } from '../../hooks/usePreferences';
@@ -58,6 +59,29 @@ function PharmacyFavorite({ id }: { id: string }) {
   );
 }
 
+function ProviderFavorite({ id }: { id: string }) {
+  const { t } = useTranslation();
+  const { pick } = useLang();
+  const area = useAreaLabel();
+  const p = useProvider(id);
+  if (p.isPending) return <CardSkeleton />;
+  if (!p.data) return null;
+  return (
+    <Link to={`/org/${id}`} className="flex items-center gap-4 rounded-card border border-border bg-surface p-4 hover:border-secondary">
+      <Building2 aria-hidden className="size-6 shrink-0 text-secondary" />
+      <div className="min-w-0 flex-1">
+        <p className="font-medium">{pick(p.data)}</p>
+        <p className="text-meta text-ink-muted">
+          {t(`orgTypes.${p.data.type}`)} · {area(p.data)}
+        </p>
+        <p className="text-micro text-ink-muted">
+          {t('pharmacy.infoUpdated')} <Freshness at={p.data.infoUpdatedAt} />
+        </p>
+      </div>
+    </Link>
+  );
+}
+
 function List({ items, type }: { items: Favorite[]; type: FavoriteType }) {
   const { t } = useTranslation();
   const mine = items.filter((f) => f.entityType === type);
@@ -66,20 +90,18 @@ function List({ items, type }: { items: Favorite[]; type: FavoriteType }) {
       <EmptyState
         icon={Heart}
         title={t('favorites.emptyTitle')}
-        body={type === 'provider' ? t('favorites.providersLater') : t('favorites.emptyBody')}
+        body={type === 'provider' ? t('favorites.providersEmpty') : t('favorites.emptyBody')}
         actions={
-          type !== 'provider' && (
-            <Link to="/" className={buttonClass('primary')}>
-              {t('search.submit')}
-            </Link>
-          )
+          <Link to={type === 'provider' ? '/directory' : '/'} className={buttonClass('primary')}>
+            {type === 'provider' ? t('dir.title') : t('search.submit')}
+          </Link>
         }
       />
     );
   return (
     <ul className="space-y-3">
       {mine.map((f) => (
-        <li key={f.entityId}>{type === 'medicine' ? <MedicineFavorite id={f.entityId} /> : <PharmacyFavorite id={f.entityId} />}</li>
+        <li key={f.entityId}>{type === 'medicine' ? <MedicineFavorite id={f.entityId} /> : type === 'provider' ? <ProviderFavorite id={f.entityId} /> : <PharmacyFavorite id={f.entityId} />}</li>
       ))}
     </ul>
   );

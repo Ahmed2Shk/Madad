@@ -18,6 +18,7 @@ export function currentUser(s: MockState = store.get()): UserRow | null {
 export function requireUser(): UserRow {
   const u = currentUser();
   if (!u) throw new AccessError('not_signed_in');
+  if (u.suspended) throw new AccessError('forbidden');
   return u;
 }
 

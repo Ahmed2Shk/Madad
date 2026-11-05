@@ -14,7 +14,9 @@ import type {
   ReportsRepo,
   Session,
   SettingsRepo,
+  NotificationPrefs,
 } from '../types';
+import { DEFAULT_PREFS } from '../providerTypes';
 import { auth, db, must, rpc } from './client';
 import {
   toAlert,
@@ -137,7 +139,7 @@ export const availabilityRepo: AvailabilityRepo = {
 // ---------------------------------------------------------------- organizations
 
 const ORG_COLS =
-  'id, type, name_ar, name_en, governorate, area, address_text, landmark, location_precision, public_lat, public_lng, phone, whatsapp, hours, description, verification_status, suspended_reason, temporarily_closed, closed_reason, info_updated_at';
+  'id, type, name_ar, name_en, governorate, area, address_text, landmark, location_precision, public_lat, public_lng, phone, whatsapp, hours, description, website, locations, verification_status, suspended_reason, temporarily_closed, closed_reason, info_updated_at';
 export { ORG_COLS };
 
 async function lastUpdates(ids: string[]) {
@@ -288,7 +290,7 @@ export const accountRepo: AccountRepo = {
   },
 
   async sendInquiry(inq) {
-    await rpc('send_inquiry', { org: inq.orgId, medicine: inq.medicineId, subject: inq.subject, body: inq.body });
+    await rpc('send_inquiry', { org: inq.orgId, medicine: inq.medicineId, subject: inq.subject, body: inq.body, service: inq.serviceId ?? null });
   },
 
   async exportData() {
@@ -306,5 +308,30 @@ export const accountRepo: AccountRepo = {
   async deleteAccount() {
     await rpc('delete_my_account');
     await auth.signOut();
+  },
+
+  async changePassword(newPassword) {
+    await requireUserId();
+    const { error } = await auth.updateUser({ password: newPassword });
+    if (error) throw error;
+  },
+
+  async signOutOtherDevices() {
+    await requireUserId();
+    const { error } = await auth.signOut({ scope: 'others' });
+    if (error) throw error;
+  },
+
+  async prefs() {
+    const id = await requireUserId();
+    const p = must(await db.from('profiles').select('prefs').eq('id', id).single()) as { prefs: Partial<NotificationPrefs> | null };
+    return { ...DEFAULT_PREFS, ...(p.prefs ?? {}) };
+  },
+
+  async updatePrefs(patch) {
+    const id = await requireUserId();
+    const next = { ...(await accountRepo.prefs()), ...patch };
+    must(await db.from('profiles').update({ prefs: next }).eq('id', id));
+    return next;
   },
 };

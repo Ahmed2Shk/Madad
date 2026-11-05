@@ -11,7 +11,8 @@ import { formatRelative } from '../../lib/format';
 import { useNow } from '../../hooks/useNow';
 import { SignedInOnly } from './SignedInOnly';
 
-function NotificationText({ n }: { n: AppNotification }) {
+/** The sentence for one notification; shared with PH-09. */
+export function NotificationText({ n }: { n: AppNotification }) {
   const { t } = useTranslation();
   const { pick, lang } = useLang();
   const now = useNow();
@@ -36,6 +37,11 @@ function NotificationText({ n }: { n: AppNotification }) {
   if (n.kind === 'verification') {
     return <>{t(`notifications.verification.${n.data.status}`, { org: lang === 'en' ? n.data.orgNameEn || n.data.orgNameAr : n.data.orgNameAr })}</>;
   }
+  const org = lang === 'en' ? n.data.orgNameEn || n.data.orgNameAr : n.data.orgNameAr;
+  if (n.kind === 'inquiry_new') return <>{t('notifications.inquiryNew', { org, subject: n.data.subject })}</>;
+  if (n.kind === 'medicine_approved') return <>{t('notifications.medicineApproved', { name: lang === 'en' ? n.data.nameEn || n.data.nameAr : n.data.nameAr })}</>;
+  if (n.kind === 'content_review')
+    return <>{n.data.status === 'approved' ? t('notifications.contentApproved', { title: n.data.title }) : t('notifications.contentRejected', { title: n.data.title, reason: n.data.reason })}</>;
   if (n.data.key) return <>{t(`notifications.platform.${n.data.key}`)}</>;
   return <>{n.data.text ?? ''}</>;
 }

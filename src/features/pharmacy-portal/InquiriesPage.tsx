@@ -9,6 +9,7 @@ import { useCatalog } from '../../data/queries';
 import { useLang } from '../../hooks/useLang';
 import { cn } from '../../lib/cn';
 import { usePharmacyCtx } from './context';
+import { useProviderServices } from '../../data/providerQueries';
 
 const STATUSES: InquiryStatus[] = ['new', 'in_progress', 'replied', 'closed'];
 const tone: Record<InquiryStatus, string> = {
@@ -74,7 +75,11 @@ function Conversation({ q }: { q: InquiryThread }) {
   const { t } = useTranslation();
   const { pick } = useLang();
   const toast = useToast();
-  const { orgId, can } = usePharmacyCtx();
+  const { orgId, can, membership } = usePharmacyCtx();
+  // PR-06 reuses this screen: providers' inquiries are about a service or programme, not a medicine.
+  const isPharmacy = membership.orgType === 'pharmacy';
+  const services = useProviderServices(isPharmacy ? '' : orgId, !isPharmacy);
+  const service = services.data?.find((x) => x.id === q.serviceId);
   const reply = useReplyInquiry(orgId);
   const setStatus = useSetInquiryStatus(orgId);
   const saveStock = useSaveStock(orgId);
@@ -83,7 +88,7 @@ function Conversation({ q }: { q: InquiryThread }) {
   const [offerUpdate, setOfferUpdate] = useState(false);
   const medicine = catalog.data?.medicines.find((m) => m.id === q.medicineId);
   const canReply = can('inquiries');
-  const quick = [t('inq.quickAvailable'), t('inq.quickUnavailable')];
+  const quick = isPharmacy ? [t('inq.quickAvailable'), t('inq.quickUnavailable')] : [];
 
   const send = async (text = body) => {
     if (!text.trim()) return;
@@ -102,6 +107,7 @@ function Conversation({ q }: { q: InquiryThread }) {
           <p className="text-meta text-ink-muted">
             {q.patientName}
             {medicine && <> · {pick(medicine)}</>}
+            {service && <> · {service.name}</>}
           </p>
         </div>
         {canReply && (

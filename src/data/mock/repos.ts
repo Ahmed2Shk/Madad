@@ -22,6 +22,7 @@ import { authRepo, registrationRepo } from './authRepos';
 import { pharmacyPortalRepo } from './portalRepo';
 import { adminRepo } from './adminRepo';
 import { demoRepo } from './demoRepo';
+import { directoryRepo, providerPortalRepo } from './providerRepos';
 import { currentCatalog } from './catalogData';
 import { audit, newId, store, type OrgRow, type StockRow, type UserRow } from './store';
 
@@ -232,8 +233,8 @@ const insights: InsightsRepo = {
 const settings: SettingsRepo = {
   // Only the is_public rows (SPEC §13): reviewer-only lists stay out.
   get: () => {
-    const { freshHours, expireHours, priceMaxDays, disclaimerAr, disclaimerEn, requiredDocs } = store.get().settings;
-    return latency({ freshHours, expireHours, priceMaxDays, disclaimerAr, disclaimerEn, requiredDocs });
+    const { freshHours, expireHours, priceMaxDays, programConfirmDays, disclaimerAr, disclaimerEn, requiredDocs } = store.get().settings;
+    return latency({ freshHours, expireHours, priceMaxDays, programConfirmDays, disclaimerAr, disclaimerEn, requiredDocs });
   },
 };
 
@@ -319,12 +320,18 @@ const account: AccountRepo = {
         orgId: inq.orgId,
         patientId: u.id,
         medicineId: inq.medicineId,
+        serviceId: inq.serviceId ?? null,
         subject: inq.subject,
         status: 'new',
         messages: [{ sender: 'patient', body: inq.body, createdAt: now }],
         createdAt: now,
         updatedAt: now,
       });
+      // PH-09: members who answer inquiries hear about a new one.
+      const org = s.orgs.find((o) => o.id === inq.orgId);
+      for (const m of s.users)
+        if (m.memberships.some((x) => x.orgId === inq.orgId && x.perms.inquiries))
+          s.notifications.push({ id: newId(), userId: m.id, kind: 'inquiry_new', data: { orgId: inq.orgId, orgNameAr: org?.nameAr ?? '', orgNameEn: org?.nameEn ?? '', subject: inq.subject }, link: org?.type === 'pharmacy' ? '/pharmacy-portal/inquiries' : '/provider/inquiries', createdAt: now, readAt: null });
     });
     return latency(undefined);
   },
@@ -352,6 +359,24 @@ const account: AccountRepo = {
       s.sessionUserId = null;
     });
     return latency(undefined);
+  },
+  changePassword(newPassword) {
+    const u = requireUser();
+    if (newPassword.length < 8) throw new Error('password_short');
+    store.mutate(() => {
+      u.password = newPassword;
+    });
+    return latency(undefined);
+  },
+  // Mock mode has one session per browser; there is nothing else to sign out.
+  signOutOtherDevices: () => latency(undefined),
+  prefs() {
+    return latency({ ...requireUser().prefs });
+  },
+  updatePrefs(patch) {
+    const u = requireUser();
+    store.mutate(() => Object.assign(u.prefs, patch));
+    return latency({ ...u.prefs });
   },
 };
 
@@ -393,6 +418,8 @@ export const mockRepos: Repos = {
   settings,
   account: async(account),
   reports,
+  directory: async(directoryRepo),
+  providerPortal: async(providerPortalRepo),
   subscribe: (l) => {
     const off = store.subscribe(l);
     return () => void off();

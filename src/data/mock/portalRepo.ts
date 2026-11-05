@@ -35,6 +35,7 @@ function toThread(s: MockState, q: MockState['inquiries'][number]): InquiryThrea
     id: q.id,
     orgId: q.orgId,
     medicineId: q.medicineId,
+    serviceId: q.serviceId ?? null,
     subject: q.subject,
     status: q.status,
     patientName: s.users.find((u) => u.id === q.patientId)?.displayName ?? '—',

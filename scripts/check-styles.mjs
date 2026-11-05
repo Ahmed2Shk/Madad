@@ -30,7 +30,8 @@ for (const file of walk(ROOT)) {
       if (line.includes('check-styles-ignore')) return;
       const where = `src/${rel}:${i + 1}`;
       const re = file.endsWith('.css') ? physicalCss : physicalClass;
-      for (const m of line.matchAll(re)) problems.push(`${where}  physical property "${m[0]}" (use ms/me/ps/pe/start/end)`);
+      // Tests hold data (ids like "pr-sanad"), not class names; they render no styles.
+      if (!isTest) for (const m of line.matchAll(re)) problems.push(`${where}  physical property "${m[0]}" (use ms/me/ps/pe/start/end)`);
       if (rel !== TOKENS && !isTest) {
         for (const m of line.matchAll(hex)) problems.push(`${where}  hex color "${m[0]}" (use tokens.css)`);
       }

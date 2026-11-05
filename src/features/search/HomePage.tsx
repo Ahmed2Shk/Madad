@@ -1,8 +1,8 @@
 // P-01 الرئيسية والبحث
-import { Clock, History, Phone, Search as SearchIcon, Store, TrendingUp } from 'lucide-react';
+import { Building2, Clock, History, Phone, Search as SearchIcon, Store, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { Freshness, SearchBar, Skeleton, searchUrl, useAreaLabel } from '../../components/ui';
+import { Freshness, SearchBar, Skeleton, buttonClass, searchUrl, useAreaLabel } from '../../components/ui';
 import { governorateById } from '../../data';
 import { useCatalog, usePharmacies, useRecentlyUpdated, useTopSearched } from '../../data/queries';
 import { useLang } from '../../hooks/useLang';
@@ -112,7 +112,18 @@ export default function HomePage() {
           </ul>
         )}
       </section>
-      {/* "لا تجد دواءك؟" links to the medical directory (P-07), which ships in phase 5. */}
+      <section aria-labelledby="cant-find" className="flex flex-col gap-3 rounded-card border border-border bg-mint p-5 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h2 id="cant-find" className="text-section">
+            {t('home.cantFindTitle')}
+          </h2>
+          <p className="text-meta text-ink-muted">{t('home.cantFindBody')}</p>
+        </div>
+        <Link to={`/directory?gov=${gov}`} className={buttonClass('secondary')}>
+          <Building2 aria-hidden className="size-4" />
+          {t('home.cantFindAction')}
+        </Link>
+      </section>
 
       <section aria-labelledby="how-title">
         <h2 id="how-title" className="text-section mb-3">

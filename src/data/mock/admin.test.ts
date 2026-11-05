@@ -104,7 +104,7 @@ describe('settings (AD-11)', () => {
   });
 
   it('the public settings read leaves reviewer-only lists out', async () => {
-    expect(Object.keys(await r.settings.get()).sort()).toEqual(['disclaimerAr', 'disclaimerEn', 'expireHours', 'freshHours', 'priceMaxDays', 'requiredDocs']);
+    expect(Object.keys(await r.settings.get()).sort()).toEqual(['disclaimerAr', 'disclaimerEn', 'expireHours', 'freshHours', 'priceMaxDays', 'programConfirmDays', 'requiredDocs']);
   });
 });
 
