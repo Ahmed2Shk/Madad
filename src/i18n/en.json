@@ -947,7 +947,7 @@
     "view": "View",
     "acceptDoc": "Accept document",
     "rejectDoc": "Reject document",
-    "docPreviewMock": "The demo keeps only the file details. Previewing the file itself comes with storage in phase 4.",
+    "docPreviewMock": "The demo keeps only the file details, not the file itself.",
     "noteToOrg": "Note to the organization",
     "rejectReason": "Rejection reason",
     "pickReason": "Choose a reason",
@@ -1077,6 +1077,8 @@
     "requiredDocs": "Required documents per organization type",
     "lists": "Governorates and areas",
     "listsNote": "A fixed list in the prototype. Editing it from the interface comes with the database in phase 4.",
-    "settingsSaved": "Settings saved and applied at once"
+    "settingsSaved": "Settings saved and applied at once",
+    "openDoc": "Open file",
+    "docLinkNote": "The link works for one minute. Do not share it."
   }
 }

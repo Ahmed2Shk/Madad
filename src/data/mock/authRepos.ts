@@ -70,7 +70,7 @@ export const registrationRepo: RegistrationRepo = {
         verificationStatus: 'pending',
         reviewerNote: null,
         events: [{ action: 'submitted', note: null, createdAt: now }],
-        documents: draft.documents.map((d) => ({ ...d, status: 'pending' as const })),
+        documents: draft.documents.map(({ file: _file, ...d }) => ({ ...d, status: 'pending' as const })),
         invitations: [],
         suspendedReason: null,
         // Real names are never seeded, but anything registered in the demo is still demo data.
@@ -123,7 +123,7 @@ export const registrationRepo: RegistrationRepo = {
       if (o.verificationStatus !== 'needs_info') throw new AccessError('forbidden');
       o.verificationStatus = 'pending';
       o.events.push({ action: 'resubmitted', note: note.trim() || null, createdAt: new Date().toISOString() });
-      o.documents.push(...documents.map((d) => ({ ...d, status: 'pending' as const })));
+      o.documents.push(...documents.map(({ file: _file, ...d }) => ({ ...d, status: 'pending' as const })));
       audit(s, 'verification.resubmitted', 'organization', orgId, { status: 'needs_info' }, { status: 'pending' });
     });
     return latency(undefined);

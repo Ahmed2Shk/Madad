@@ -9,13 +9,14 @@ import { useDemoReset, useDemoSwitch } from '../../data/adminQueries';
 import { useMe } from '../../data/portalQueries';
 import { cn } from '../../lib/cn';
 
-const ROLES: { key: string; userId: string | null; home: string }[] = [
-  { key: 'visitor', userId: null, home: '/' },
-  { key: 'patient', userId: 'u-patient', home: '/' },
-  { key: 'owner', userId: 'u-ph-owner', home: '/pharmacy-portal' },
-  { key: 'staff', userId: 'u-ph-staff', home: '/pharmacy-portal' },
-  { key: 'reviewer', userId: 'u-reviewer', home: '/admin' },
-  { key: 'admin', userId: 'u-admin', home: '/admin' },
+// userId is the seed id; the email identifies the account in both modes (Supabase ids are UUIDs).
+const ROLES: { key: string; userId: string | null; email: string | null; home: string }[] = [
+  { key: 'visitor', userId: null, email: null, home: '/' },
+  { key: 'patient', userId: 'u-patient', email: 'patient@madad.test', home: '/' },
+  { key: 'owner', userId: 'u-ph-owner', email: 'owner@madad.test', home: '/pharmacy-portal' },
+  { key: 'staff', userId: 'u-ph-staff', email: 'staff@madad.test', home: '/pharmacy-portal' },
+  { key: 'reviewer', userId: 'u-reviewer', email: 'reviewer@madad.test', home: '/admin' },
+  { key: 'admin', userId: 'u-admin', email: 'admin@madad.test', home: '/admin' },
 ];
 
 export default function RoleSwitcher() {
@@ -25,7 +26,7 @@ export default function RoleSwitcher() {
   const reset = useDemoReset();
   const [open, setOpen] = useState(false);
   const [confirming, setConfirming] = useState(false);
-  const current = ROLES.find((r) => r.userId === (me?.userId ?? null))?.key;
+  const current = ROLES.find((r) => r.email === (me?.email ?? null))?.key;
 
   const pick = async (r: (typeof ROLES)[number]) => {
     await switchTo.mutateAsync(r.userId);

@@ -307,6 +307,8 @@ export interface DocumentMeta {
   fileName: string;
   size: number;
   mime: string;
+  /** The picked file itself, kept in memory only: uploaded to Storage in supabase mode, never saved in the draft. */
+  file?: File;
 }
 
 export interface RegistrationDraft {
@@ -614,6 +616,8 @@ export interface AdminRepo {
   /** review_org(org_id, decision, note): notes are required for needs_info and reject. */
   reviewOrg(orgId: string, decision: ReviewDecision, note: string): Promise<void>;
   setDocumentStatus(orgId: string, fileName: string, status: DocumentStatus): Promise<void>;
+  /** A short-lived signed link to the uploaded file, or null when only its metadata exists (mock mode). */
+  documentUrl(orgId: string, fileName: string): Promise<string | null>;
   organizations(): Promise<AdminOrgRow[]>;
   suspendOrg(orgId: string, reason: string): Promise<void>;
   reactivateOrg(orgId: string): Promise<void>;

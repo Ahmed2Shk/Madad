@@ -104,7 +104,8 @@ function Wizard({ type }: { type: OrgType }) {
 
   // "تُحفظ المسودة على جهازك تلقائيًا" — everything except the password.
   useEffect(() => {
-    safeStorage.setItem(storageKey, JSON.stringify(draft));
+    // The picked files stay in memory; after a reload the documents step asks for them again.
+    safeStorage.setItem(storageKey, JSON.stringify({ ...draft, documents: [] }));
   }, [draft, storageKey]);
 
   const steps = [t('register.stepAccount'), t('register.stepOrg'), t('register.stepDocs'), t('register.stepReview')];

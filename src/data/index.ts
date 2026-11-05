@@ -1,14 +1,14 @@
-// Chooses the data source from VITE_DATA_MODE (SPEC §12). Both load lazily so the demo seeds
-// stay out of the main bundle.
-import { env } from '../lib/env';
+// Chooses the data source from VITE_DATA_MODE (SPEC §12). Both load lazily: the demo seeds and the
+// Supabase clients each stay in their own chunk, out of the main bundle.
 import type { Repos } from './types';
 
 let pending: Promise<Repos> | null = null;
 
 export function getRepos(): Promise<Repos> {
   pending ??=
-    env.dataMode === 'supabase'
-      ? Promise.reject(new Error('Supabase mode arrives in phase 4'))
+    // Read straight from import.meta.env so the build drops the data layer it does not use.
+    import.meta.env.VITE_DATA_MODE === 'supabase'
+      ? import('./supabase').then((m) => m.supabaseRepos)
       : import('./mock/repos').then((m) => m.mockRepos);
   return pending;
 }

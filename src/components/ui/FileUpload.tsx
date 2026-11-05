@@ -11,8 +11,8 @@ const ACCEPT = UPLOAD_ACCEPT.join(',');
 const kb = (n: number) => `${Math.max(1, Math.round(n / 1024))} KB`;
 
 /**
- * One document slot with an image preview and the file name. In mock mode only the file's
- * metadata is kept; Supabase Storage holds the file itself from phase 4 (SPEC §13).
+ * One document slot with an image preview and the file name. The file itself rides along in memory:
+ * Supabase mode uploads it to the private org-docs bucket; mock mode keeps only its metadata (SPEC §13).
  */
 export function FileUpload({
   label,
@@ -45,7 +45,7 @@ export function FileUpload({
       if (old) URL.revokeObjectURL(old);
       return file.type.startsWith('image/') ? URL.createObjectURL(file) : null;
     });
-    onChange({ docType, fileName: file.name, size: file.size, mime: file.type });
+    onChange({ docType, fileName: file.name, size: file.size, mime: file.type, file });
   };
 
   const clear = () => {

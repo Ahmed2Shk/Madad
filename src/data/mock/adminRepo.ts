@@ -205,6 +205,12 @@ export const adminRepo: AdminRepo = {
     return latency(undefined);
   },
 
+  // Mock mode keeps document metadata only (docs/DECISIONS.md, phases 2–3 #4).
+  documentUrl() {
+    requirePlatform('reviewer');
+    return latency(null);
+  },
+
   organizations() {
     requirePlatform('reviewer');
     const s = store.get();

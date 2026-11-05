@@ -1,8 +1,10 @@
 // AD-02 طلبات التوثيق — approve · ask for more (note required) · reject (reason required).
-import { CircleCheck, CircleX, Eye, FileText, MapPin, MessageSquareWarning, ShieldCheck, TriangleAlert } from 'lucide-react';
+import { CircleCheck, CircleX, ExternalLink, Eye, FileText, MapPin, MessageSquareWarning, ShieldCheck, TriangleAlert } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  buttonClass,
+  Skeleton,
   Button,
   CardSkeleton,
   Dialog,
@@ -17,7 +19,7 @@ import {
   useToast,
 } from '../../components/ui';
 import { governorateById, type DocumentStatus, type VerificationItem, type VerificationStatus } from '../../data';
-import { usePlatformSettings, useReviewOrg, useSetDocumentStatus, useVerificationQueue } from '../../data/adminQueries';
+import { useDocumentUrl, usePlatformSettings, useReviewOrg, useSetDocumentStatus, useVerificationQueue } from '../../data/adminQueries';
 import { useLang } from '../../hooks/useLang';
 import { cn } from '../../lib/cn';
 
@@ -270,10 +272,28 @@ function Detail({ v }: { v: VerificationItem }) {
             <p className="text-meta text-ink-muted">
               {viewing.mime} · <bdi>{Math.round(viewing.size / 1024)} KB</bdi>
             </p>
-            <p className="rounded-card bg-canvas p-4 text-ink-muted">{t('admin.docPreviewMock')}</p>
+            <DocumentPreview orgId={v.orgId} doc={viewing} />
           </div>
         )}
       </Dialog>
     </section>
+  );
+}
+
+/** The uploaded file through a one-minute signed link, or a note when only its details exist (mock mode). */
+function DocumentPreview({ orgId, doc }: { orgId: string; doc: VerificationItem['documents'][number] }) {
+  const { t } = useTranslation();
+  const url = useDocumentUrl(orgId, doc.fileName);
+  if (url.isPending) return <Skeleton className="h-40 w-full" />;
+  if (!url.data) return <p className="rounded-card bg-canvas p-4 text-ink-muted">{t('admin.docPreviewMock')}</p>;
+  return (
+    <div className="space-y-2">
+      {doc.mime.startsWith('image/') && <img src={url.data} alt={t(`docTypes.${doc.docType}`)} className="max-h-96 w-full rounded-card border border-border object-contain" />}
+      <a href={url.data} target="_blank" rel="noopener noreferrer" className={buttonClass('secondary', 'sm')}>
+        <ExternalLink aria-hidden className="size-4" />
+        {t('admin.openDoc')}
+      </a>
+      <p className="text-micro text-ink-muted">{t('admin.docLinkNote')}</p>
+    </div>
   );
 }

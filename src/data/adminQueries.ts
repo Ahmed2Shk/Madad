@@ -28,6 +28,15 @@ export const useUnmetDemand = (days: number, categoryId: string, region: 'gaza' 
   useQuery({ queryKey: adminKeys.demand(days, categoryId, region), queryFn: a((r) => r.unmetDemand(days, categoryId, region)) });
 export const useAdminReports = () => useQuery({ queryKey: adminKeys.reports, queryFn: a((r) => r.reports()) });
 export const useAuditLog = () => useQuery({ queryKey: adminKeys.audit, queryFn: a((r) => r.audit()) });
+/** Signed link to an uploaded verification document; short-lived, so cached only briefly. */
+export const useDocumentUrl = (orgId: string | null, fileName: string | null) =>
+  useQuery({
+    queryKey: ['me', 'admin', 'document', orgId, fileName] as const,
+    queryFn: a((r) => r.documentUrl(orgId!, fileName!)),
+    enabled: !!orgId && !!fileName,
+    staleTime: 30_000,
+    gcTime: 30_000,
+  });
 export const usePlatformSettings = () => useQuery({ queryKey: adminKeys.settings, queryFn: a((r) => r.settings()) });
 
 /** Admin writes change public reads too (approvals, suspensions, settings), so refresh everything. */

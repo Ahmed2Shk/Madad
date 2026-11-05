@@ -30,6 +30,11 @@ export default tseslint.config(
     },
   },
   {
+    // The Supabase implementation of the repositories is the one place that may import it.
+    files: ['src/data/supabase/**/*.ts'],
+    rules: { 'no-restricted-imports': 'off' },
+  },
+  {
     // Route table, not a component module.
     files: ['src/app/router.tsx'],
     rules: { 'react-refresh/only-export-components': 'off' },
