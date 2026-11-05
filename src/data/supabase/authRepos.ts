@@ -3,7 +3,7 @@
 import { callbackUrl } from '../../lib/authRedirect';
 import { env } from '../../lib/env';
 import type { AuthRepo, DemoRepo, DocumentMeta, Me, OAuthProvider, RegistrationRepo, SignUpInput } from '../types';
-import { auth, db, must, rpc, storage } from './client';
+import { auth, authNotify, db, must, rpc, storage } from './client';
 import { DEMO_EMAILS, DEMO_PASSWORD } from './demoAccounts';
 import { toEvent, toMembership, type OrgDbRow, type PrivateDbRow } from './map';
 import { currentUserId } from './publicRepos';
@@ -155,6 +155,8 @@ export const registrationRepo: RegistrationRepo = {
 export const demoRepo: DemoRepo = {
   async signInAs(userId) {
     if (!env.demo) throw new Error('forbidden');
+    // The switcher reloads the page next (RoleSwitcher), so the page on screen stays as it is.
+    authNotify.paused = true;
     // Signing in replaces the session; signing out first would let the open page refetch as a visitor.
     if (!userId) {
       await auth.signOut();

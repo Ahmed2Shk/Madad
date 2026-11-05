@@ -24,6 +24,9 @@ export const auth = new AuthClient({
   flowType: 'pkce',
 });
 
+/** The demo role switcher reloads the page right after signing in; the open page must not refetch with the new account first. */
+export const authNotify = { paused: false };
+
 /** Every database and storage request carries the signed-in user's token, or the anon key. */
 const authedFetch: typeof fetch = async (input, init) => {
   const { data } = await auth.getSession();

@@ -2,7 +2,7 @@
 // There is no Realtime (SPEC §12): after any change we notify subscribers, the query cache
 // refetches, and other tabs or devices catch up on focus.
 import type { Repos } from '../types';
-import { auth } from './client';
+import { auth, authNotify } from './client';
 import { adminRepo } from './adminRepo';
 import { authRepo, demoRepo, registrationRepo } from './authRepos';
 import { pharmacyPortalRepo } from './portalRepo';
@@ -24,6 +24,7 @@ const emit = () => {
 auth.onAuthStateChange((event) => {
   // Token refreshes and the initial session change nothing the screens show.
   // Each tab gets its own auth event (auth-js syncs sessions across tabs), so this stays local.
+  if (authNotify.paused) return;
   if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED') setTimeout(notifyHere, 0);
 });
 
