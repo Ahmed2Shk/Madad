@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#146B68">
 <link rel="icon" type="image/png" href="assets/logo-mark.png">
-<!-- Served at madad-ps.pages.dev (free Cloudflare Pages address); change here if a custom domain is connected -->
+<!-- Served at madad-ps.pages.dev (Cloudflare Pages); change here if a custom domain is connected -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="مَدَد MADAD">
-<meta property="og:description" content="اعرف أين أُبلغ عن توفر دوائك، ومتى كان آخر تحديث. مجاني، بلا تنزيل.">
+<meta property="og:description" content="اعرف أين أُبلغ عن توفر دوائك، ومتى كان آخر تحديث. بلا تنزيل.">
 <meta property="og:image" content="https://madad-ps.pages.dev/assets/video-poster.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <title>مَدَد MADAD</title>
-<meta name="description" content="مَدَد: اعرف أين أُبلغ عن توفر دوائك، ومتى كان آخر تحديث. موقع مجاني للبحث عن الأدوية في الصيدليات في فلسطين.">
+<meta name="description" content="مَدَد: اعرف أين أُبلغ عن توفر دوائك، ومتى كان آخر تحديث. موقع للبحث عن الأدوية في صيدليات قطاع غزة.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700&display=swap">
@@ -118,7 +118,7 @@ html.en .eyebrow{text-transform:uppercase}
 .age{font-size:13px}
 .price{font-size:13px;color:var(--ink)}
 .board-f{padding:12px 20px;background:var(--mint);font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center}
-.demo-tag{position:absolute;inset-block-start:14px;inset-inline-end:14px;font-size:11px;font-weight:600;color:var(--warn);background:var(--warn-bg);border-radius:999px;padding:2px 10px}
+.demo-tag{font-size:11px;font-weight:600;color:var(--warn);background:var(--warn-bg);border-radius:999px;padding:2px 10px}
 
 /* problem band */
 .band{background:var(--band);color:var(--band-ink);position:relative;overflow:hidden}
@@ -266,7 +266,7 @@ html.en .sign{direction:ltr}
   <canvas id="pills" aria-hidden="true"></canvas>
   <div class="wrap">
     <div>
-      <span class="eyebrow"><span data-l="ar">غزة · الضفة الغربية · مجاني</span><span data-l="en">Gaza · West Bank · Free</span></span>
+      <span class="eyebrow"><span data-l="ar">قطاع غزة</span><span data-l="en">Gaza Strip</span></span>
       <h1>
         <span data-l="ar">اعرف أين أُبلغ عن توفر دوائك، <em>ومتى.</em></span>
         <span data-l="en">Know where your medicine was reported available, <em>and when.</em></span>
@@ -286,16 +286,15 @@ html.en .sign{direction:ltr}
         </a>
       </div>
       <div class="facts">
-        <span><b class="data">0$</b> <span data-l="ar">بلا رسوم، بلا تنزيل</span><span data-l="en">no fees, no download</span></span>
-        <span><b class="data">16</b> <span data-l="ar">محافظة</span><span data-l="en">governorates</span></span>
+        <span><b class="data">0</b> <span data-l="ar">تنزيل: يعمل من المتصفح</span><span data-l="en">downloads: works in the browser</span></span>
+        <span><b class="data">5</b> <span data-l="ar">محافظات</span><span data-l="en">governorates</span></span>
         <span><b class="data">24 / 72</b> <span data-l="ar">ساعة: حديث / غير مؤكد</span><span data-l="en">hours: fresh / unconfirmed</span></span>
       </div>
     </div>
 
     <div class="board" aria-label="مثال حي على البلاغات">
-      <span class="demo-tag"><span data-l="ar">بيانات تجريبية</span><span data-l="en">Demo data</span></span>
       <div class="board-h">
-        <strong><span data-l="ar">بلاغات التوفر</span><span data-l="en">Availability reports</span></strong>
+        <strong><span data-l="ar">بلاغات التوفر</span><span data-l="en">Availability reports</span> <span class="demo-tag"><span data-l="ar">بيانات تجريبية</span><span data-l="en">Demo data</span></span></strong>
         <span class="live"><i></i><span data-l="ar">الوقت يمرّ… والحالة تتغيّر</span><span data-l="en">Time passes, status changes</span></span>
       </div>
       <ul class="rows" id="rows"></ul>
@@ -415,7 +414,7 @@ html.en .sign{direction:ltr}
         </div>
         <div><span class="timer"><b id="tm">0:00</b><span data-l="ar">ثوانٍ حتى يظهر التحديث للعامة</span><span data-l="en">seconds until the update is public</span></span></div>
         <div class="cta-row">
-          <a class="btn btn-primary app-link" data-path="/for-organizations" href="https://madad-6p2.pages.dev/for-organizations" target="_blank" rel="noopener"><span data-l="ar">سجّل صيدليتك مجانًا</span><span data-l="en">Register your pharmacy for free</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="flip"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+          <a class="btn btn-primary app-link" data-path="/for-organizations" href="https://madad-6p2.pages.dev/for-organizations" target="_blank" rel="noopener"><span data-l="ar">سجّل صيدليتك</span><span data-l="en">Register your pharmacy</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="flip"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
         </div>
       </div>
       <div class="shot-card"><img src="assets/ph-update.webp" alt="شاشة تحديث التوفر في بوابة الصيدلية" width="1600" height="900" loading="lazy"></div>
@@ -669,7 +668,7 @@ html.en .sign{direction:ltr}
     ['mortar', 'صيدلية الرحمة', 'Al-Rahma Pharmacy', 'رفح', 'Rafah'],
     ['leaf', 'صيدلية الياسمين', 'Al-Yasmin Pharmacy', 'دير البلح', 'Deir al-Balah'],
     ['drop', 'صيدلية الأمل', 'Al-Amal Pharmacy', 'خان يونس', 'Khan Younis'],
-    ['cross', 'صيدلية الهدى', 'Al-Huda Pharmacy', 'الخليل', 'Hebron'],
+    ['cross', 'صيدلية الهدى', 'Al-Huda Pharmacy', 'شمال غزة', 'North Gaza'],
     ['capsule', 'صيدلية البشرى', 'Al-Bushra Pharmacy', 'غزة', 'Gaza'],
   ];
   const ART = {
