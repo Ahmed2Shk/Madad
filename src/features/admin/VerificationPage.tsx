@@ -181,7 +181,7 @@ function Detail({ v }: { v: VerificationItem }) {
         {v.documents.length === 0 ? (
           <p className="text-meta text-ink-muted">{t('admin.noDocuments')}</p>
         ) : (
-          <ul className="divide-y divide-border rounded-card border border-border">
+          <ul className="rise-children divide-y divide-border rounded-card border border-border">
             {v.documents.map((d) => (
               <li key={d.fileName} className="flex flex-wrap items-center gap-3 p-3">
                 <FileText aria-hidden className="size-5 text-secondary" />
@@ -216,7 +216,7 @@ function Detail({ v }: { v: VerificationItem }) {
         <h3 id="hist-title" className="mb-2 font-semibold">
           {t('status_page.history')}
         </h3>
-        <ol className="space-y-2 text-meta">
+        <ol className="rise-children space-y-2 text-meta">
           {[...v.events].reverse().map((e, i) => (
             <li key={i} className="flex flex-wrap justify-between gap-2 border-b border-border pb-1.5">
               <span>

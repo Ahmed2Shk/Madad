@@ -243,7 +243,7 @@ function RequestsTab() {
   };
 
   return (
-    <ul className="space-y-3">
+    <ul className="rise-children space-y-3">
       {requests.data.map((r) => (
         <li key={r.id} className="space-y-3 rounded-card border border-border bg-surface p-4">
           <div className="flex flex-wrap items-start justify-between gap-3">

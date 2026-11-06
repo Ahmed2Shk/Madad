@@ -31,7 +31,7 @@ export default function OverviewPage() {
     <div className="space-y-6">
       <h1 className="text-page">{t('portal.admin.nav.overview')}</h1>
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="rise-children grid grid-cols-2 gap-3 md:grid-cols-4">
         <StatCard label={t('admin.stat.pharmacies')} value={o.verifiedPharmacies} icon={BadgeCheck} tone="ok" note={demo} to="/admin/organizations" />
         <StatCard label={t('admin.stat.providers')} value={o.verifiedProviders} icon={Building2} note={demo} to="/admin/organizations" />
         <StatCard label={t('admin.stat.pending')} value={o.pendingVerifications} icon={Hourglass} tone="review" note={demo} to="/admin/verification" />
@@ -46,7 +46,7 @@ export default function OverviewPage() {
         <h2 id="pending-title" className="text-section mb-3">
           {t('admin.waiting')}
         </h2>
-        <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="rise-children grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
           {(
             [
               ['pharmacies', '/admin/verification'],
@@ -95,7 +95,7 @@ export default function OverviewPage() {
         <SearchesLine data={o.daily} />
       </ChartFigure>
 
-      <div className="grid gap-4 xl:grid-cols-2">
+      <div className="rise-children grid gap-4 xl:grid-cols-2">
         <ChartFigure
           title={t('admin.chart.freshness')}
           table={

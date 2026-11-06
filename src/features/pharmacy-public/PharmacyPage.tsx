@@ -232,7 +232,7 @@ export default function PharmacyPage() {
         ) : recent.length === 0 ? (
           <EmptyState icon={Search} title={t('pharmacy.noRecent')} />
         ) : (
-          <ul className="divide-y divide-border rounded-card border border-border bg-surface">
+          <ul className="rise-children divide-y divide-border rounded-card border border-border bg-surface">
             {recent.map((x) => {
               const m = medicines.get(x.row.medicineId);
               return (

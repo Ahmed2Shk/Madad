@@ -127,7 +127,7 @@ function Conversation({ q }: { q: InquiryThread }) {
           </label>
         )}
       </header>
-      <ol className="flex-1 space-y-3 p-4">
+      <ol className="rise-children flex-1 space-y-3 p-4">
         {q.messages.map((m, i) => (
           <li key={i} className={cn('max-w-[80%] rounded-card p-3', m.sender === 'org' ? 'ms-auto bg-mint' : 'bg-canvas')}>
             <p>{m.body}</p>

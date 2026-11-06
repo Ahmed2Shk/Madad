@@ -35,7 +35,7 @@ export default function ModerationPage() {
       {items.length === 0 ? (
         <EmptyState icon={ListChecks} title={t('moderation.emptyTitle')} body={t('moderation.emptyBody')} />
       ) : (
-        <ul className="space-y-3">
+        <ul className="rise-children space-y-3">
           {items.map((item) => {
             const Icon = item.kind === 'announcement' ? Megaphone : Stethoscope;
             return (

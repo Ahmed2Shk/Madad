@@ -109,7 +109,7 @@ function Notifications() {
         ) : activeAlerts.length === 0 ? (
           <EmptyState icon={BellOff} title={t('alerts.emptyTitle')} body={t('alerts.emptyBody')} />
         ) : (
-          <ul className="space-y-3">
+          <ul className="rise-children space-y-3">
             {activeAlerts.map((a) => (
               <li key={a.id} className="flex flex-wrap items-center justify-between gap-3 rounded-card border border-border bg-surface p-4">
                 <div>

@@ -90,7 +90,7 @@ export default function DataQualityPage() {
         <h2 id="dist-title" className="text-section mb-3">
           {t('admin.distribution')}
         </h2>
-        <ul className="space-y-2">
+        <ul className="rise-children space-y-2">
           {q.byGov.map((g) => {
             const total = g.fresh + g.stale + g.expired || 1;
             return (
@@ -121,7 +121,7 @@ export default function DataQualityPage() {
         {q.conflicts.length === 0 ? (
           <p className="mt-3 text-ink-muted">{t('admin.noConflicts')}</p>
         ) : (
-          <ul className="mt-3 divide-y divide-border">
+          <ul className="rise-children mt-3 divide-y divide-border">
             {q.conflicts.map((c) => (
               <li key={c.reportId} className="flex flex-wrap items-center justify-between gap-3 py-3">
                 <span>

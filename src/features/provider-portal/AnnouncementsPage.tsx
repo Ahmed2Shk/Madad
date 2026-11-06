@@ -111,7 +111,7 @@ export default function AnnouncementsPage() {
       {(list.data ?? []).length === 0 ? (
         <EmptyState icon={Megaphone} title={t('provider.empty.announcements')} body={t('provider.emptyAnnouncementsBody')} />
       ) : (
-        <ul className="space-y-3">
+        <ul className="rise-children space-y-3">
           {list.data!.map((a) => {
             const state = announcementStateOf(a.reviewStatus, new Date(a.startsAt), a.endsAt ? new Date(a.endsAt) : null, now);
             return (

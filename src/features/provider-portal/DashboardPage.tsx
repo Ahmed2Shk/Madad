@@ -43,7 +43,7 @@ export default function ProviderDashboardPage() {
     <div className="space-y-6">
       <h1 className="text-page">{t('portal.provider.nav.dashboard')}</h1>
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+      <div className="rise-children grid grid-cols-2 gap-3 lg:grid-cols-5">
         <StatCard label={t('provider.stat.completeness')} value={`${complete.percent}%`} icon={UserRoundCheck} tone={complete.percent === 100 ? 'ok' : 'warn'} to="/provider/profile" />
         <StatCard label={t('provider.stat.published')} value={published.filter((s) => s.kind !== 'program').length} icon={Stethoscope} to="/provider/services" />
         <StatCard label={t('provider.stat.active')} value={active} icon={HandHeart} tone="ok" note={needsConfirm ? t('provider.stat.needsConfirm', { count: needsConfirm }) : undefined} to="/provider/programs" />
@@ -51,7 +51,7 @@ export default function ProviderDashboardPage() {
         <StatCard label={t('provider.stat.stale', { days: STALE_DAYS })} value={stale} icon={CalendarClock} tone={stale ? 'warn' : 'ok'} to="/provider/services" />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="rise-children grid gap-4 lg:grid-cols-3">
         <section className="space-y-3 rounded-card border border-border bg-surface p-5 shadow-card">
           <h2 className="text-section flex items-center gap-2">
             <ShieldCheck aria-hidden className="size-5 text-secondary" />
@@ -77,7 +77,7 @@ export default function ProviderDashboardPage() {
           {newInquiries.length === 0 ? (
             <p className="text-meta text-ink-muted">{t('provider.noNewInquiries')}</p>
           ) : (
-            <ul className="space-y-2">
+            <ul className="rise-children space-y-2">
               {newInquiries.slice(0, 3).map((q) => (
                 <li key={q.id}>
                   <Link to="/provider/inquiries" className="block rounded-control p-2 hover:bg-canvas">

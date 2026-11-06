@@ -184,7 +184,7 @@ export default function ProviderPage() {
           {p.locations.length > 0 && (
             <section className="space-y-2 rounded-card border border-border bg-surface p-5 shadow-card">
               <h2 className="text-section">{t('dir.otherLocations')}</h2>
-              <ul className="space-y-2">
+              <ul className="rise-children space-y-2">
                 {p.locations.map((l) => (
                   <li key={l.name}>
                     <p className="font-medium">{l.name}</p>
@@ -203,7 +203,7 @@ export default function ProviderPage() {
           <h2 id="ann-title" className="text-section">
             {t('dir.announcements')}
           </h2>
-          <ul className="space-y-2">
+          <ul className="rise-children space-y-2">
             {p.announcements.map((a) => (
               <li key={a.id} className="flex gap-3 rounded-card border border-border bg-surface p-4">
                 <Megaphone aria-hidden className="mt-0.5 size-5 shrink-0 text-secondary" />

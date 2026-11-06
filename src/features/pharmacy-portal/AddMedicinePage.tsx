@@ -106,7 +106,7 @@ function FromCatalog({ onNotFound }: { onNotFound: () => void }) {
           }
         />
       ) : (
-        <ul className="divide-y divide-border rounded-card border border-border bg-surface">
+        <ul className="rise-children divide-y divide-border rounded-card border border-border bg-surface">
           {hits.map((m) => (
             <li key={m.id} className="flex flex-col gap-3 p-4 lg:flex-row lg:items-center">
               <div className="min-w-0 flex-1">
@@ -223,7 +223,7 @@ function MyRequests() {
   if (requests.isPending) return <CardSkeleton />;
   if (!requests.data?.length) return <EmptyState icon={FilePlus2} title={t('add.noRequests')} />;
   return (
-    <ul className="divide-y divide-border rounded-card border border-border bg-surface">
+    <ul className="rise-children divide-y divide-border rounded-card border border-border bg-surface">
       {requests.data.map((r) => (
         <li key={r.id} className="flex flex-wrap items-center justify-between gap-3 p-4">
           <div>

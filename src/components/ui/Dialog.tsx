@@ -47,10 +47,10 @@ export function Dialog({
       }}
       onClick={(e) => e.target === ref.current && onClose()}
       className={cn(
-        'bg-surface p-0 text-ink shadow-dialog backdrop:bg-ink/40',
+        'bg-surface p-0 text-ink shadow-dialog backdrop:animate-backdrop backdrop:bg-ink/40',
         side
-          ? cn('my-0 ms-auto me-0 h-dvh max-h-dvh w-full rounded-none', size === 'lg' ? 'max-w-4xl' : 'max-w-md')
-          : cn('m-auto w-[calc(100%-2rem)] rounded-dialog', { sm: 'max-w-sm', md: 'max-w-lg', lg: 'max-w-2xl' }[size]),
+          ? cn('animate-slide-end my-0 ms-auto me-0 h-dvh max-h-dvh w-full rounded-none', size === 'lg' ? 'max-w-4xl' : 'max-w-md')
+          : cn('animate-pop m-auto w-[calc(100%-2rem)] rounded-dialog', { sm: 'max-w-sm', md: 'max-w-lg', lg: 'max-w-2xl' }[size]),
       )}
     >
       <div className="flex h-full max-h-[90dvh] flex-col">

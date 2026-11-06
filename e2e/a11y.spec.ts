@@ -34,6 +34,16 @@ for (const { role, paths } of SCREENS) {
       if (role) await switchTo(page, role);
       await page.goto(path, { waitUntil: 'networkidle' });
       await expect(page.locator('h1').first()).toBeVisible();
+      // Scan what people see once things have risen into place: mid-fade, text is not yet at full
+      // contrast. Endless animations (loading placeholders) are not waited for.
+      await page.evaluate(() =>
+        Promise.all(
+          document
+            .getAnimations()
+            .filter((a) => a.effect?.getComputedTiming().iterations !== Infinity)
+            .map((a) => a.finished.catch(() => undefined)),
+        ),
+      );
       const { violations } = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
         .exclude('.leaflet-container')

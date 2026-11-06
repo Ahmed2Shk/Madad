@@ -1,5 +1,6 @@
 // Floating demo role switcher (SPEC §4): moves between the four interfaces without signing in,
 // plus "إعادة ضبط بيانات العرض". Only loaded when VITE_DEMO=true; never part of a production build.
+import { useQueryClient } from '@tanstack/react-query';
 import { del } from 'idb-keyval';
 import { RotateCcw, Users } from 'lucide-react';
 import { useState } from 'react';
@@ -25,12 +26,17 @@ export default function RoleSwitcher() {
   const { data: me } = useMe();
   const switchTo = useDemoSwitch();
   const reset = useDemoReset();
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const current = ROLES.find((r) => r.email === (me?.email ?? null))?.key;
 
   const pick = async (r: (typeof ROLES)[number]) => {
     await switchTo.mutateAsync(r.userId);
+    // Drop the stored copy of the data: on one device, the next role would otherwise see pages as
+    // they were before the last role's changes (e.g. the patient missing the pharmacy's update).
+    queryClient.clear();
+    await del('madad.query-cache').catch(() => undefined);
     // A full navigation: each interface mounts fresh, as it would after a real sign-in.
     window.location.assign(r.home);
   };

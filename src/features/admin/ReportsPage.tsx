@@ -44,7 +44,7 @@ export default function ReportsPage() {
         <EmptyState icon={Flag} title={t('admin.noReports')} />
       ) : (
         <div className="grid gap-4 lg:grid-cols-[340px_1fr]">
-          <ul className="divide-y divide-border self-start rounded-card border border-border bg-surface" aria-label={t('portal.admin.nav.reports')}>
+          <ul className="rise-children divide-y divide-border self-start rounded-card border border-border bg-surface" aria-label={t('portal.admin.nav.reports')}>
             {list.map((r) => (
               <li key={r.id}>
                 <button

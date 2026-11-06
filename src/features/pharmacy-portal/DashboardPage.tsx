@@ -57,7 +57,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
+      <div className="rise-children grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
         <StatCard label={t('dashboard.listed')} value={o.listed} icon={ListChecks} to="/pharmacy-portal/medicines" />
         <StatCard label={t('dashboard.fresh')} value={o.fresh} icon={CircleCheck} tone="ok" />
         <StatCard label={t('dashboard.stale')} value={o.stale} icon={Clock} tone="warn" to="/pharmacy-portal/update?filter=needs" />
@@ -82,7 +82,7 @@ export default function DashboardPage() {
         </section>
       )}
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="rise-children grid gap-4 lg:grid-cols-2">
         <section aria-labelledby="unmet-title" className="rounded-card border border-border bg-surface p-5 shadow-card">
           <h2 id="unmet-title" className="text-section">
             {t('dashboard.unmetTitle')}
@@ -91,7 +91,7 @@ export default function DashboardPage() {
           {o.unmetNearby.length === 0 ? (
             <p className="mt-4 text-ink-muted">{t('dashboard.unmetEmpty')}</p>
           ) : (
-            <ul className="mt-4 divide-y divide-border">
+            <ul className="rise-children mt-4 divide-y divide-border">
               {o.unmetNearby.map((u) => (
                 <li key={u.medicineId} className="flex flex-wrap items-center justify-between gap-3 py-3">
                   <div>
@@ -116,7 +116,7 @@ export default function DashboardPage() {
           {o.activity.length === 0 ? (
             <EmptyState icon={ListChecks} title={t('dashboard.noActivity')} />
           ) : (
-            <ol className="mt-3 space-y-3">
+            <ol className="rise-children mt-3 space-y-3">
               {o.activity.map((h) => (
                 <li key={h.id} className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border pb-2 last:border-0">
                   <HistoryLine entry={h} />

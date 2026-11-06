@@ -127,7 +127,7 @@ export function DataTable<T>({
                   })}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              <tbody className="rise-children divide-y divide-border">
                 {slice.map((r) => (
                   <tr key={rowKey(r)} className="h-[38px] hover:bg-canvas">
                     {columns.map((c) => (
@@ -141,7 +141,7 @@ export function DataTable<T>({
             </table>
           </div>
 
-          <ul className="space-y-3 md:hidden" aria-label={caption}>
+          <ul className="rise-children space-y-3 md:hidden" aria-label={caption}>
             {slice.map((r) => (
               <li key={rowKey(r)} className="rounded-card border border-border bg-surface p-4 shadow-card">
                 {cardTitle && <div className="mb-2 font-semibold">{cardTitle(r)}</div>}

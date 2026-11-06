@@ -79,7 +79,7 @@ export default function PharmacyNotificationsPage() {
       {list.length === 0 ? (
         <EmptyState icon={Bell} title={t('phNotif.emptyTitle')} body={t('phNotif.emptyBody')} />
       ) : (
-        <ul className="divide-y divide-border rounded-card border border-border bg-surface">
+        <ul className="rise-children divide-y divide-border rounded-card border border-border bg-surface">
           {list.map((n) => (
             <li key={n.id} className="flex flex-col gap-1 p-4">
               <p className={n.readAt ? '' : 'font-semibold'}>

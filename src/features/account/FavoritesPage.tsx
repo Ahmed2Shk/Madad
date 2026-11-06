@@ -99,7 +99,7 @@ function List({ items, type }: { items: Favorite[]; type: FavoriteType }) {
       />
     );
   return (
-    <ul className="space-y-3">
+    <ul className="rise-children space-y-3">
       {mine.map((f) => (
         <li key={f.entityId}>{type === 'medicine' ? <MedicineFavorite id={f.entityId} /> : type === 'provider' ? <ProviderFavorite id={f.entityId} /> : <PharmacyFavorite id={f.entityId} />}</li>
       ))}

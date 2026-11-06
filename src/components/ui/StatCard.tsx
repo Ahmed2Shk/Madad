@@ -40,7 +40,7 @@ export function StatCard({
       {note && <span className="mt-1 block text-micro text-ink-muted">{note}</span>}
     </>
   );
-  const cls = cn('block rounded-card border p-4 shadow-card', tones[tone].card, to && 'hover:border-secondary');
+  const cls = cn('block rounded-card border p-4 shadow-card', tones[tone].card, to && 'lift hover:border-secondary');
   return to ? (
     <Link to={to} className={cls}>
       {body}

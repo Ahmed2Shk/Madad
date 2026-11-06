@@ -67,7 +67,7 @@ export default function ServicesPage({ mode }: { mode: 'services' | 'programs' }
       {items.length === 0 ? (
         <EmptyState icon={Icon} title={t(`provider.empty.${mode}`)} body={t('provider.emptyBody')} />
       ) : (
-        <ul className="space-y-3">
+        <ul className="rise-children space-y-3">
           {items.map((s) => {
             const display = s.kind === 'program' ? programDisplay(s, now, confirmDays) : null;
             return (

@@ -76,7 +76,7 @@ export default function UnmetDemandPage() {
         </select>
       </div>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <div className="rise-children grid grid-cols-1 gap-3 sm:grid-cols-3">
         <StatCard label={t('admin.failedSearches')} value={d.failedTotal.toLocaleString('en')} icon={SearchX} tone="warn" note={env.demo ? t('demo.badge') : undefined} />
         <StatCard label={t('admin.requestedMedicines')} value={d.medicineIds.length} icon={Pill} note={env.demo ? t('demo.badge') : undefined} />
         <StatCard label={t('admin.governorates')} value={d.governorates.length} icon={MapIcon} />
@@ -141,7 +141,7 @@ export default function UnmetDemandPage() {
           {d.unmatched.length === 0 ? (
             <p className="mt-3 text-ink-muted">{t('admin.noUnmatched')}</p>
           ) : (
-            <ul className="mt-3 divide-y divide-border">
+            <ul className="rise-children mt-3 divide-y divide-border">
               {d.unmatched.map((u) => (
                 <li key={u.query} className="flex items-center justify-between gap-2 py-2">
                   <span>

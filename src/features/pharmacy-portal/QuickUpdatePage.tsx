@@ -183,7 +183,7 @@ function QuickUpdate() {
       {rows.length === 0 ? (
         <EmptyState icon={CheckCheck} title={filter === 'needs' ? t('update.allFresh') : t('update.noMatch')} />
       ) : (
-        <ul className="divide-y divide-border rounded-card border border-border bg-surface">
+        <ul className="rise-children divide-y divide-border rounded-card border border-border bg-surface">
           {rows.map((r) => {
             const m = medicines.get(r.medicineId);
             const e = edits[r.medicineId];

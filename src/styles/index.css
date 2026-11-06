@@ -65,6 +65,41 @@
 @utility animate-pop {
   animation: pop-in 0.35s var(--ease-spring) both;
 }
+/* On a list or grid: its items rise in one after another, without touching each item. */
+@utility rise-children {
+  & > * {
+    animation: rise 0.45s var(--ease-soft) both;
+  }
+  & > :nth-child(2) { animation-delay: 55ms; }
+  & > :nth-child(3) { animation-delay: 110ms; }
+  & > :nth-child(4) { animation-delay: 165ms; }
+  & > :nth-child(5) { animation-delay: 220ms; }
+  & > :nth-child(6) { animation-delay: 275ms; }
+  & > :nth-child(7) { animation-delay: 330ms; }
+  & > :nth-child(n + 8) { animation-delay: 385ms; }
+}
+/* Side panels slide in from their own edge (the inline end), in either direction. */
+@keyframes slide-in-end {
+  from {
+    opacity: 0;
+    translate: var(--slide-from, 2rem) 0;
+  }
+}
+@utility animate-slide-end {
+  --slide-from: 2rem;
+  &:dir(rtl) {
+    --slide-from: -2rem;
+  }
+  animation: slide-in-end 0.3s var(--ease-soft) both;
+}
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
+@utility animate-backdrop {
+  animation: backdrop-in 0.25s ease-out both;
+}
 /* A bar grows to its width (set inline) from nothing. */
 @keyframes grow {
   from {

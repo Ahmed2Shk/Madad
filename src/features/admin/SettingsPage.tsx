@@ -96,7 +96,7 @@ function SettingsForm({ initial }: { initial: PlatformSettings }) {
 
       <section className="space-y-3 rounded-card border border-border bg-surface p-5">
         <h2 className="text-section">{t('admin.rejectionReasons')}</h2>
-        <ul className="space-y-2">
+        <ul className="rise-children space-y-2">
           {s.rejectionReasons.map((r, i) => (
             <li key={r} className="flex items-center justify-between gap-3 rounded-control border border-border px-3 py-2">
               {r}
