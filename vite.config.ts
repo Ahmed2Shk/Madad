@@ -32,6 +32,8 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2,json}'],
         navigateFallback: '/index.html',
+        // Reloads open pages once when a new version replaces an older one (public/sw-reload.js).
+        importScripts: ['sw-reload.js'],
       },
     }),
   ],
