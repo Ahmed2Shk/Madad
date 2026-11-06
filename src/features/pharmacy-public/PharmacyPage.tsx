@@ -39,11 +39,16 @@ import { ReportDialog } from '../account/ReportDialog';
 import { useRequireSession } from '../account/useRequireSession';
 import { HoursList, OpenNowBadge } from './HoursList';
 
-export default function PharmacyPage() {
-  const { id = '' } = useParams();
+/**
+ * `previewId`: shown inside the pharmacy portal (PH-07 «معاينة كما يراها المريض») in the same app,
+ * not in an iframe — a second copy of the app beside the first never finished loading when signed in.
+ */
+export default function PharmacyPage({ previewId }: { previewId?: string } = {}) {
+  const { id: routeId = '' } = useParams();
+  const id = previewId ?? routeId;
   const [params] = useSearchParams();
   const fromMedicine = params.get('medicine');
-  const preview = params.get('preview') === '1';
+  const preview = previewId !== undefined || params.get('preview') === '1';
   const { t } = useTranslation();
   const { pick, strength } = useLang();
   const toast = useToast();

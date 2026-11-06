@@ -35,10 +35,12 @@ function Section({ id, title, items, now, confirmDays }: { id: string; title: st
   );
 }
 
-export default function ProviderPage() {
-  const { id = '' } = useParams();
+/** `previewId`: shown inside the provider portal (PR-07) in the same app, not in an iframe. */
+export default function ProviderPage({ previewId }: { previewId?: string } = {}) {
+  const { id: routeId = '' } = useParams();
+  const id = previewId ?? routeId;
   const [params] = useSearchParams();
-  const preview = params.get('preview') === '1';
+  const preview = previewId !== undefined || params.get('preview') === '1';
   const { t } = useTranslation();
   const { pick } = useLang();
   const toast = useToast();

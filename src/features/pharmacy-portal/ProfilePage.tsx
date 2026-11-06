@@ -21,6 +21,10 @@ import { useLang } from '../../hooks/useLang';
 import { cn } from '../../lib/cn';
 import { profileCompleteness } from '../../lib/completeness';
 import { usePharmacyCtx } from './context';
+import { SignInPromptProvider } from '../account/SignInPrompt';
+
+// The public page itself, loaded only when the preview opens.
+const PharmacyPage = lazy(() => import('../pharmacy-public/PharmacyPage'));
 
 const MapPicker = lazy(() => import('../../components/ui/MapPicker'));
 
@@ -203,8 +207,12 @@ function ProfileForm({ initial }: { initial: OrgProfile }) {
         onConfirm={() => void save()}
       />
 
-      <Dialog open={preview} onClose={() => setPreview(false)} title={t('dashboard.previewAsPatient')} size="lg">
-        <iframe title={t('dashboard.previewAsPatient')} src={`/pharmacy/${orgId}?preview=1`} className="h-[70dvh] w-full rounded-card border border-border" />
+      <Dialog open={preview} onClose={() => setPreview(false)} title={t('dashboard.previewAsPatient')} side size="lg">
+        <SignInPromptProvider>
+          <Suspense fallback={<CardSkeleton />}>
+            <PharmacyPage previewId={orgId} />
+          </Suspense>
+        </SignInPromptProvider>
       </Dialog>
     </div>
   );
