@@ -15,6 +15,7 @@ import {
   SearchBar,
   ViewToggle,
   type ListOrMap,
+  stagger,
 } from '../../components/ui';
 import { governorateById, type GovFilter } from '../../data';
 import { useFreshnessSettings, useMedicineSearch, usePharmacies } from '../../data/queries';
@@ -176,8 +177,8 @@ export default function SearchPage() {
             <LazyMap markers={markers} center={gov !== 'all' ? governorateById(gov)?.center : undefined} label={t('map.label')} />
           ) : (
             <ul className="space-y-3">
-              {hits.map((h) => (
-                <li key={h.medicine.id}>
+              {hits.map((h, i) => (
+                <li key={h.medicine.id} className="animate-rise" style={stagger(i)}>
                   <MedicineCard medicine={h.medicine} summary={h.summary} to={`/medicine/${h.medicine.id}?gov=${gov}`} />
                 </li>
               ))}

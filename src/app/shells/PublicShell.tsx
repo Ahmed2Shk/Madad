@@ -1,5 +1,5 @@
 import { Bell, ChevronDown, LayoutDashboard, UserRound } from 'lucide-react';
-import { useState } from 'react';
+import { useState, ViewTransition } from 'react';
 import { Link, NavLink, Outlet } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitch, OfflineBanner, Wordmark, buttonClass } from '../../components/ui';
@@ -128,7 +128,12 @@ export function PublicShell() {
         </header>
 
         <main id="main" className="mx-auto min-h-dvh w-full max-w-content flex-1 px-4 py-8">
-          <Outlet />
+          {/* Pages cross-fade when they change (React <ViewTransition>; off with reduced motion). */}
+          <ViewTransition>
+            <div>
+              <Outlet />
+            </div>
+          </ViewTransition>
         </main>
 
         <footer className="border-t border-border bg-surface">

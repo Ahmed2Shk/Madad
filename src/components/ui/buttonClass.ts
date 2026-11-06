@@ -13,7 +13,7 @@ const variants: Record<ButtonVariant, string> = {
 /** Button look, shared with links styled as buttons. 'md' = 44px touch target, 'sm' = 38px for dense tables. */
 export const buttonClass = (variant: ButtonVariant = 'primary', size: ButtonSize = 'md', block = false) =>
   cn(
-    'inline-flex items-center justify-center gap-2 rounded-control px-4 font-medium transition-colors',
+    'press inline-flex items-center justify-center gap-2 rounded-control px-4 font-medium',
     'disabled:cursor-not-allowed disabled:opacity-50',
     size === 'md' ? 'min-h-11' : 'min-h-[38px] text-meta',
     block && 'w-full',

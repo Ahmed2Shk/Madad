@@ -1,5 +1,5 @@
 import { ChevronDown, type LucideIcon } from 'lucide-react';
-import { useState, type ReactNode } from 'react';
+import { useState, ViewTransition, type ReactNode } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitch, OfflineBanner, Wordmark } from '../../components/ui';
@@ -125,7 +125,9 @@ export function PortalShell({
         {banner && <div className="px-4 pt-4 lg:px-6">{banner}</div>}
 
         <main id="main" className="w-full max-w-content flex-1 px-4 py-4 lg:px-6">
-          {children ?? <Outlet />}
+          <ViewTransition>
+            <div>{children ?? <Outlet />}</div>
+          </ViewTransition>
         </main>
       </div>
     </div>

@@ -34,3 +34,5 @@ export { StatCard } from './StatCard';
 export { StatusPicker } from './StatusPicker';
 export { Stepper } from './Stepper';
 export { PasswordInput } from './PasswordInput';
+export { stagger } from './motion';
+export { UpdateRing } from './UpdateRing';

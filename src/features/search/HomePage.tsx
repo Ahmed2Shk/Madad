@@ -17,6 +17,7 @@ import {
   Skeleton,
   buttonClass,
   searchUrl,
+  stagger,
   useAreaLabel,
 } from "../../components/ui";
 import { governorateById } from "../../data";
@@ -157,11 +158,11 @@ export default function HomePage() {
           <p className="mt-4 text-ink-muted">{t("home.noRecent")}</p>
         ) : (
           <ul className="mt-4 divide-y divide-border">
-            {recent.data!.map((r) => {
+            {recent.data!.map((r, i) => {
               const p = pharmacies.data?.find((x) => x.id === r.pharmacyId);
               if (!p) return null;
               return (
-                <li key={r.pharmacyId}>
+                <li key={r.pharmacyId} className="animate-rise" style={stagger(i)}>
                   <Link
                     to={`/pharmacy/${p.id}`}
                     className="flex min-h-14 items-center gap-3 py-2 hover:text-primary"

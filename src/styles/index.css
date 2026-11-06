@@ -28,9 +28,74 @@
     *::before,
     *::after {
       animation-duration: 0.01ms !important;
+      animation-delay: 0s !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+      animation: none !important;
+    }
+  }
+}
+
+/* Motion (all of it switches off with prefers-reduced-motion above). */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+}
+
+/* A list item rises into place; set --i (0, 1, 2…) to stagger it after the ones before it. */
+@utility animate-rise {
+  animation: rise 0.45s var(--ease-soft) both;
+  animation-delay: calc(min(var(--i, 0), 8) * 55ms);
+}
+/* Toasts and other things that pop up from below. */
+@utility animate-pop {
+  animation: pop-in 0.35s var(--ease-spring) both;
+}
+/* A bar grows to its width (set inline) from nothing. */
+@keyframes grow {
+  from {
+    width: 0;
+  }
+}
+@utility animate-grow {
+  animation: grow 0.8s var(--ease-soft) both;
+  animation-delay: calc(min(var(--i, 0), 10) * 50ms);
+}
+/* A card that lifts a little under the pointer and gives under a press. */
+@utility lift {
+  transition:
+    transform 0.2s var(--ease-spring),
+    border-color 0.2s,
+    box-shadow 0.2s;
+  &:hover {
+    transform: translateY(-2px);
+  }
+  &:active {
+    transform: scale(0.985);
+  }
+}
+/* Buttons give a little under a press. */
+@utility press {
+  transition:
+    transform 0.15s var(--ease-spring),
+    background-color 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+  &:active:not(:disabled) {
+    transform: scale(0.97);
   }
 }

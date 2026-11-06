@@ -1,6 +1,6 @@
 // AD-01 charts (Recharts, admin bundle only — SPEC §12). Colors come from tokens.css; every chart
 // has a legend or a title naming its single series, a hover tooltip, and a table view beside it.
-import { useMemo, type ReactNode } from 'react';
+import { useMemo, type CSSProperties, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Bar,
@@ -15,6 +15,10 @@ import {
   YAxis,
 } from 'recharts';
 import { useLang } from '../../hooks/useLang';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+
+// Charts draw themselves in once, smoothly; not at all for people who asked for less motion.
+const motion = (reduced: boolean) => ({ isAnimationActive: !reduced, animationDuration: 900, animationEasing: 'ease-out' as const });
 
 function useTokens() {
   return useMemo(() => {
@@ -62,6 +66,7 @@ export function SearchesLine({ data }: { data: { date: string; searches: number;
   const { t } = useTranslation();
   const { lang } = useLang();
   const c = useTokens();
+  const reduced = useReducedMotion();
   const rtl = lang === 'ar';
   const day = (d: string) => new Intl.DateTimeFormat(rtl ? 'ar-u-nu-latn' : 'en', { day: 'numeric', month: 'short' }).format(new Date(d));
   return (
@@ -72,8 +77,8 @@ export function SearchesLine({ data }: { data: { date: string; searches: number;
         <YAxis orientation={rtl ? 'right' : 'left'} allowDecimals={false} tick={{ fill: c.muted, fontSize: 12 }} stroke={c.grid} width={36} />
         <Tooltip {...tooltipStyle(c)} labelFormatter={(d) => day(String(d))} />
         <Legend wrapperStyle={{ color: c.ink, fontSize: 13 }} />
-        <Line type="monotone" dataKey="searches" name={t('admin.searches')} stroke={c.s1} strokeWidth={2} dot={false} activeDot={{ r: 5, stroke: c.surface, strokeWidth: 2 }} />
-        <Line type="monotone" dataKey="failed" name={t('admin.failed')} stroke={c.s2} strokeWidth={2} dot={false} activeDot={{ r: 5, stroke: c.surface, strokeWidth: 2 }} />
+        <Line {...motion(reduced)} type="monotone" dataKey="searches" name={t('admin.searches')} stroke={c.s1} strokeWidth={2} dot={false} activeDot={{ r: 5, stroke: c.surface, strokeWidth: 2 }} />
+        <Line {...motion(reduced)} type="monotone" dataKey="failed" name={t('admin.failed')} stroke={c.s2} strokeWidth={2} dot={false} activeDot={{ r: 5, stroke: c.surface, strokeWidth: 2 }} />
       </LineChart>
     </ResponsiveContainer>
   );
@@ -83,6 +88,7 @@ export function FreshnessStack({ data }: { data: { name: string; fresh: number; 
   const { t } = useTranslation();
   const { lang } = useLang();
   const c = useTokens();
+  const reduced = useReducedMotion();
   const rtl = lang === 'ar';
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -93,9 +99,9 @@ export function FreshnessStack({ data }: { data: { name: string; fresh: number; 
         <Tooltip {...tooltipStyle(c)} cursor={{ fill: c.grid, opacity: 0.4 }} />
         <Legend wrapperStyle={{ color: c.ink, fontSize: 13 }} />
         {/* Freshness is a state: status colors, with a legend, and a 2px surface gap between segments. */}
-        <Bar dataKey="fresh" stackId="f" name={t('meds.fresh.fresh')} fill={c.ok} stroke={c.surface} strokeWidth={2} />
-        <Bar dataKey="stale" stackId="f" name={t('meds.fresh.stale')} fill={c.warn} stroke={c.surface} strokeWidth={2} />
-        <Bar dataKey="expired" stackId="f" name={t('meds.fresh.expired')} fill={c.unknown} stroke={c.surface} strokeWidth={2} radius={[4, 4, 0, 0]} />
+        <Bar {...motion(reduced)} dataKey="fresh" stackId="f" name={t('meds.fresh.fresh')} fill={c.ok} stroke={c.surface} strokeWidth={2} />
+        <Bar {...motion(reduced)} dataKey="stale" stackId="f" name={t('meds.fresh.stale')} fill={c.warn} stroke={c.surface} strokeWidth={2} />
+        <Bar {...motion(reduced)} dataKey="expired" stackId="f" name={t('meds.fresh.expired')} fill={c.unknown} stroke={c.surface} strokeWidth={2} radius={[4, 4, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   );
@@ -109,10 +115,10 @@ export function TopUnmetBars({ data }: { data: { name: string; count: number }[]
   const max = Math.max(1, ...data.map((d) => d.count));
   return (
     <ul className="flex h-full flex-col justify-between gap-1">
-      {data.map((d) => (
+      {data.map((d, i) => (
         <li key={d.name} className="grid grid-cols-[minmax(0,10rem)_1fr_2.5rem] items-center gap-2 text-meta" title={`${d.name}: ${d.count}`}>
           <span className="truncate">{d.name}</span>
-          <span className="h-4 rounded-e-[4px] bg-chart-1" style={{ width: `${(d.count / max) * 100}%` }} />
+          <span className="animate-grow h-4 rounded-e-[4px] bg-chart-1" style={{ width: `${(d.count / max) * 100}%`, "--i": i } as CSSProperties} />
           <bdi className="text-end font-medium">{d.count}</bdi>
         </li>
       ))}

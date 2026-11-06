@@ -2,6 +2,10 @@
 @import 'tailwindcss';
 
 @theme {
+  /* Motion: short, soft, never in the way. `spring` overshoots a little; `soft` settles gently. */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
   /* Reset Tailwind's palette so only MADAD tokens exist. */
   --color-*: initial;
   --color-white: #ffffff;

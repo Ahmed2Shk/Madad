@@ -1,4 +1,5 @@
 import { BadgeCheck, MapPin, Navigation, Phone } from 'lucide-react';
+import { stagger } from './motion';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import type { PharmacyAvailability, PublicPharmacy } from '../../data';
@@ -16,18 +17,21 @@ export function PharmacyResultRow({
   view,
   distanceKm,
   medicineId,
+  index = 0,
 }: {
   pharmacy: PublicPharmacy;
   row: PharmacyAvailability;
   view: ReportView;
   distanceKm: number | null;
   medicineId: string;
+  /** Position in the list: rows rise in one after another. */
+  index?: number;
 }) {
   const { t } = useTranslation();
   const { lang, pick } = useLang();
   const area = useAreaLabel();
   return (
-    <li className="flex flex-col gap-3 rounded-card border border-border bg-surface p-4 shadow-card md:flex-row md:items-center">
+    <li style={stagger(index)} className="animate-rise flex flex-col gap-3 rounded-card border border-border bg-surface p-4 shadow-card md:flex-row md:items-center">
       <div className="min-w-0 flex-1 space-y-1.5">
         <div className="flex flex-wrap items-center gap-x-2">
           <Link to={`/pharmacy/${pharmacy.id}?medicine=${medicineId}`} className="text-section hover:text-primary">

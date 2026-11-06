@@ -290,8 +290,8 @@ export default function MedicinePage() {
             <LazyMap markers={markers} center={gov !== 'all' ? governorateById(gov)?.center : undefined} label={t('map.label')} />
           ) : (
             <ul className="space-y-3">
-              {ranked.shown.map((x) => (
-                <PharmacyResultRow key={x.pharmacy.id} pharmacy={x.pharmacy} row={x.row} view={x.view} distanceKm={x.distanceKm} medicineId={id} />
+              {ranked.shown.map((x, i) => (
+                <PharmacyResultRow key={x.pharmacy.id} index={i} pharmacy={x.pharmacy} row={x.row} view={x.view} distanceKm={x.distanceKm} medicineId={id} />
               ))}
             </ul>
           )}

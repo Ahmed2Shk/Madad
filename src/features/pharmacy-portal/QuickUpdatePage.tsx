@@ -12,6 +12,7 @@ import {
   FilterChips,
   Freshness,
   StatusPicker,
+  UpdateRing,
   useToast,
 } from '../../components/ui';
 import type { Reported, StockChange } from '../../data';
@@ -119,6 +120,11 @@ function QuickUpdate() {
         <div>
           <h1 className="text-page">{t('portal.pharmacy.nav.update')}</h1>
           <p className="text-meta text-ink-muted">{t('update.subtitle')}</p>
+          {listed.length > 0 && (
+            <div className="mt-3">
+              <UpdateRing done={listed.length - needsCount} total={listed.length} label={t('update.progress', { done: listed.length - needsCount, total: listed.length })} />
+            </div>
+          )}
         </div>
         <div className="relative w-full max-w-xs">
           <label htmlFor="upd-q" className="sr-only">

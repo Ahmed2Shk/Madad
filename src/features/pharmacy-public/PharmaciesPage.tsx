@@ -15,6 +15,7 @@ import {
   ViewToggle,
   useAreaLabel,
   type ListOrMap,
+  stagger,
 } from '../../components/ui';
 import { governorateById, type GovFilter } from '../../data';
 import { usePharmacies } from '../../data/queries';
@@ -115,9 +116,9 @@ export default function PharmaciesPage() {
         <LazyMap markers={markers} center={gov !== 'all' ? governorateById(gov)?.center : undefined} label={t('map.label')} />
       ) : (
         <ul className="grid gap-3 md:grid-cols-2">
-          {list.map(({ p, km }) => (
-            <li key={p.id}>
-              <Link to={`/pharmacy/${p.id}`} className="block h-full rounded-card border border-border bg-surface p-4 shadow-card hover:border-secondary">
+          {list.map(({ p, km }, i) => (
+            <li key={p.id} className="animate-rise" style={stagger(i)}>
+              <Link to={`/pharmacy/${p.id}`} className="lift block h-full rounded-card border border-border bg-surface p-4 shadow-card hover:border-secondary">
                 <div className="flex flex-wrap items-center gap-x-2">
                   <h2 className="text-section">{pick(p)}</h2>
                   <BadgeCheck aria-label={t('pharmacy.verified')} className="size-4 text-ok-icon" />

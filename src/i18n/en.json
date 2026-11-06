@@ -767,7 +767,8 @@
     "waiting_other": "{{count}} changes waiting for a connection · they will be sent when you reconnect",
     "seeAsPatient": "See it as a patient",
     "allFresh": "All your medicines are recent",
-    "noMatch": "No matching medicines"
+    "noMatch": "No matching medicines",
+    "progress": "{{done}} of {{total}} up to date"
   },
   "table": {
     "search": "Search the table",

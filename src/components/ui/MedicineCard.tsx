@@ -14,7 +14,7 @@ export function MedicineCard({ medicine, summary, to }: { medicine: Medicine; su
   return (
     <Link
       to={to}
-      className="flex items-center gap-4 rounded-card border border-border bg-surface p-4 shadow-card hover:border-secondary"
+      className="lift flex items-center gap-4 rounded-card border border-border bg-surface p-4 shadow-card hover:border-secondary"
     >
       <span className="flex size-12 shrink-0 items-center justify-center rounded-control bg-mint">
         <Pill aria-hidden className="size-6 text-secondary" />

@@ -4,7 +4,7 @@ import { BadgeCheck, Building2, HeartHandshake, Hospital, MapPin, Stethoscope } 
 import { useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { CardSkeleton, EmptyState, ErrorBanner, FilterChips, Freshness, GovernorateSelect, SavedBadge, Tabs, useAreaLabel } from '../../components/ui';
+import { CardSkeleton, EmptyState, ErrorBanner, FilterChips, Freshness, GovernorateSelect, SavedBadge, Tabs, stagger, useAreaLabel } from '../../components/ui';
 import { governorateById, SERVICE_CATEGORIES, type DirectoryEntry, type GovFilter, type ProviderType } from '../../data';
 import { useDirectory } from '../../data/providerQueries';
 import { useLang } from '../../hooks/useLang';
@@ -109,11 +109,11 @@ export default function DirectoryPage() {
             <EmptyState icon={Building2} title={t('dir.emptyTitle')} body={t('dir.emptyBody')} />
           ) : (
             <ul className="grid gap-3 md:grid-cols-2">
-              {list.map((p) => {
+              {list.map((p, i) => {
                 const Icon = typeIcon[p.type];
                 return (
-                  <li key={p.id}>
-                    <Link to={`/org/${p.id}`} className="block h-full space-y-2 rounded-card border border-border bg-surface p-4 shadow-card hover:border-secondary">
+                  <li key={p.id} className="animate-rise" style={stagger(i)}>
+                    <Link to={`/org/${p.id}`} className="lift block h-full space-y-2 rounded-card border border-border bg-surface p-4 shadow-card hover:border-secondary">
                       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                         <Icon aria-hidden className="size-5 text-secondary" />
                         <h2 className="text-section">{pick(p)}</h2>

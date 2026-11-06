@@ -33,7 +33,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               key={it.id}
               role="status"
               className={cn(
-                'pointer-events-auto flex items-center gap-2 rounded-card px-4 py-3 shadow-dialog',
+                'pointer-events-auto flex animate-pop items-center gap-2 rounded-card px-4 py-3 shadow-dialog',
                 it.kind === 'success' ? 'bg-ok-bg text-ok-text' : 'bg-bad-bg text-bad-text',
               )}
             >
