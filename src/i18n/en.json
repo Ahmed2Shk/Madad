@@ -42,8 +42,7 @@
     "how3Body": "Call to confirm, then go to the pharmacy yourself. Dispensing happens at the pharmacy only.",
     "cantFindTitle": "Can't find your medicine?",
     "cantFindBody": "See hospitals, medical points and organizations offering services and programmes in your area.",
-    "cantFindAction": "Medical directory",
-    "bannerAlt": "The MADAD logo and the line \"Because access to medicine is a right\", with pharmacy shelves and a phone searching for a medicine"
+    "cantFindAction": "Medical directory"
   },
   "search": {
     "fieldLabel": "Medicine, active ingredient or barcode",

@@ -31,7 +31,6 @@ import { useNow } from "../../hooks/useNow";
 import { useOnline } from "../../hooks/useOnline";
 import { useDataSaver, usePreferences } from "../../hooks/usePreferences";
 import { formatRelative } from "../../lib/format";
-import { cn } from "../../lib/cn";
 import { readLastSearch } from "./useSearchLog";
 
 export default function HomePage() {
@@ -63,35 +62,23 @@ export default function HomePage() {
   return (
     <div className="space-y-10">
       {/* Full-width band: breaks out of the content column to the shell edges (Stitch P-01). */}
-      <section className="-mt-8 mx-[calc(50%-50cqw)] bg-primary text-white">
-        {/* Same width as the search card below, so their edges line up. With the banner: title at the
-            start, banner card at the end (above the title on phones). Without it: the centred band. */}
-        <div
-          className={cn(
-            "mx-auto max-w-5xl px-6 pb-24 lg:pb-28",
-            showBanner
-              ? "flex flex-col gap-6 pt-6 lg:flex-row lg:items-center lg:gap-10 lg:pt-12"
-              : "pt-14 text-center lg:pt-20",
-          )}
-        >
-          <div className={showBanner ? "text-center lg:flex-1 lg:text-start" : undefined}>
-            <h1 className={cn("text-hero", !showBanner && "mx-auto max-w-3xl")}>{t("home.title")}</h1>
-            <p className={cn("mt-3 text-mint", !showBanner && "mx-auto max-w-2xl")}>{t("home.subtitle")}</p>
-          </div>
-          {/* The banner (docs/brand/banner-original.jpg): skipped in data saver mode or when it cannot load. */}
-          {showBanner && (
-            <img
-              src="/brand/banner-750.webp"
-              srcSet="/brand/banner-750.webp 750w, /brand/banner-1500.webp 1500w"
-              sizes="(min-width: 1024px) 480px, (min-width: 448px) 448px, 100vw"
-              width={1500}
-              height={558}
-              alt={t("home.bannerAlt")}
-              fetchPriority="high"
-              onError={() => setBannerFailed(true)}
-              className="order-first mx-auto block h-auto w-full max-w-md rounded-card shadow-card ring-1 ring-white/25 lg:order-none lg:w-[30rem] lg:max-w-none lg:shrink-0"
-            />
-          )}
+      <section className="relative -mt-8 mx-[calc(50%-50cqw)] overflow-hidden bg-primary text-white">
+        {/* The banner (docs/brand/banner-original.jpg) as a faint texture across the whole band. Decorative:
+            the title is the content. Skipped in data saver mode or when it cannot load. */}
+        {showBanner && (
+          <img
+            src="/brand/banner-1500.webp"
+            srcSet="/brand/banner-750.webp 750w, /brand/banner-1500.webp 1500w"
+            sizes="100vw"
+            alt=""
+            decoding="async"
+            onError={() => setBannerFailed(true)}
+            className="absolute inset-x-0 top-1/2 h-[170%] w-full -translate-y-1/2 object-cover object-[0%_50%] opacity-20 mix-blend-luminosity lg:top-0 lg:h-full lg:translate-y-0 lg:object-center"
+          />
+        )}
+        <div className="relative px-6 pt-14 pb-24 text-center lg:pt-20 lg:pb-28">
+          <h1 className="text-hero mx-auto max-w-3xl">{t("home.title")}</h1>
+          <p className="mx-auto mt-3 max-w-2xl text-mint">{t("home.subtitle")}</p>
         </div>
       </section>
       <div className="relative z-10 mx-auto -mt-28 max-w-5xl px-2 lg:-mt-32">
