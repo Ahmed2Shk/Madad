@@ -1,6 +1,7 @@
 // PH-02 التحديث السريع للتوفر — the most important screen: done in under 30 seconds.
 import { CheckCheck, Clock, Eye, Search, WifiOff } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { HOLD_MS } from '../../lib/heldSaves';
 import { Link, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import {
@@ -55,7 +56,7 @@ function QuickUpdate() {
   const stock = usePortalStock(orgId);
   const catalog = useCatalog();
   const confirmAll = useConfirmAll(orgId);
-  const { submit, waiting, saving } = useOfflineQueue(orgId);
+  const { hold, undo, waiting, saving } = useOfflineQueue(orgId);
   const [q, setQ] = useState(params.get('q') ?? '');
   const [edits, setEdits] = useState<Record<string, Edit>>({});
   const [openPrice, setOpenPrice] = useState<string | null>(null);
@@ -88,7 +89,7 @@ function QuickUpdate() {
   const setEdit = (medicineId: string, patch: Partial<Edit>) =>
     setEdits((e) => ({ ...e, [medicineId]: { ...e[medicineId], ...patch, at: new Date().toISOString() } }));
 
-  const save = async () => {
+  const save = () => {
     const list: StockChange[] = Object.entries(edits).flatMap(([medicineId, e]) => {
       const row = listed.find((r) => r.medicineId === medicineId);
       if (!row) return [];
@@ -97,12 +98,20 @@ function QuickUpdate() {
       return [{ medicineId, status: e.status ?? row.reportedStatus, priceIls: price, clientUpdatedAt: e.at }];
     });
     if (list.length === 0) return;
-    const result = await submit(list);
+    const count = list.length;
+    // Kept on the device for HOLD_MS so it can be undone, then sent (useOfflineQueue).
+    const id = hold(list, (result) => {
+      if (result === 'queued') return toast(t('update.queued', { count }));
+      setSaved(count);
+      toast(approved ? t('update.savedPublic', { count }) : t('update.savedPending', { count }));
+    });
     setEdits({});
     setOpenPrice(null);
-    if (result === 'queued') return toast(t('update.queued', { count: list.length }));
-    setSaved(list.length);
-    toast(approved ? t('update.savedPublic', { count: list.length }) : t('update.savedPending', { count: list.length }));
+    setSaved(null);
+    toast(t('update.held', { count, seconds: HOLD_MS / 1000 }), 'success', {
+      durationMs: HOLD_MS,
+      action: { label: t('update.undo'), onClick: () => undo(id) && toast(t('update.undone')) },
+    });
   };
 
   const doConfirmAll = async () => {

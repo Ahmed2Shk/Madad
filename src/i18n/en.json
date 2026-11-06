@@ -768,7 +768,11 @@
     "seeAsPatient": "See it as a patient",
     "allFresh": "All your medicines are recent",
     "noMatch": "No matching medicines",
-    "progress": "{{done}} of {{total}} up to date"
+    "progress": "{{done}} of {{total}} up to date",
+    "held_one": "Sending 1 update in {{seconds}} seconds",
+    "held_other": "Sending {{count}} updates in {{seconds}} seconds",
+    "undo": "Undo",
+    "undone": "Update cancelled. Nothing was sent."
   },
   "table": {
     "search": "Search the table",

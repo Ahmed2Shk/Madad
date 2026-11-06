@@ -29,3 +29,14 @@ export function enqueue(store: KeyValueStore, orgId: string, changes: StockChang
 export function clearQueue(store: KeyValueStore, orgId: string) {
   store.setItem(key(orgId), '[]');
 }
+
+/**
+ * Removes the changes that were just sent, and only those: anything added to the queue while they
+ * were on their way (a newer edit, another save) stays for the next send.
+ */
+export function removeSent(store: KeyValueStore, orgId: string, sent: StockChange[]): StockChange[] {
+  const gone = new Set(sent.map((c) => `${c.medicineId}@${c.clientUpdatedAt}`));
+  const next = queued(store, orgId).filter((c) => !gone.has(`${c.medicineId}@${c.clientUpdatedAt}`));
+  store.setItem(key(orgId), JSON.stringify(next));
+  return next;
+}

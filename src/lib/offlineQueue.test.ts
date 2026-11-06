@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { clearQueue, enqueue, queued } from './offlineQueue';
+import { clearQueue, enqueue, queued, removeSent } from './offlineQueue';
 import type { KeyValueStore } from './searchLog';
 
 const memory = (): KeyValueStore => {
@@ -35,5 +35,26 @@ describe('offline queue', () => {
     const s = memory();
     s.setItem('madad.queue.ph', '{broken');
     expect(queued(s, 'ph')).toEqual([]);
+  });
+});
+
+describe('removeSent', () => {
+  it('removes only what was sent; a newer edit queued meanwhile stays', () => {
+    const s = memory();
+    const sent = enqueue(s, 'org', [
+      { medicineId: 'm1', status: 'available', clientUpdatedAt: '2026-11-06T10:00:00.000Z' },
+      { medicineId: 'm2', status: 'limited', clientUpdatedAt: '2026-11-06T10:00:01.000Z' },
+    ]);
+    // While those were on their way, m1 was changed again and m3 was saved.
+    enqueue(s, 'org', [
+      { medicineId: 'm1', status: 'unavailable', clientUpdatedAt: '2026-11-06T10:00:05.000Z' },
+      { medicineId: 'm3', status: 'available', clientUpdatedAt: '2026-11-06T10:00:06.000Z' },
+    ]);
+    const left = removeSent(s, 'org', sent);
+    expect(left.map((c) => [c.medicineId, c.status])).toEqual([
+      ['m1', 'unavailable'],
+      ['m3', 'available'],
+    ]);
+    expect(queued(s, 'org')).toEqual(left);
   });
 });

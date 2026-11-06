@@ -835,7 +835,15 @@
     "seeAsPatient": "شاهد كما يراها المريض",
     "allFresh": "كل أدويتك حديثة",
     "noMatch": "لا توجد أدوية مطابقة",
-    "progress": "محدّث {{done}} من {{total}}"
+    "progress": "محدّث {{done}} من {{total}}",
+    "held_zero": "لا يوجد ما يُرسل",
+    "held_one": "يُرسل تحديث دواء واحد خلال {{seconds}} ثوانٍ",
+    "held_two": "يُرسل تحديث دواءين خلال {{seconds}} ثوانٍ",
+    "held_few": "يُرسل تحديث {{count}} أدوية خلال {{seconds}} ثوانٍ",
+    "held_many": "يُرسل تحديث {{count}} دواءً خلال {{seconds}} ثوانٍ",
+    "held_other": "يُرسل تحديث {{count}} دواء خلال {{seconds}} ثوانٍ",
+    "undo": "تراجع",
+    "undone": "أُلغي التحديث، ولم يُرسل شيء."
   },
   "table": {
     "search": "ابحث في الجدول",
