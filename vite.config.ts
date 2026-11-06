@@ -10,7 +10,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg'],
+      includeAssets: ['icons/favicon-48.png', 'brand/logo-mark.png'],
       manifest: {
         name: 'مَدَد MADAD',
         short_name: 'مَدَد',
