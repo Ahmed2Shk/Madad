@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import i18n from '../../i18n';
 import { Freshness } from './Freshness';
@@ -40,8 +40,10 @@ describe('LanguageSwitch', () => {
     expect(document.documentElement.dir).toBe('rtl');
     render(<LanguageSwitch />);
     await userEvent.click(screen.getByRole('button'));
-    expect(document.documentElement.dir).toBe('ltr');
+    // English loads on demand the first time (it is not in the first page's bundle).
+    await waitFor(() => expect(document.documentElement.dir).toBe('ltr'));
     expect(document.documentElement.lang).toBe('en');
+    expect(i18n.t('nav.login')).not.toBe('nav.login');
     await act(() => i18n.changeLanguage('ar'));
   });
 });

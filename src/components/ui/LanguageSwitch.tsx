@@ -1,5 +1,6 @@
 import { Languages } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { setLanguage } from '../../i18n';
 import { cn } from '../../lib/cn';
 
 export function LanguageSwitch({ className }: { className?: string }) {
@@ -8,7 +9,7 @@ export function LanguageSwitch({ className }: { className?: string }) {
   return (
     <button
       type="button"
-      onClick={() => void i18n.changeLanguage(next)}
+      onClick={() => void setLanguage(next)}
       lang={next}
       className={cn(
         'inline-flex min-h-11 items-center gap-1.5 rounded-control px-3 font-medium text-primary hover:bg-mint',

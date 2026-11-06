@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {
   Button,
   CardSkeleton,
+  Skeleton,
   Disclaimer,
   EmptyState,
   ErrorBanner,
@@ -151,6 +152,13 @@ export default function MedicinePage() {
               <bdi dir="ltr">{medicine.genericName}</bdi>
               {medicine.strength && <> · {strength(medicine)}</>} · {t(`forms.${medicine.dosageForm}`)}
             </p>
+            {loading && (
+              // Same height as the two summary rows below, so the actions do not move when they load.
+              <div className="mt-4 space-y-2">
+                <Skeleton className="h-11" />
+                <Skeleton className="h-11" />
+              </div>
+            )}
             {!loading && (
               <dl className="mt-4 space-y-2">
                 <div className="flex items-center justify-between gap-3 rounded-control bg-mint px-3 py-2.5">

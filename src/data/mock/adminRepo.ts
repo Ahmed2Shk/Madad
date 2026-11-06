@@ -161,7 +161,8 @@ export const adminRepo: AdminRepo = {
         pharmacies: s.orgs.filter((o) => o.type === 'pharmacy' && (o.verificationStatus === 'pending' || o.verificationStatus === 'needs_info')).length,
         medicines: s.medicineRequests.filter((r) => r.status === 'pending').length,
         reports: s.reports.filter((r) => r.status === 'new').length,
-        announcements: 0,
+        // What AD-08 lists: pending services and organization announcements.
+        announcements: s.services.filter((x) => x.reviewStatus === 'pending').length + s.announcements.filter((x) => x.reviewStatus === 'pending' && x.orgId).length,
       },
     });
   },

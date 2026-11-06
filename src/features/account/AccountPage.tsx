@@ -5,6 +5,7 @@ import { useState, type ReactNode } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { setLanguage } from '../../i18n';
 import { z } from 'zod';
 import { Button, ConfirmDialog, GovernorateSelect, useToast } from '../../components/ui';
 import { exportMyData, useDeleteAccount, useSession, useSignOut, useUpdateProfile } from '../../data/queries';
@@ -110,7 +111,7 @@ function Account() {
           <div className="flex gap-4">
             {(['ar', 'en'] as const).map((l) => (
               <label key={l} className="flex min-h-11 items-center gap-2">
-                <input type="radio" name="lang" checked={i18n.language === l} onChange={() => void i18n.changeLanguage(l)} className="size-4 accent-primary" />
+                <input type="radio" name="lang" checked={i18n.language === l} onChange={() => void setLanguage(l)} className="size-4 accent-primary" />
                 {t(`account.lang_${l}`)}
               </label>
             ))}

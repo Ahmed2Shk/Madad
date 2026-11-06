@@ -127,7 +127,7 @@ export function PublicShell() {
           )}
         </header>
 
-        <main id="main" className="mx-auto w-full max-w-content flex-1 px-4 py-8">
+        <main id="main" className="mx-auto min-h-dvh w-full max-w-content flex-1 px-4 py-8">
           <Outlet />
         </main>
 

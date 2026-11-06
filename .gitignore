@@ -8,3 +8,5 @@ coverage
 *.log
 .DS_Store
 dist-supabase
+test-results
+playwright-report

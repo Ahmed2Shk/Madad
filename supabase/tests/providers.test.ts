@@ -143,3 +143,42 @@ describe('AD-09 users', () => {
     expect(audit.map((a) => a.action)).toEqual(['user.suspend', 'user.reactivate', 'user.platform_role']);
   });
 });
+
+describe('0011 fixes', () => {
+  it('a suspended account loses table access through RLS too, not only through the RPCs', async () => {
+    const privRead = (uid: string) => as(db, uid, () => rows(db, 'select 1 from public.organization_private where org_id = $1', [NOUR]));
+    const stockRead = () => as(db, PH_OWNER, () => rows(db, 'select 1 from public.stock_private where pharmacy_id = $1', [NOUR]));
+    expect(await privRead(PH_OWNER)).toHaveLength(1);
+    expect((await stockRead()).length).toBeGreaterThan(0);
+    expect(await privRead(REVIEWER)).toHaveLength(1);
+
+    const suspend = (uid: string, on: boolean) => as(db, ADMIN, () => db.query('select public.set_user_suspended($1, $2)', [uid, on]));
+    try {
+      await suspend(PH_OWNER, true);
+      await suspend(REVIEWER, true);
+      expect(await privRead(PH_OWNER)).toHaveLength(0);
+      expect(await stockRead()).toHaveLength(0);
+      expect(await privRead(REVIEWER)).toHaveLength(0);
+    } finally {
+      await suspend(PH_OWNER, false);
+      await suspend(REVIEWER, false);
+    }
+    expect(await privRead(PH_OWNER)).toHaveLength(1);
+  });
+
+  it('a reply from a medical provider links the patient to its /org page', async () => {
+    await as(db, PATIENT, () => db.query(`select public.send_inquiry($1, null, 'سؤال', 'متى تفتحون؟', null)`, [SANAD]));
+    const q = await one<{ id: string }>(db, 'select id from public.inquiries where org_id = $1 order by created_at desc limit 1', [SANAD]);
+    await as(db, ORG_OWNER, () => db.query(`select public.reply_inquiry($1, $2, 'من 8 صباحًا')`, [SANAD, q.id]));
+    const n = await as(db, PATIENT, () => one<{ link: string }>(db, `select link from public.notifications where kind = 'inquiry_reply' order by created_at desc limit 1`));
+    expect(n.link).toBe(`/org/${SANAD}`);
+  });
+
+  it('AD-01 counts the content AD-08 lists', async () => {
+    const o = await as(db, REVIEWER, () => one<{ n: number }>(db, `select (public.admin_overview() -> 'pending' ->> 'announcements')::int as n`));
+    const listed = await one<{ n: number }>(db, `select ((select count(*) from public.services where review_status = 'pending')
+      + (select count(*) from public.announcements where review_status = 'pending' and org_id is not null))::int as n`);
+    expect(listed.n).toBeGreaterThan(0);
+    expect(o.n).toBe(listed.n);
+  });
+});

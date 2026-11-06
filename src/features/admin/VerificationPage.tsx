@@ -21,6 +21,7 @@ import {
 import { governorateById, type DocumentStatus, type VerificationItem, type VerificationStatus } from '../../data';
 import { useDocumentUrl, usePlatformSettings, useReviewOrg, useSetDocumentStatus, useVerificationQueue } from '../../data/adminQueries';
 import { useLang } from '../../hooks/useLang';
+import { useDataSaver } from '../../hooks/usePreferences';
 import { cn } from '../../lib/cn';
 
 type Filter = 'open' | 'approved' | 'rejected';
@@ -284,11 +285,13 @@ function Detail({ v }: { v: VerificationItem }) {
 function DocumentPreview({ orgId, doc }: { orgId: string; doc: VerificationItem['documents'][number] }) {
   const { t } = useTranslation();
   const url = useDocumentUrl(orgId, doc.fileName);
+  // Data saver (SPEC §11): no images; the link still opens the file on request.
+  const saver = useDataSaver();
   if (url.isPending) return <Skeleton className="h-40 w-full" />;
   if (!url.data) return <p className="rounded-card bg-canvas p-4 text-ink-muted">{t('admin.docPreviewMock')}</p>;
   return (
     <div className="space-y-2">
-      {doc.mime.startsWith('image/') && <img src={url.data} alt={t(`docTypes.${doc.docType}`)} className="max-h-96 w-full rounded-card border border-border object-contain" />}
+      {doc.mime.startsWith('image/') && !saver && <img src={url.data} alt={t(`docTypes.${doc.docType}`)} className="max-h-96 w-full rounded-card border border-border object-contain" />}
       <a href={url.data} target="_blank" rel="noopener noreferrer" className={buttonClass('secondary', 'sm')}>
         <ExternalLink aria-hidden className="size-4" />
         {t('admin.openDoc')}

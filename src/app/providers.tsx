@@ -5,6 +5,7 @@ import { del, get, set } from 'idb-keyval';
 import { lazy, Suspense, useEffect, type ReactNode } from 'react';
 import { DemoBadge, ToastProvider } from '../components/ui';
 import { getRepos } from '../data';
+import { InquiryOutbox } from '../features/account/InquiryOutbox';
 
 // Statically false in a production build (VITE_DEMO unset), so the switcher is not even bundled.
 const RoleSwitcher = import.meta.env.VITE_DEMO === 'true' ? lazy(() => import('../features/demo/RoleSwitcher')) : null;
@@ -54,6 +55,7 @@ export function Providers({ children }: { children: ReactNode }) {
     >
       <ToastProvider>
         <RepoSync />
+        <InquiryOutbox />
         {children}
         <DemoBadge />
         {RoleSwitcher && (

@@ -149,7 +149,7 @@ export default function OverviewPage() {
         </ChartFigure>
       </div>
 
-      <section aria-labelledby="bygov-title" className="overflow-x-auto rounded-card border border-border bg-surface">
+      <section tabIndex={0} aria-labelledby="bygov-title" className="overflow-x-auto rounded-card border border-border bg-surface">
         <h2 id="bygov-title" className="text-section p-5 pb-3">
           {t('admin.byGov')}
         </h2>

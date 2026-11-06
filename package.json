@@ -15,7 +15,8 @@
     "test:watch": "vitest",
     "size": "node scripts/check-size.mjs",
     "icons": "node scripts/gen-icons.mjs",
-    "seed:sql": "node scripts/build-seed.mjs"
+    "seed:sql": "node scripts/build-seed.mjs",
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@fontsource/ibm-plex-sans-arabic": "^5.3.0",
@@ -41,8 +42,10 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@electric-sql/pglite": "^0.5.13",
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.64.1",
     "@tailwindcss/vite": "^4.3.4",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",

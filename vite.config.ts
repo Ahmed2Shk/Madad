@@ -39,5 +39,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     css: false,
+    // e2e/ is Playwright's (npm run e2e).
+    exclude: ['e2e/**', 'node_modules/**', 'dist/**', 'dist-supabase/**'],
   },
 });

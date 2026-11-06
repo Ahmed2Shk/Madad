@@ -253,7 +253,11 @@
     "noMedicalInfo": "Do not write personal medical information.",
     "notAnOrder": "An inquiry never becomes an order or a reservation.",
     "about": "About",
-    "aboutGeneral": "General question"
+    "aboutGeneral": "General question",
+    "queued": "You are offline. Your inquiry is saved on this device and will be sent when you are back online.",
+    "outboxFull": "Too many inquiries are waiting to be sent. Try again once you are online.",
+    "queuedSent_one": "An inquiry that was waiting for the connection was sent.",
+    "queuedSent_other": "{{count}} inquiries that were waiting for the connection were sent."
   },
   "report": {
     "open": "Report a mistake",
@@ -934,7 +938,7 @@
       "pharmacies": "New pharmacies",
       "medicines": "Suggested medicines",
       "reports": "Reports",
-      "announcements": "Announcements"
+      "announcements": "Content to review"
     },
     "chart": {
       "daily": "Searches and searches with no result, last 30 days",

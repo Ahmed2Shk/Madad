@@ -21,3 +21,5 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run size
+      - name: Playwright (search, quick update, accessibility)
+        run: npx playwright install --with-deps chromium && npm run e2e

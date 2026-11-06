@@ -66,7 +66,7 @@ export function SearchesLine({ data }: { data: { date: string; searches: number;
   const day = (d: string) => new Intl.DateTimeFormat(rtl ? 'ar-u-nu-latn' : 'en', { day: 'numeric', month: 'short' }).format(new Date(d));
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <LineChart data={data} margin={{ top: 8, right: 12, left: 12, bottom: 0 }}>
+      <LineChart accessibilityLayer={false} data={data} margin={{ top: 8, right: 12, left: 12, bottom: 0 }}>
         <CartesianGrid vertical={false} stroke={c.grid} />
         <XAxis dataKey="date" tickFormatter={day} reversed={rtl} tick={{ fill: c.muted, fontSize: 12 }} stroke={c.grid} minTickGap={24} />
         <YAxis orientation={rtl ? 'right' : 'left'} allowDecimals={false} tick={{ fill: c.muted, fontSize: 12 }} stroke={c.grid} width={36} />
@@ -86,7 +86,7 @@ export function FreshnessStack({ data }: { data: { name: string; fresh: number; 
   const rtl = lang === 'ar';
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <BarChart data={data} margin={{ top: 8, right: 12, left: 12, bottom: 0 }} barCategoryGap="30%">
+      <BarChart accessibilityLayer={false} data={data} margin={{ top: 8, right: 12, left: 12, bottom: 0 }} barCategoryGap="30%">
         <CartesianGrid vertical={false} stroke={c.grid} />
         <XAxis dataKey="name" reversed={rtl} tick={{ fill: c.muted, fontSize: 12 }} stroke={c.grid} interval={0} />
         <YAxis orientation={rtl ? 'right' : 'left'} allowDecimals={false} tick={{ fill: c.muted, fontSize: 12 }} stroke={c.grid} width={36} />

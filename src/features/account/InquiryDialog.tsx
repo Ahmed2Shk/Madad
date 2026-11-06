@@ -7,6 +7,9 @@ import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { Button, Dialog, useToast } from '../../components/ui';
 import { useSendInquiry } from '../../data/queries';
+import { addToOutbox } from '../../lib/outbox';
+import { safeStorage } from '../../lib/storage';
+import { INQUIRY_BOX } from './inquiryBox';
 
 const MAX = 500;
 const schema = z.object({
@@ -46,8 +49,15 @@ export function InquiryDialog({
   const [serviceId, setServiceId] = useState('');
 
   const onSubmit = handleSubmit(async (f) => {
-    await send.mutateAsync({ orgId, medicineId, serviceId: serviceId || null, subject: f.subject, body: f.body });
-    toast(t('inquiry.sent'));
+    const inquiry = { orgId, medicineId, serviceId: serviceId || null, subject: f.subject, body: f.body };
+    // Offline: kept on this device and sent when the connection returns (InquiryOutbox).
+    if (!navigator.onLine) {
+      if (!addToOutbox(safeStorage, INQUIRY_BOX, inquiry)) return toast(t('inquiry.outboxFull'), 'error');
+      toast(t('inquiry.queued'));
+    } else {
+      await send.mutateAsync(inquiry);
+      toast(t('inquiry.sent'));
+    }
     reset();
     onClose();
   });

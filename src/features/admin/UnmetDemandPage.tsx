@@ -86,7 +86,7 @@ export default function UnmetDemandPage() {
         {d.medicineIds.length === 0 ? (
           <EmptyState icon={SearchX} title={t('admin.noDemand')} />
         ) : (
-          <div className="overflow-x-auto rounded-card border border-border bg-surface">
+          <div role="region" tabIndex={0} aria-label={t('portal.admin.nav.unmetDemand')} className="overflow-x-auto rounded-card border border-border bg-surface">
             <table className="w-full text-meta">
               <caption className="sr-only">{t('portal.admin.nav.unmetDemand')}</caption>
               <thead className="bg-canvas text-ink-muted">
@@ -111,12 +111,12 @@ export default function UnmetDemandPage() {
                       {med(id)}
                     </th>
                     {d.matrix.cells[i]!.map((c, j) => {
-                      // Sequential: one hue, light → deep teal by count.
-                      const share = c === null || c === 0 ? 0 : 12 + Math.round((c / max) * 78);
+                      // Sequential: one hue, light → mid teal by count. Capped at 58% so dark ink keeps 4.5:1 contrast.
+                      const share = c === null || c === 0 ? 0 : 8 + Math.round((c / max) * 50);
                       return (
                         <td key={j} className="p-0.5 text-center">
                           <span
-                            className={cn('flex h-9 items-center justify-center rounded-[6px] font-medium', share > 55 ? 'text-white' : 'text-ink', c === null && 'text-ink-muted')}
+                            className={cn('flex h-9 items-center justify-center rounded-[6px] font-medium', c === null ? 'text-ink-muted' : 'text-ink')}
                             style={share ? { background: `color-mix(in srgb, var(--color-primary) ${share}%, var(--color-surface))` } : undefined}
                             title={c === null ? t('admin.hiddenCell', { min: MIN_CELL }) : undefined}
                           >

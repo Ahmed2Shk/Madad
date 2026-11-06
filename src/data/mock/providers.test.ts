@@ -142,3 +142,23 @@ describe('AD-09 users and PH-10 settings', () => {
     expect(await r.auth.signIn('org@madad.test', 'a-new-password')).not.toBeNull();
   });
 });
+
+describe('fixes after the phase 6 review', () => {
+  it('a reply from a medical provider links the patient to its /org page', async () => {
+    await asPatient();
+    await r.account.sendInquiry({ orgId: SANAD, medicineId: null, serviceId: null, subject: 'سؤال', body: 'متى تفتحون؟' });
+    await asOrg();
+    const [q] = await r.pharmacyPortal.inquiries(SANAD);
+    await r.pharmacyPortal.replyInquiry(SANAD, q!.id, 'من 8 صباحًا');
+    await asPatient();
+    const n = (await r.account.notifications()).find((x) => x.kind === 'inquiry_reply');
+    expect(n?.link).toBe(`/org/${SANAD}`);
+  });
+
+  it('AD-01 counts the content AD-08 lists', async () => {
+    await asReviewer();
+    const [o, queue] = await Promise.all([r.admin.overview(), r.admin.moderationQueue()]);
+    expect(queue.length).toBeGreaterThan(0);
+    expect(o.pending.announcements).toBe(queue.length);
+  });
+});

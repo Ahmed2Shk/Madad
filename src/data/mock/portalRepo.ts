@@ -228,7 +228,7 @@ export const pharmacyPortalRepo: PharmacyPortalRepo = {
         userId: q.patientId,
         kind: 'inquiry_reply',
         data: { orgId, orgNameAr: o.nameAr, orgNameEn: o.nameEn, subject: q.subject },
-        link: `/pharmacy/${orgId}`,
+        link: o.type === 'pharmacy' ? `/pharmacy/${orgId}` : `/org/${orgId}`,
         createdAt: now,
         readAt: null,
       });
