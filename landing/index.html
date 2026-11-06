@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#146B68">
+<link rel="icon" type="image/png" href="assets/logo-mark.png">
+<!-- Replace DOMAIN with the real domain once it is connected -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="مَدَد MADAD">
+<meta property="og:description" content="اعرف أين أُبلغ عن توفر دوائك، ومتى كان آخر تحديث. مجاني، بلا تنزيل.">
+<meta property="og:image" content="https://DOMAIN/assets/video-poster.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<title>مَدَد MADAD</title>
+<meta name="description" content="مَدَد: اعرف أين أُبلغ عن توفر دوائك، ومتى كان آخر تحديث. موقع مجاني للبحث عن الأدوية في الصيدليات في فلسطين.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: an availability ledger. Every claim on the page is shown the way MADAD shows a pharmacy report — a status, a time, and how old it is. */
+:root{
+  --bg:#F5F8F7; --surface:#FFFFFF; --ink:#183B3A; --muted:#55706C; --line:#DCE8E5;
+  --primary:#146B68; --primary-ink:#FFFFFF; --primary-deep:#0B3F3D; --mint:#E4F3EE; --glow:#9ED8C6;
+  --ok:#1E6E4C; --ok-bg:#E3F2EA; --warn:#8A5A12; --warn-bg:#FBF0DD; --unk:#5C6A67; --unk-bg:#EEF1F0; --bad:#A43F3F; --bad-bg:#F9E4E4;
+  --band:#0B2F2E; --band-ink:#E7F3EF; --band-muted:#9CC3BA;
+  --shadow:0 1px 2px rgba(24,59,58,.06),0 12px 40px rgba(24,59,58,.10);
+  --f-ar:"IBM Plex Sans Arabic","Noto Sans Arabic",Tahoma,sans-serif;
+  --f-lat:"Inter","IBM Plex Sans Arabic",system-ui,sans-serif;
+  --f-data:"IBM Plex Mono","Inter",ui-monospace,monospace;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0A1716; --surface:#10221F; --ink:#E3EFEC; --muted:#9DB8B2; --line:#1F3A36;
+  --primary:#3FB3A6; --primary-ink:#04211F; --primary-deep:#07201E; --mint:#12302C; --glow:#2E8F84;
+  --ok:#7FD3A8; --ok-bg:#14382A; --warn:#F0C27A; --warn-bg:#3A2C12; --unk:#AFC0BC; --unk-bg:#22302E; --bad:#F09A9A; --bad-bg:#3D1C1C;
+  --band:#061312; --band-ink:#E7F3EF; --band-muted:#8FB5AC;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 40px rgba(0,0,0,.35); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A1716; --surface:#10221F; --ink:#E3EFEC; --muted:#9DB8B2; --line:#1F3A36;
+  --primary:#3FB3A6; --primary-ink:#04211F; --primary-deep:#07201E; --mint:#12302C; --glow:#2E8F84;
+  --ok:#7FD3A8; --ok-bg:#14382A; --warn:#F0C27A; --warn-bg:#3A2C12; --unk:#AFC0BC; --unk-bg:#22302E; --bad:#F09A9A; --bad-bg:#3D1C1C;
+  --band:#061312; --band-ink:#E7F3EF; --band-muted:#8FB5AC;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 40px rgba(0,0,0,.35); color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-ar);font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--surface)}
+html.en body{font-family:var(--f-lat);line-height:1.6}
+html:not(.en) [data-l="en"]{display:none!important} html.en [data-l="ar"]{display:none!important}
+a{color:inherit}
+img{max-width:100%;height:auto;display:block}
+h1,h2,h3{text-wrap:balance;margin:0;line-height:1.25}
+p{margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.data{font-family:var(--f-data);font-variant-numeric:tabular-nums;letter-spacing:0}
+.eyebrow{font-size:13px;font-weight:600;letter-spacing:.06em;color:var(--primary);display:inline-flex;gap:8px;align-items:center}
+html.en .eyebrow{text-transform:uppercase}
+.sec{padding-block:96px}
+.sec h2{font-size:clamp(28px,4vw,44px);font-weight:700;letter-spacing:-.01em}
+.lead{font-size:clamp(17px,1.6vw,19px);color:var(--muted);max-width:60ch}
+:focus-visible{outline:3px solid var(--primary);outline-offset:3px;border-radius:6px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;border-radius:12px;font-weight:600;font-size:16px;text-decoration:none;border:1.5px solid transparent;cursor:pointer;transition:transform .15s ease,background .15s ease,box-shadow .15s ease;white-space:nowrap}
+.btn svg{width:20px;height:20px;flex:none}
+.btn-primary{background:var(--primary);color:var(--primary-ink);box-shadow:0 8px 24px color-mix(in srgb,var(--primary) 35%,transparent)}
+.btn-primary:hover{transform:translateY(-2px)}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn-ghost:hover{background:var(--mint)}
+.flip{transform:scaleX(-1)} html.en .flip{transform:none}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:20px;min-height:68px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:700;font-size:26px;color:var(--primary)}
+.brand img{height:34px;width:auto}
+.nav{display:flex;gap:4px;margin-inline-start:auto}
+.nav a{padding:8px 12px;border-radius:10px;text-decoration:none;color:var(--muted);font-weight:500;font-size:15px}
+.nav a:hover{background:var(--mint);color:var(--ink)}
+.lang{background:none;border:1px solid var(--line);color:var(--ink);border-radius:10px;min-height:40px;padding:0 12px;font:600 14px var(--f-lat);cursor:pointer}
+.top .btn{min-height:42px;padding:0 16px;font-size:15px}
+@media (max-width:860px){.nav{display:none}.top .wrap{gap:10px}.brand{margin-inline-end:auto}}
+@media (max-width:420px){.top .btn span.lbl{display:none}}
+
+/* hero */
+.hero{position:relative;overflow:hidden;padding-block:64px 72px}
+#pills{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.9}
+.hero .wrap{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.hero h1{font-size:clamp(36px,5.4vw,64px);font-weight:700;letter-spacing:-.015em;line-height:1.18;margin-top:14px}
+.hero h1 em{font-style:normal;color:var(--primary);position:relative;white-space:nowrap}
+.hero h1 em::after{content:"";position:absolute;inset-inline:0;bottom:.06em;height:.16em;background:var(--glow);opacity:.45;border-radius:4px;z-index:-1}
+.hero .lead{margin-top:20px}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.facts{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:34px;color:var(--muted);font-size:14px}
+.facts span{display:inline-flex;gap:8px;align-items:center}
+.facts b{color:var(--ink)}
+@media (max-width:960px){.hero .wrap{grid-template-columns:1fr}}
+
+/* live board */
+.board{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
+.board-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.board-h strong{font-size:16px}
+.live{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 color-mix(in srgb,var(--ok) 60%,transparent);animation:pulse 1.6s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.rows{list-style:none;margin:0;padding:6px 0}
+.row{display:grid;grid-template-columns:1fr auto;gap:6px 14px;padding:14px 20px;border-bottom:1px dashed var(--line);transition:background .4s ease}
+.row:last-child{border-bottom:0}
+.row.fresh-flash{background:var(--ok-bg)}
+.row .ph{font-weight:600}
+.row .ph small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+.row .med{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:14px;color:var(--muted)}
+.row .med b{color:var(--ink);font-weight:500}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 12px 4px 10px;font-size:13px;font-weight:600;white-space:nowrap;align-self:start;transition:background .3s,color .3s}
+.chip svg{width:16px;height:16px;flex:none}
+.c-ok{background:var(--ok-bg);color:var(--ok)} .c-warn{background:var(--warn-bg);color:var(--warn)} .c-unk{background:var(--unk-bg);color:var(--unk)} .c-bad{background:var(--bad-bg);color:var(--bad)}
+.age{font-size:13px}
+.price{font-size:13px;color:var(--ink)}
+.board-f{padding:12px 20px;background:var(--mint);font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center}
+.demo-tag{position:absolute;inset-block-start:14px;inset-inline-end:14px;font-size:11px;font-weight:600;color:var(--warn);background:var(--warn-bg);border-radius:999px;padding:2px 10px}
+
+/* problem band */
+.band{background:var(--band);color:var(--band-ink);position:relative;overflow:hidden}
+.band .lead{color:var(--band-muted)}
+.band .eyebrow{color:var(--glow)}
+.problem .wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:48px;align-items:center}
+.problem h2{font-size:clamp(30px,4.4vw,52px)}
+.problem h2 .ln{display:block}
+.problem h2 .dim{color:var(--band-muted)}
+#walk{width:100%;height:auto;max-width:100%}
+@media (max-width:900px){.problem .wrap{grid-template-columns:1fr}}
+
+/* video */
+.video-box{position:relative;border-radius:22px;overflow:hidden;box-shadow:var(--shadow);background:#000;aspect-ratio:16/9;max-width:100%;margin-top:36px}
+.video-box video{width:100%;height:100%;display:block;object-fit:cover}
+.play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(0deg,rgba(0,0,0,.35),rgba(0,0,0,0) 55%);border:0;cursor:pointer;color:#fff}
+.play span{width:92px;height:92px;border-radius:50%;background:rgba(255,255,255,.95);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 40px rgba(0,0,0,.35);transition:transform .2s}
+.play:hover span{transform:scale(1.06)}
+.play svg{width:36px;height:36px;color:#146B68;margin-inline-start:6px}
+.play small{position:absolute;bottom:18px;inset-inline-start:22px;font:600 14px var(--f-lat);background:rgba(0,0,0,.45);padding:4px 10px;border-radius:8px}
+.video-note{margin-top:12px;font-size:13px;color:var(--muted)}
+
+/* steps */
+.steps{display:grid;grid-template-columns:.85fr 1.15fr;gap:56px;margin-top:44px;align-items:start}
+.step-list{display:grid;gap:14px}
+.step{display:grid;grid-template-columns:auto 1fr;gap:16px;padding:22px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);cursor:pointer;text-align:start;font:inherit;color:inherit;transition:border-color .2s,box-shadow .2s}
+.step .n{width:40px;height:40px;border-radius:12px;background:var(--mint);color:var(--primary);display:flex;align-items:center;justify-content:center;font:600 16px var(--f-data)}
+.step h3{font-size:20px;font-weight:700}
+.step p{color:var(--muted);margin-top:4px;font-size:15px}
+.step[aria-selected="true"]{border-color:var(--primary);box-shadow:0 0 0 4px color-mix(in srgb,var(--primary) 14%,transparent)}
+.step[aria-selected="true"] .n{background:var(--primary);color:var(--primary-ink)}
+.frame{position:sticky;top:96px;border-radius:16px;overflow:hidden;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow)}
+.frame-bar{display:flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-bottom:1px solid var(--line);direction:ltr}
+.frame-bar i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.frame-bar .url{margin-left:12px;flex:1;max-width:420px;height:24px;border-radius:7px;background:var(--bg);border:1px solid var(--line);font:500 12px var(--f-lat);color:var(--muted);display:flex;align-items:center;padding:0 10px;overflow:hidden;white-space:nowrap}
+.shots{position:relative;aspect-ratio:16/9;max-width:100%}
+.shots img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transition:opacity .45s ease,transform .6s ease;transform:scale(1.02)}
+.shots img.on{opacity:1;transform:none}
+.shots img:first-child{position:relative}
+@media (max-width:900px){.steps{grid-template-columns:1fr}.frame{position:relative;top:0}}
+
+/* freshness */
+.fresh{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.meter{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:28px;box-shadow:var(--shadow)}
+.meter-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.meter-top .chip{font-size:16px;padding:8px 16px 8px 12px}
+.meter-top .chip svg{width:20px;height:20px}
+.age-big{font:600 15px var(--f-data);color:var(--muted)}
+.scale{position:relative;margin-top:30px;height:14px;border-radius:7px;display:flex;overflow:hidden}
+.scale div{height:100%}
+.ticks{position:relative;height:26px;margin-top:8px;font:500 12px var(--f-data);color:var(--muted)}
+.ticks span{position:absolute;transform:translateX(50%);white-space:nowrap}
+html.en .ticks span{transform:translateX(-50%)}
+#ageRange{width:100%;margin-top:18px;accent-color:var(--primary);height:28px}
+.meter-out{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.meter-out div{border:1px dashed var(--line);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--muted)}
+.meter-out b{display:block;color:var(--ink);font-size:16px}
+.rules{display:grid;gap:12px;margin-top:26px;padding:0;list-style:none}
+.rules li{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start}
+.rules svg{width:22px;height:22px;color:var(--primary);margin-top:4px}
+@media (max-width:900px){.fresh{grid-template-columns:1fr}}
+
+/* pharmacies */
+.ph-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}
+.seg{display:inline-flex;gap:6px;padding:6px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);margin-top:28px}
+.seg span{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;font-weight:600;font-size:14px;color:var(--muted);border:1.5px solid transparent;transition:all .25s}
+.seg span svg{width:16px;height:16px}
+.seg span.sel-ok{background:var(--ok-bg);color:var(--ok);border-color:var(--ok)}
+.seg span.sel-warn{background:var(--warn-bg);color:var(--warn);border-color:var(--warn)}
+.seg span.sel-bad{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
+.timer{display:inline-flex;align-items:baseline;gap:10px;margin-top:22px;font-size:15px;color:var(--muted)}
+.timer b{font:600 40px var(--f-data);color:var(--ink)}
+.shot-card{border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);background:var(--surface)}
+.marquee{margin-top:72px;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.mq-track{display:flex;gap:16px;width:max-content;animation:mq 38s linear infinite}
+html[dir] .mq-track{direction:ltr}
+.marquee:hover .mq-track{animation-play-state:paused}
+@keyframes mq{to{transform:translateX(-50%)}}
+.sign{display:flex;align-items:center;gap:12px;padding:12px 18px 12px 12px;border-radius:16px;background:var(--surface);border:1px solid var(--line);direction:rtl;min-width:220px}
+html.en .sign{direction:ltr}
+.sign svg{width:46px;height:46px;flex:none}
+.sign b{display:block;font-size:15px}
+.sign small{color:var(--muted);font-size:12px}
+.sign.you{border-style:dashed;border-color:var(--primary);background:var(--mint)}
+.mq-note{text-align:center;color:var(--muted);font-size:13px;margin-top:14px}
+@media (max-width:900px){.ph-grid{grid-template-columns:1fr}}
+
+/* partners */
+.partners .wrap{display:grid;grid-template-columns:.95fr 1.05fr;gap:56px;align-items:center}
+.ticks-list{list-style:none;padding:0;margin:26px 0 0;display:grid;gap:12px}
+.ticks-list li{display:flex;gap:12px;align-items:flex-start}
+.ticks-list svg{width:22px;height:22px;color:var(--glow);flex:none;margin-top:4px}
+.counter{display:flex;gap:28px;flex-wrap:wrap;margin-top:30px}
+.counter div{min-width:0}
+.counter b{display:block;font:600 40px var(--f-data);color:#fff}
+.counter small{color:var(--band-muted);font-size:13px}
+.partners .shot-card{border-color:#1F3A36}
+@media (max-width:900px){.partners .wrap{grid-template-columns:1fr}}
+
+/* principles */
+.pr{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:36px}
+.pr div{padding:22px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line)}
+.pr svg{width:28px;height:28px;color:var(--primary)}
+.pr b{display:block;font-size:17px;margin-top:12px}
+.pr p{color:var(--muted);font-size:14px;margin-top:4px}
+@media (max-width:900px){.pr{grid-template-columns:1fr 1fr}}
+@media (max-width:480px){.pr{grid-template-columns:1fr}}
+
+/* final cta */
+.final{text-align:center}
+.final h2{font-size:clamp(32px,5vw,58px)}
+.final .lead{margin:16px auto 0}
+.final .cta-row{justify-content:center}
+.foot{border-top:1px solid var(--line);padding-block:28px;color:var(--muted);font-size:13px}
+.foot .wrap{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;align-items:center}
+.foot p{max-width:70ch}
+
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<div id="app" dir="rtl">
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="مَدَد"><img src="assets/logo-mark.png" alt="" width="66" height="34"><span>مَدَد</span></a>
+    <nav class="nav" aria-label="أقسام الصفحة">
+      <a href="#how"><span data-l="ar">كيف يعمل</span><span data-l="en">How it works</span></a>
+      <a href="#fresh"><span data-l="ar">حداثة البلاغ</span><span data-l="en">Freshness</span></a>
+      <a href="#pharmacies"><span data-l="ar">للصيدليات</span><span data-l="en">Pharmacies</span></a>
+      <a href="#partners"><span data-l="ar">للشركاء</span><span data-l="en">Partners</span></a>
+    </nav>
+    <button class="lang" id="langBtn" type="button"><span data-l="ar">EN</span><span data-l="en">عربي</span></button>
+    <a class="btn btn-primary app-link" data-path="/" href="https://madad-6p2.pages.dev/" target="_blank" rel="noopener">
+      <span class="lbl"><span data-l="ar">افتح مَدَد</span><span data-l="en">Open MADAD</span></span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flip"><path d="M7 17 17 7M8 7h9v9"/></svg>
+    </a>
+  </div>
+</header>
+
+<main id="top">
+<!-- HERO -->
+<section class="hero">
+  <canvas id="pills" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div>
+      <span class="eyebrow"><span data-l="ar">غزة · الضفة الغربية · مجاني</span><span data-l="en">Gaza · West Bank · Free</span></span>
+      <h1>
+        <span data-l="ar">اعرف أين أُبلغ عن توفر دوائك، <em>ومتى.</em></span>
+        <span data-l="en">Know where your medicine was reported available, <em>and when.</em></span>
+      </h1>
+      <p class="lead">
+        <span data-l="ar">مَدَد موقع ويب يجمع ما تُبلغ عنه الصيدليات من توفر الأدوية، مع وقت آخر تحديث لكل بلاغ. ابحث، قارن، ثم اتصل واذهب. الصرف يتم داخل الصيدلية.</span>
+        <span data-l="en">MADAD is a website that gathers what pharmacies report about medicine availability, with the time of every report. Search, compare, then call and go. Dispensing happens at the pharmacy.</span>
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary app-link" data-path="/" href="https://madad-6p2.pages.dev/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <span data-l="ar">ابحث عن دوائك الآن</span><span data-l="en">Search for your medicine</span>
+        </a>
+        <a class="btn btn-ghost" href="#video">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
+          <span data-l="ar">شاهد الفيديو</span><span data-l="en">Watch the video</span>
+        </a>
+      </div>
+      <div class="facts">
+        <span><b class="data">0$</b> <span data-l="ar">بلا رسوم، بلا تنزيل</span><span data-l="en">no fees, no download</span></span>
+        <span><b class="data">16</b> <span data-l="ar">محافظة</span><span data-l="en">governorates</span></span>
+        <span><b class="data">24 / 72</b> <span data-l="ar">ساعة: حديث / غير مؤكد</span><span data-l="en">hours: fresh / unconfirmed</span></span>
+      </div>
+    </div>
+
+    <div class="board" aria-label="مثال حي على البلاغات">
+      <span class="demo-tag"><span data-l="ar">بيانات تجريبية</span><span data-l="en">Demo data</span></span>
+      <div class="board-h">
+        <strong><span data-l="ar">بلاغات التوفر</span><span data-l="en">Availability reports</span></strong>
+        <span class="live"><i></i><span data-l="ar">الوقت يمرّ… والحالة تتغيّر</span><span data-l="en">Time passes, status changes</span></span>
+      </div>
+      <ul class="rows" id="rows"></ul>
+      <div class="board-f">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <span><span data-l="ar">كل حالة تظهر مع وقتها. البلاغ القديم لا يظهر مؤكدًا أبدًا.</span><span data-l="en">Every status shows its time. An old report never shows as confirmed.</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="band problem sec">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow"><span data-l="ar">المشكلة</span><span data-l="en">The problem</span></span>
+      <h2 style="margin-top:12px">
+        <span data-l="ar"><span class="ln">دواءٌ واحد.</span><span class="ln">صيدلياتٌ كثيرة.</span><span class="ln dim">بلا معلومة.</span></span>
+        <span data-l="en"><span class="ln">One medicine.</span><span class="ln">Many pharmacies.</span><span class="ln dim">No information.</span></span>
+      </h2>
+      <p class="lead" style="margin-top:20px">
+        <span data-l="ar">في غزة، يعني البحث عن دواء مزمن كالإنسولين أن تمشي من صيدلية إلى أخرى وأنت لا تعرف إن كان موجودًا. مَدَد يختصر الطريق قبل أن تبدأه.</span>
+        <span data-l="en">In Gaza, finding a chronic medicine like insulin means walking from one pharmacy to the next without knowing if it is there. MADAD shortens the route before you take it.</span>
+      </p>
+    </div>
+    <svg id="walk" viewBox="0 0 640 400" role="img" aria-label="مسار بين صيدليات">
+      <defs><mask id="reveal"><path id="walkMaskPath" d="M70 300 L190 110 L330 300 L460 120 L590 260" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="0"/></mask></defs>
+      <path d="M70 300 L190 110 L330 300 L460 120 L590 260" fill="none" stroke="var(--band-muted)" stroke-width="3" stroke-dasharray="2 12" stroke-linecap="round" mask="url(#reveal)"/>
+      <g id="walkPins"></g>
+      <circle id="walker" r="9" fill="var(--band-ink)"/>
+    </svg>
+  </div>
+</section>
+
+<!-- VIDEO -->
+<section class="sec" id="video">
+  <div class="wrap">
+    <span class="eyebrow"><span data-l="ar">مَدَد في 71 ثانية</span><span data-l="en">MADAD in 71 seconds</span></span>
+    <h2 style="margin-top:12px"><span data-l="ar">شاهد كيف يعمل</span><span data-l="en">See how it works</span></h2>
+    <div class="video-box">
+      <video id="vid" src="assets/madad-promo-720.mp4" poster="assets/video-poster.jpg" preload="none" playsinline controls></video>
+      <button class="play" id="playBtn" type="button" aria-label="تشغيل الفيديو"><span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></span><small class="data">1:11</small></button>
+    </div>
+    <p class="video-note"><span data-l="ar">الفيديو بالعربية، ويعمل بالصوت. المشاهد ببيانات تجريبية.</span><span data-l="en">The video is in Arabic with sound. Scenes use demo data.</span></p>
+  </div>
+</section>
+
+<!-- HOW -->
+<section class="sec" id="how" style="padding-top:24px">
+  <div class="wrap">
+    <span class="eyebrow"><span data-l="ar">ثلاث خطوات</span><span data-l="en">Three steps</span></span>
+    <h2 style="margin-top:12px"><span data-l="ar">من البحث إلى باب الصيدلية</span><span data-l="en">From search to the pharmacy door</span></h2>
+    <div class="steps">
+      <div class="step-list" role="tablist" aria-label="الخطوات">
+        <button class="step" role="tab" aria-selected="true" data-shot="0" type="button"><span class="n">1</span><span><h3><span data-l="ar">ابحث</span><span data-l="en">Search</span></h3><p><span data-l="ar">بالاسم التجاري أو المادة الفعالة أو الباركود. «انسولين» و«إنسولين» و«insulin» تعطي نفس النتيجة.</span><span data-l="en">By brand name, active ingredient or barcode. Arabic spelling variants and English give the same results.</span></p></span></button>
+        <button class="step" role="tab" aria-selected="false" data-shot="1" type="button"><span class="n">2</span><span><h3><span data-l="ar">قارن وقت التحديث</span><span data-l="en">Compare update times</span></h3><p><span data-l="ar">الصيدليات مرتبة حسب الحالة وحداثة البلاغ، مع السعر إن أبلغت عنه الصيدلية.</span><span data-l="en">Pharmacies are ordered by status and report age, with the price if the pharmacy reported one.</span></p></span></button>
+        <button class="step" role="tab" aria-selected="false" data-shot="2" type="button"><span class="n">3</span><span><h3><span data-l="ar">اتصل واذهب، أو فعّل التنبيه</span><span data-l="en">Call and go, or set an alert</span></h3><p><span data-l="ar">اتصال أو اتجاهات بضغطة. وإن لم يتوفر، يصلك إشعار عندما تُبلغ صيدلية عنه.</span><span data-l="en">Call or get directions in one tap. If it is not available, you get notified when a pharmacy reports it.</span></p></span></button>
+      </div>
+      <div class="frame">
+        <div class="frame-bar"><i></i><i></i><i></i><span class="url" id="frameUrl">madad-6p2.pages.dev/search?q=انسولين</span></div>
+        <div class="shots" id="shots">
+          <img class="on" src="assets/search.webp" alt="نتائج البحث عن إنسولين في خان يونس" width="1600" height="900" loading="lazy">
+          <img src="assets/medicine.webp" alt="صفحة دواء مع الصيدليات المبلِّغة وأوقات التحديث" width="1600" height="900" loading="lazy">
+          <img src="assets/noresult.webp" alt="صفحة لا نتائج مع زر نبّهني عند التوفر" width="1600" height="900" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FRESHNESS -->
+<section class="sec" id="fresh" style="background:var(--surface);border-block:1px solid var(--line)">
+  <div class="wrap fresh">
+    <div>
+      <span class="eyebrow"><span data-l="ar">قلب المنصة</span><span data-l="en">The core idea</span></span>
+      <h2 style="margin-top:12px"><span data-l="ar">عمر البلاغ يحدد ما يراه المريض</span><span data-l="en">The age of a report decides what patients see</span></h2>
+      <p class="lead" style="margin-top:16px"><span data-l="ar">الصيدلي يُدخل الحالة، والنظام يحسب الحداثة. لا تستطيع الصيدلية ولا الإدارة تجاوز ذلك.</span><span data-l="en">The pharmacist enters the status; the system computes freshness. Neither the pharmacy nor the admins can override it.</span></p>
+      <ul class="rules">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg><span><span data-l="ar">حتى 24 ساعة: تظهر الحالة كما أبلغت بها الصيدلية.</span><span data-l="en">Up to 24 hours: the status shows as reported.</span></span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span><span data-l="ar">من 24 إلى 72 ساعة: «يحتاج تحديث» مع آخر بلاغ.</span><span data-l="en">24 to 72 hours: “needs update”, with the last report.</span></span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></svg><span><span data-l="ar">بعد 72 ساعة: «غير مؤكد»، ويختفي السعر.</span><span data-l="en">After 72 hours: “unconfirmed”, and the price is hidden.</span></span></li>
+      </ul>
+    </div>
+    <div class="meter">
+      <div class="meter-top">
+        <span class="chip c-ok" id="mChip"></span>
+        <span class="age-big" id="mAge"></span>
+      </div>
+      <div class="scale" aria-hidden="true">
+        <div style="flex:24;background:color-mix(in srgb,var(--ok) 55%,var(--surface))"></div>
+        <div style="flex:48;background:color-mix(in srgb,var(--warn) 45%,var(--surface))"></div>
+        <div style="flex:48;background:color-mix(in srgb,var(--unk) 40%,var(--surface))"></div>
+      </div>
+      <div class="ticks" aria-hidden="true" id="ticks"></div>
+      <label for="ageRange" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"><span data-l="ar">عمر البلاغ بالساعات</span><span data-l="en">Report age in hours</span></label>
+      <input type="range" id="ageRange" min="0" max="120" step="1" value="6">
+      <div class="meter-out">
+        <div><span data-l="ar">ما أدخله الصيدلي</span><span data-l="en">Pharmacist entered</span><b><span data-l="ar">متوفر · 9.50 ₪</span><span data-l="en">Available · 9.50 ₪</span></b></div>
+        <div><span data-l="ar">ما يراه المريض</span><span data-l="en">Patient sees</span><b id="mSees"></b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHARMACIES -->
+<section class="sec" id="pharmacies">
+  <div class="wrap">
+    <div class="ph-grid">
+      <div>
+        <span class="eyebrow"><span data-l="ar">للصيدليات</span><span data-l="en">For pharmacies</span></span>
+        <h2 style="margin-top:12px"><span data-l="ar">حدّث توفر أدويتك في أقل من 30 ثانية</span><span data-l="en">Update your stock in under 30 seconds</span></h2>
+        <p class="lead" style="margin-top:16px"><span data-l="ar">ثلاثة أزرار لكل دواء، وزر «تأكيد الكل كما هو». الكمية تبقى داخلية لا يراها أحد، والسعر اختياري. ويظهر لك ما يبحث عنه الناس في منطقتك ولا يجدونه.</span><span data-l="en">Three buttons per medicine, plus “confirm all as is”. Quantities stay private and prices are optional. You also see what people nearby search for and cannot find.</span></p>
+        <div class="seg" id="seg" aria-hidden="true">
+          <span data-k="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg><span data-l="ar">متوفر</span><span data-l="en">Available</span></span>
+          <span data-k="warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 17h.01"/></svg><span data-l="ar">محدود</span><span data-l="en">Limited</span></span>
+          <span data-k="bad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg><span data-l="ar">غير متوفر</span><span data-l="en">Unavailable</span></span>
+        </div>
+        <div><span class="timer"><b id="tm">0:00</b><span data-l="ar">ثوانٍ حتى يظهر التحديث للعامة</span><span data-l="en">seconds until the update is public</span></span></div>
+        <div class="cta-row">
+          <a class="btn btn-primary app-link" data-path="/for-organizations" href="https://madad-6p2.pages.dev/for-organizations" target="_blank" rel="noopener"><span data-l="ar">سجّل صيدليتك مجانًا</span><span data-l="en">Register your pharmacy for free</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="flip"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+        </div>
+      </div>
+      <div class="shot-card"><img src="assets/ph-update.webp" alt="شاشة تحديث التوفر في بوابة الصيدلية" width="1600" height="900" loading="lazy"></div>
+    </div>
+
+    <div class="marquee" aria-hidden="true"><div class="mq-track" id="mq"></div></div>
+    <p class="mq-note"><span data-l="ar">أسماء وشعارات تجريبية. مكان شعار صيدليتك هنا بعد التوثيق.</span><span data-l="en">Demo names and logos. Your pharmacy’s logo goes here once verified.</span></p>
+  </div>
+</section>
+
+<!-- PARTNERS -->
+<section class="band partners sec" id="partners">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow"><span data-l="ar">للمؤسسات والممولين</span><span data-l="en">For organizations and funders</span></span>
+      <h2 style="margin-top:12px"><span data-l="ar">خريطة الطلب غير الملبّى</span><span data-l="en">The unmet demand map</span></h2>
+      <p class="lead" style="margin-top:16px"><span data-l="ar">كل بحث لم يجد دواءً يتحول إلى رقم مجمّع حسب الدواء والمحافظة. بيانات لا يملكها أحد اليوم، ويمكن أن توجّه شحنات الأدوية والمساعدات.</span><span data-l="en">Every search that finds nothing becomes an aggregate count by medicine and governorate. Data nobody has today, which can guide medicine and aid shipments.</span></p>
+      <ul class="ticks-list">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span><span data-l="ar">بلا أي بيانات شخصية في سجل البحث</span><span data-l="en">No personal data in search logs</span></span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3z"/><path d="m14 14 7 7M21 14l-7 7"/></svg><span><span data-l="ar">الخلايا الأقل من 5 عمليات بحث مخفية</span><span data-l="en">Cells under 5 searches are hidden</span></span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg><span><span data-l="ar">تصدير CSV لمشاركته مع الشركاء</span><span data-l="en">CSV export to share with partners</span></span></li>
+      </ul>
+      <div class="counter">
+        <div><b class="data" data-count="470">470</b><small><span data-l="ar">بحث بلا نتيجة · 30 يومًا · تجريبي</span><span data-l="en">searches with no result · 30 days · demo</span></small></div>
+        <div><b class="data" data-count="15">15</b><small><span data-l="ar">دواء مطلوب · تجريبي</span><span data-l="en">medicines in demand · demo</span></small></div>
+      </div>
+    </div>
+    <div class="shot-card"><img src="assets/ad-unmet.webp" alt="خريطة الطلب غير الملبّى في لوحة الإدارة" width="1600" height="900" loading="lazy"></div>
+  </div>
+</section>
+
+<!-- PRINCIPLES -->
+<section class="sec">
+  <div class="wrap">
+    <span class="eyebrow"><span data-l="ar">ما لا يفعله مَدَد</span><span data-l="en">What MADAD does not do</span></span>
+    <h2 style="margin-top:12px"><span data-l="ar">معلومة فقط. والقرار للصيدلي.</span><span data-l="en">Information only. The pharmacist decides.</span></h2>
+    <div class="pr">
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.4 12h11l2-8H6"/><path d="m3 3 18 18"/></svg><b><span data-l="ar">لا بيع</span><span data-l="en">No sales</span></b><p><span data-l="ar">لا سلة ولا دفع ولا حجز.</span><span data-l="en">No cart, payment or reservation.</span></p></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/><path d="m2 2 20 20"/></svg><b><span data-l="ar">لا توصيل</span><span data-l="en">No delivery</span></b><p><span data-l="ar">الصرف داخل الصيدلية فقط.</span><span data-l="en">Dispensing happens at the pharmacy.</span></p></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.5 20.5 3.5 13.5a5 5 0 0 1 7-7l7 7a5 5 0 0 1-7 7z"/><path d="m8.5 8.5 7 7"/></svg><b><span data-l="ar">لا نصيحة طبية</span><span data-l="en">No medical advice</span></b><p><span data-l="ar">لا بدائل ولا جرعات ولا تشخيص.</span><span data-l="en">No substitutes, doses or diagnosis.</span></p></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 13c0 5-3.5 7.5-7.7 9-4.2-1.5-7.8-4-7.8-9V6c2 0 4.5-1.2 7.8-3.5C15.5 4.8 18 6 20 6z"/><path d="m9 12 2 2 4-4"/></svg><b><span data-l="ar">توثيق قبل النشر</span><span data-l="en">Verified first</span></b><p><span data-l="ar">لا تظهر مؤسسة قبل مراجعة وثائقها.</span><span data-l="en">No organization appears before review.</span></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section class="sec final" style="padding-top:24px">
+  <div class="wrap">
+    <h2><span data-l="ar">دواؤك قد يكون أقرب مما تظن.</span><span data-l="en">Your medicine may be closer than you think.</span></h2>
+    <p class="lead"><span data-l="ar">افتح مَدَد من أي متصفح، بلا حساب وبلا تنزيل.</span><span data-l="en">Open MADAD in any browser. No account, no download.</span></p>
+    <div class="cta-row">
+      <a class="btn btn-primary app-link" data-path="/" href="https://madad-6p2.pages.dev/" target="_blank" rel="noopener"><span data-l="ar">افتح مَدَد</span><span data-l="en">Open MADAD</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="flip"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+      <a class="btn btn-ghost app-link" data-path="/for-organizations" href="https://madad-6p2.pages.dev/for-organizations" target="_blank" rel="noopener"><span data-l="ar">لديك صيدلية أو مؤسسة؟</span><span data-l="en">Run a pharmacy or organization?</span></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span class="brand" style="font-size:20px"><img src="assets/logo-mark.png" alt="" width="54" height="28" style="height:28px">مَدَد · MADAD</span>
+    <p><span data-l="ar">تعتمد معلومات التوفر على آخر تحديث أبلغت عنه الصيدلية. يُرجى الاتصال بالصيدلية أو زيارتها للتأكد. يخضع الصرف لتقدير الصيدلي المهني والأنظمة المعمول بها. الأسماء والأرقام في هذه الصفحة تجريبية.</span><span data-l="en">Availability is based on the pharmacy's latest reported update. Please call or visit to confirm. Dispensing is subject to the pharmacist's professional judgement and applicable regulations. Names and figures on this page are demo data.</span></p>
+  </div>
+</footer>
+</div>
+
+<script>
+(() => {
+  // Where every "open MADAD" button points. Change this one line when app.<your-domain> is ready.
+  const APP_URL = 'https://madad-6p2.pages.dev';
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const app = $('#app');
+
+  // ---------- links + UTM so visits from this page can be counted ----------
+  function setLinks() {
+    const src = new URLSearchParams(location.search).get('src') || 'landing';
+    $$('.app-link').forEach((a) => { const u = new URL(APP_URL + (a.dataset.path || '/')); u.searchParams.set('utm_source', src); a.href = u.toString(); });
+  }
+  setLinks();
+
+  // ---------- language ----------
+  const IC = {
+    ok: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>',
+    lim: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 17h.01"/></svg>',
+    clk: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
+    q: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></svg>',
+    x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg>'
+  };
+  let lang = 'ar';
+  try { if (localStorage.getItem('madad.landing.lang') === 'en') lang = 'en'; } catch (e) {}
+  const T = (ar, en) => (lang === 'ar' ? ar : en);
+  function applyLang() {
+    document.documentElement.classList.toggle('en', lang === 'en');
+    document.documentElement.lang = lang; app.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    try { localStorage.setItem('madad.landing.lang', lang); } catch (e) {}
+    renderBoard(); renderMeter(); renderTicks(); buildMarquee();
+  }
+  $('#langBtn').addEventListener('click', () => { lang = lang === 'ar' ? 'en' : 'ar'; applyLang(); });
+
+  // the freshness rule, same thresholds as src/lib/freshness.ts
+  function display(rep, h) {
+    if (h > 72) return 'unk';
+    if (rep === 'bad') return 'bad';
+    if (h > 24) return 'warn';
+    return rep; // ok | lim
+  }
+  function chipHTML(state, last) {
+    const m = { ok: ['c-ok', IC.ok, 'متوفر', 'Available'], lim: ['c-warn', IC.lim, 'كمية محدودة', 'Limited'], warn: ['c-warn', IC.clk, 'يحتاج تحديث', 'Needs update'], unk: ['c-unk', IC.q, 'غير مؤكد', 'Unconfirmed'], bad: ['c-bad', IC.x, 'غير متوفر', 'Unavailable'] }[state];
+    return [m[0], m[1] + T(m[2], m[3])];
+  }
+  function ageText(h) {
+    if (h < 1) return T('حُدّث الآن', 'Updated just now');
+    if (h < 24) return T(`حُدّث قبل ${Math.floor(h)} س`, `Updated ${Math.floor(h)} h ago`);
+    const d = Math.floor(h / 24); return T(`حُدّث قبل ${d} ${d === 1 ? 'يوم' : d === 2 ? 'يومين' : 'أيام'}`, `Updated ${d} day${d > 1 ? 's' : ''} ago`);
+  }
+
+  // ---------- live board ----------
+  const ROWS = [
+    { ph: ['صيدلية النور', 'Al-Noor Pharmacy'], area: ['خان يونس · وسط المدينة', 'Khan Younis · Center'], med: ['إنسولين نوفورابيد', 'NovoRapid insulin'], rep: 'ok', h: 0.3, price: '42.00 ₪', speed: 7 },
+    { ph: ['صيدلية الشفاء', 'Al-Shifa Pharmacy'], area: ['غزة · الرمال', 'Gaza · Rimal'], med: ['ليفوثيروكسين 100', 'Levothyroxine 100'], rep: 'lim', h: 14, price: '18.50 ₪', speed: 9 },
+    { ph: ['صيدلية الياسمين', 'Al-Yasmin Pharmacy'], area: ['دير البلح', 'Deir al-Balah'], med: ['سالبوتامول بخاخ', 'Salbutamol inhaler'], rep: 'ok', h: 31, price: '', speed: 11 },
+    { ph: ['صيدلية الرحمة', 'Al-Rahma Pharmacy'], area: ['رفح', 'Rafah'], med: ['أموكسيسيلين 500', 'Amoxicillin 500'], rep: 'ok', h: 66, price: '12.00 ₪', speed: 8 },
+  ];
+  const ul = $('#rows');
+  ROWS.forEach(() => { const li = document.createElement('li'); li.className = 'row'; li.innerHTML = '<span class="ph"></span><span class="chip"></span><span class="med"></span>'; ul.appendChild(li); });
+  function renderBoard() {
+    ROWS.forEach((r, i) => {
+      const li = ul.children[i]; const st = display(r.rep, r.h); const [cls, html] = chipHTML(st);
+      li.querySelector('.ph').innerHTML = `${T(r.ph[0], r.ph[1])} <span style="font-weight:400;color:var(--warn);font-size:12px">${T('(تجريبي)', '(demo)')}</span><small>${T(r.area[0], r.area[1])}</small>`;
+      const chip = li.querySelector('.chip'); chip.className = 'chip ' + cls; chip.innerHTML = html;
+      const showPrice = r.price && r.h <= 72;
+      const last = st === 'warn' ? `<span>${T('آخر بلاغ: ', 'Last report: ')}${r.rep === 'lim' ? T('كمية محدودة', 'limited') : T('متوفر', 'available')}</span>` : '';
+      li.querySelector('.med').innerHTML = `<b>${T(r.med[0], r.med[1])}</b><span class="age data">${ageText(r.h)}</span>${last}${showPrice ? `<span class="price data">${r.price}</span>` : ''}`;
+    });
+  }
+  let lastT = performance.now();
+  function tickBoard() {
+    const now = performance.now(); const dt = Math.min(0.5, (now - lastT) / 1000); lastT = now;
+    ROWS.forEach((r, i) => {
+      r.h += dt * r.speed; // simulated hours pass quickly
+      if (r.h > 92) { r.h = 0; const li = ul.children[i]; li.classList.add('fresh-flash'); setTimeout(() => li.classList.remove('fresh-flash'), 900); }
+    });
+    renderBoard();
+  }
+  renderBoard();
+  if (!reduce) setInterval(tickBoard, 250);
+
+  // ---------- floating capsules (canvas) ----------
+  const cv = $('#pills'), cx = cv.getContext('2d');
+  let W = 0, H = 0, caps = [];
+  function sizeCanvas() {
+    const r = cv.getBoundingClientRect(), d = Math.min(2, devicePixelRatio || 1);
+    W = r.width; H = r.height; cv.width = W * d; cv.height = H * d; cx.setTransform(d, 0, 0, d, 0, 0);
+    const n = W < 700 ? 7 : 14; caps = [];
+    for (let i = 0; i < n; i++) caps.push({ x: Math.random() * W, y: Math.random() * H, len: 26 + Math.random() * 34, a: Math.random() * Math.PI, va: (Math.random() - .5) * .006, vy: -(0.08 + Math.random() * 0.18), vx: (Math.random() - .5) * .08, o: .10 + Math.random() * .16 });
+  }
+  function tok(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '#146B68'; }
+  function drawCaps() {
+    cx.clearRect(0, 0, W, H);
+    const c1 = tok('--primary'), c2 = tok('--glow');
+    caps.forEach((p) => {
+      const w = p.len, h = w * .42;
+      cx.save(); cx.translate(p.x, p.y); cx.rotate(p.a); cx.globalAlpha = p.o;
+      cx.beginPath(); cx.roundRect(-w / 2, -h / 2, w, h, h / 2); cx.fillStyle = c2; cx.fill();
+      cx.beginPath(); cx.roundRect(-w / 2, -h / 2, w / 2, h, [h / 2, 0, 0, h / 2]); cx.fillStyle = c1; cx.fill();
+      cx.restore();
+      if (!reduce) { p.y += p.vy; p.x += p.vx; p.a += p.va; if (p.y < -60) { p.y = H + 60; p.x = Math.random() * W; } }
+    });
+    if (!reduce) requestAnimationFrame(drawCaps);
+  }
+  sizeCanvas(); drawCaps(); addEventListener('resize', () => { sizeCanvas(); if (reduce) drawCaps(); });
+
+  // ---------- problem walk (scroll-scrubbed) ----------
+  const PINS = [[70, 300], [190, 110], [330, 300], [460, 120], [590, 260]];
+  const g = $('#walkPins');
+  PINS.forEach(([x, y], i) => {
+    g.insertAdjacentHTML('beforeend', `<g transform="translate(${x} ${y})"><rect x="-26" y="-26" width="52" height="52" rx="14" fill="rgba(231,243,239,.08)" stroke="rgba(231,243,239,.35)" stroke-width="1.5"/><path d="M0 -10v20M-10 0h20" stroke="var(--band-ink)" stroke-width="2.5" stroke-linecap="round"/><g class="qm" data-i="${i}" opacity="0"><circle cx="24" cy="-24" r="13" fill="#2B4644" stroke="#7B8986" stroke-width="1.5"/><text x="24" y="-19" text-anchor="middle" font-size="16" font-weight="700" fill="#D7DEDC" font-family="IBM Plex Sans Arabic, sans-serif">؟</text></g></g>`);
+  });
+  const maskPath = $('#walkMaskPath'), route = maskPath, walker = $('#walker'), svgWalk = $('#walk');
+  const segs = [0]; for (let i = 1; i < PINS.length; i++) segs.push(segs[i - 1] + Math.hypot(PINS[i][0] - PINS[i - 1][0], PINS[i][1] - PINS[i - 1][1]));
+  const total = segs[segs.length - 1];
+  const realLen = route.getTotalLength();
+  function setWalk(k) {
+    maskPath.setAttribute('stroke-dashoffset', String(1 - k));
+    const p = route.getPointAtLength(k * realLen); walker.setAttribute('cx', p.x); walker.setAttribute('cy', p.y);
+    $$('.qm', g).forEach((q) => { const i = +q.dataset.i; q.setAttribute('opacity', k * total >= segs[i] - 1 ? 1 : 0); });
+  }
+  function onScrollWalk() {
+    const r = svgWalk.getBoundingClientRect(); const vh = innerHeight;
+    const k = Math.max(0, Math.min(1, (vh - r.top) / (vh * .9)));
+    setWalk(k);
+  }
+  if (reduce) setWalk(1); else { addEventListener('scroll', onScrollWalk, { passive: true }); onScrollWalk(); }
+
+  // ---------- video ----------
+  const vid = $('#vid'), playBtn = $('#playBtn');
+  playBtn.addEventListener('click', () => { playBtn.hidden = true; vid.play().catch(() => { playBtn.hidden = false; }); });
+  vid.addEventListener('play', () => { playBtn.hidden = true; });
+
+  // ---------- steps ----------
+  const urls = ['madad-6p2.pages.dev/search?q=انسولين', 'madad-6p2.pages.dev/medicine/insulin-aspart', 'madad-6p2.pages.dev/medicine/levothyroxine-100'];
+  const steps = $$('.step'), shots = $$('#shots img');
+  function pick(i) {
+    steps.forEach((s, j) => s.setAttribute('aria-selected', String(i === j)));
+    shots.forEach((s, j) => s.classList.toggle('on', i === j));
+    $('#frameUrl').textContent = urls[i];
+  }
+  steps.forEach((s, i) => s.addEventListener('click', () => { pick(i); stepAuto = false; }));
+  let stepAuto = !reduce, si = 0;
+  setInterval(() => { if (stepAuto) { si = (si + 1) % 3; pick(si); } }, 4200);
+
+  // ---------- freshness meter ----------
+  const range = $('#ageRange');
+  function renderTicks() {
+    const t = $('#ticks'); const pos = [[0, T('الآن', 'now')], [24, '24 ' + T('س', 'h')], [72, '72 ' + T('س', 'h')], [120, '120 ' + T('س', 'h')]];
+    t.innerHTML = pos.map(([h, l]) => `<span style="${lang === 'ar' ? 'right' : 'left'}:${(h / 120) * 100}%">${l}</span>`).join('');
+  }
+  function renderMeter() {
+    const h = +range.value; const st = display('ok', h); const [cls, html] = chipHTML(st);
+    const c = $('#mChip'); c.className = 'chip ' + cls; c.innerHTML = html;
+    $('#mAge').textContent = T(`عمر البلاغ: ${h} ساعة`, `Report age: ${h} h`);
+    $('#mSees').textContent = st === 'ok' ? T('متوفر · 9.50 ₪', 'Available · 9.50 ₪') : st === 'warn' ? T('يحتاج تحديث · 9.50 ₪', 'Needs update · 9.50 ₪') : T('غير مؤكد · بلا سعر', 'Unconfirmed · no price');
+  }
+  range.addEventListener('input', () => { meterAuto = false; renderMeter(); });
+  let meterAuto = !reduce, dir = 1;
+  const meterEl = $('.meter');
+  const io = new IntersectionObserver((es) => { es.forEach((e) => { meterEl.dataset.vis = e.isIntersecting ? '1' : ''; }); });
+  io.observe(meterEl);
+  setInterval(() => { if (!meterAuto || !meterEl.dataset.vis) return; let v = +range.value + dir * 2; if (v >= 110) dir = -1; if (v <= 2) dir = 1; range.value = v; renderMeter(); }, 90);
+
+  // ---------- pharmacy quick update demo ----------
+  const segEls = $$('#seg > span'); const tm = $('#tm');
+  const seq = [['bad', 0], ['ok', 1.4], ['ok', 2.6]];
+  let t0 = performance.now();
+  function segTick() {
+    const s = ((performance.now() - t0) / 1000) % 7;
+    const sel = s < 1.4 ? 'bad' : 'ok';
+    segEls.forEach((e) => { e.className = e.dataset.k === sel ? 'sel-' + sel : ''; });
+    const shown = Math.min(s, 4.2);
+    tm.textContent = `0:${String(Math.floor(shown)).padStart(2, '0')}`;
+    tm.style.color = s >= 4.2 ? 'var(--ok)' : '';
+  }
+  if (reduce) { segEls[0].className = 'sel-ok'; tm.textContent = '0:04'; } else setInterval(segTick, 120);
+
+  // ---------- pharmacy signage marquee (generic, demo) ----------
+  const SIGNS = [
+    ['cross', 'صيدلية النور', 'Al-Noor Pharmacy', 'خان يونس', 'Khan Younis'],
+    ['capsule', 'صيدلية الشفاء', 'Al-Shifa Pharmacy', 'غزة', 'Gaza'],
+    ['mortar', 'صيدلية الرحمة', 'Al-Rahma Pharmacy', 'رفح', 'Rafah'],
+    ['leaf', 'صيدلية الياسمين', 'Al-Yasmin Pharmacy', 'دير البلح', 'Deir al-Balah'],
+    ['drop', 'صيدلية الأمل', 'Al-Amal Pharmacy', 'خان يونس', 'Khan Younis'],
+    ['cross', 'صيدلية الهدى', 'Al-Huda Pharmacy', 'الخليل', 'Hebron'],
+    ['capsule', 'صيدلية البشرى', 'Al-Bushra Pharmacy', 'غزة', 'Gaza'],
+  ];
+  const ART = {
+    cross: (c, b) => `<rect width="46" height="46" rx="12" fill="${b}"/><path d="M19 10h8v9h9v8h-9v9h-8v-9h-9v-8h9z" fill="${c}"/>`,
+    capsule: (c, b) => `<rect width="46" height="46" rx="23" fill="${b}"/><g transform="rotate(-40 23 23)"><rect x="9" y="17" width="28" height="12" rx="6" fill="#fff"/><rect x="9" y="17" width="14" height="12" rx="6" fill="${c}"/><rect x="17" y="17" width="6" height="12" fill="${c}"/></g>`,
+    mortar: (c, b) => `<rect width="46" height="46" rx="12" fill="${b}"/><path d="M11 22h24a12 12 0 0 1-24 0z" fill="${c}"/><rect x="18" y="34" width="10" height="3" rx="1.5" fill="${c}"/><path d="m27 21 8-11" stroke="${c}" stroke-width="3.5" stroke-linecap="round"/>`,
+    leaf: (c, b) => `<rect width="46" height="46" rx="14" fill="${b}"/><path d="M13 33c0-12 8-20 21-20 0 13-8 21-20 21z" fill="${c}"/><path d="M15 31c5-5 9-9 15-14" stroke="#fff" stroke-width="2" stroke-linecap="round"/>`,
+    drop: (c, b) => `<rect width="46" height="46" rx="12" fill="${b}"/><path d="M23 9c6 8 10 13 10 18a10 10 0 0 1-20 0c0-5 4-10 10-18z" fill="${c}"/><path d="M19 27h8M23 23v8" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>`,
+  };
+  const PAL = [['#146B68', '#E4F3EE'], ['#23845B', '#E3F2EA'], ['#2D6A9F', '#E4EEF7'], ['#B4572E', '#FBEDE4'], ['#6B4FA3', '#EEE9F7']];
+  function buildMarquee() {
+    const one = SIGNS.map((s, i) => { const [c, b] = PAL[i % PAL.length]; return `<div class="sign"><svg viewBox="0 0 46 46">${ART[s[0]](c, b)}</svg><div><b>${T(s[1], s[2])}</b><small>${T(s[3], s[4])} · ${T('تجريبي', 'demo')}</small></div></div>`; }).join('')
+      + `<div class="sign you"><svg viewBox="0 0 46 46"><rect width="46" height="46" rx="12" fill="none" stroke="currentColor" stroke-dasharray="4 4" stroke-width="2"/><path d="M23 15v16M15 23h16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><div><b>${T('صيدليتك هنا', 'Your pharmacy')}</b><small>${T('بعد التوثيق', 'once verified')}</small></div></div>`;
+    $('#mq').innerHTML = one + one;
+  }
+
+  // ---------- counters ----------
+  const cio = new IntersectionObserver((es) => {
+    es.forEach((e) => { if (!e.isIntersecting || reduce) return; const el = e.target; const to = +el.dataset.count; const t1 = performance.now();
+      const step = (n) => { const k = Math.min(1, (n - t1) / 1200); el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); cio.unobserve(el); });
+  }, { threshold: .6 });
+  $$('[data-count]').forEach((el) => cio.observe(el));
+
+  applyLang();
+})();
+</script>
+
+</body>
+</html>
