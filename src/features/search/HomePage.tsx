@@ -8,6 +8,7 @@ import {
   Store,
   TrendingUp,
 } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
 import {
@@ -28,7 +29,7 @@ import {
 import { useLang } from "../../hooks/useLang";
 import { useNow } from "../../hooks/useNow";
 import { useOnline } from "../../hooks/useOnline";
-import { usePreferences } from "../../hooks/usePreferences";
+import { useDataSaver, usePreferences } from "../../hooks/usePreferences";
 import { formatRelative } from "../../lib/format";
 import { readLastSearch } from "./useSearchLog";
 
@@ -46,6 +47,9 @@ export default function HomePage() {
   const pharmacies = usePharmacies(gov);
   const area = useAreaLabel();
   const last = readLastSearch();
+  const saver = useDataSaver();
+  const [bannerFailed, setBannerFailed] = useState(false);
+  const showBanner = !saver && !bannerFailed;
   const medName = (id: string) =>
     pick(catalog.data?.medicines.find((m) => m.id === id));
 
@@ -58,9 +62,25 @@ export default function HomePage() {
   return (
     <div className="space-y-10">
       {/* Full-width band: breaks out of the content column to the shell edges (Stitch P-01). */}
-      <section className="-mt-8 mx-[calc(50%-50cqw)] bg-primary px-6 pt-14 pb-24 text-center text-white lg:pt-20 lg:pb-28">
-        <h1 className="text-hero mx-auto max-w-3xl">{t("home.title")}</h1>
-        <p className="mx-auto mt-3 max-w-2xl text-mint">{t("home.subtitle")}</p>
+      <section className="-mt-8 mx-[calc(50%-50cqw)] bg-primary text-center text-white">
+        {/* The banner (docs/brand/banner-original.jpg): skipped in data saver mode or when it cannot load. */}
+        {showBanner && (
+          <img
+            src="/brand/banner-1500.webp"
+            srcSet="/brand/banner-750.webp 750w, /brand/banner-1500.webp 1500w"
+            sizes="100vw"
+            width={1500}
+            height={558}
+            alt={t("home.bannerAlt")}
+            fetchPriority="high"
+            onError={() => setBannerFailed(true)}
+            className="mx-auto block h-auto w-full max-w-[1500px]"
+          />
+        )}
+        <div className={showBanner ? "px-6 pt-8 pb-24 lg:pt-10 lg:pb-28" : "px-6 pt-14 pb-24 lg:pt-20 lg:pb-28"}>
+          <h1 className="text-hero mx-auto max-w-3xl">{t("home.title")}</h1>
+          <p className="mx-auto mt-3 max-w-2xl text-mint">{t("home.subtitle")}</p>
+        </div>
       </section>
       <div className="relative z-10 mx-auto -mt-28 max-w-5xl px-2 lg:-mt-32">
         <SearchBar variant="hero" />

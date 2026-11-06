@@ -1,6 +1,7 @@
 // Builds the logo files from the approved logo (docs/brand/logo-original.jpg, on black):
 //   public/brand/logo-mark.png   the symbol (ribbon, capsule, cross) on a transparent background
 //   public/icons/icon-192.png, icon-512.png, maskable-512.png, favicon-48.png
+// and the P-01 banner (docs/brand/banner-original.jpg) as public/brand/banner-{750,1500}.webp
 // Run: npm run icons
 import { mkdirSync } from 'node:fs';
 import sharp from 'sharp';
@@ -51,4 +52,7 @@ await (await icon(512, 0.8)).toFile(out('icons/icon-512.png'));
 await (await icon(512, 0.6)).toFile(out('icons/maskable-512.png'));
 await sharp(mark).resize({ width: 48, height: 48, fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toFile(out('icons/favicon-48.png'));
 
-console.log('logo-mark.png and icons written from docs/brand/logo-original.jpg');
+const BANNER = SRC.replace('logo-original.jpg', 'banner-original.jpg');
+for (const width of [750, 1500]) await sharp(BANNER).resize({ width }).webp({ quality: 78 }).toFile(out(`brand/banner-${width}.webp`));
+
+console.log('logo-mark.png, icons and banner written from docs/brand/');
