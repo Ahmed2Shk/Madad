@@ -26,7 +26,7 @@
     "label": "التبديل إلى العربية"
   },
   "home": {
-    "title": "Find your medicine and see which pharmacies reported it available",
+    "title": "Find your medicine",
     "subtitle": "Information from pharmacies, with the time of the last update",
     "topSearched": "Most searched in {{gov}}",
     "recentlyUpdated": "Recently updated",
@@ -118,7 +118,14 @@
     "vial": "Vial",
     "inhaler": "Inhaler",
     "sachet": "Sachets",
-    "cream": "Cream"
+    "cream": "Cream",
+    "drops": "Drops",
+    "injection": "Injection",
+    "ointment": "Ointment",
+    "gel": "Gel",
+    "suppository": "Suppositories",
+    "spray": "Spray",
+    "solution": "Solution"
   },
   "medicine": {
     "pack": "Pack",
@@ -838,7 +845,6 @@
     "request": "Request a new medicine",
     "myRequests": "My requests",
     "searchLabel": "Search by name, active ingredient or barcode",
-    "typeToSearch": "Type at least two letters to search the catalog.",
     "notFound": "Not in the catalog",
     "notFoundBody": "Request it and the MADAD team will review it.",
     "alreadyListed": "Already in your medicines",
@@ -859,7 +865,23 @@
       "approved": "Approved",
       "rejected": "Rejected",
       "merged": "Merged with an existing medicine"
-    }
+    },
+    "showAll": "Show all medicines ({{count}})",
+    "typeOrShowAll": "Search by medicine name, or press “Show all medicines” to choose from the full list.",
+    "categoryFilter": "Medicine category",
+    "allCategories": "All categories",
+    "selectAll": "Select all",
+    "selectFor": "Select {{name}}",
+    "bulkStatus": "Status of the selected medicines",
+    "selectedCount_zero": "None selected",
+    "selectedCount_one": "1 selected",
+    "selectedCount_other": "{{count}} selected",
+    "addSelected_zero": "Add selected",
+    "addSelected_one": "Add 1 medicine",
+    "addSelected_other": "Add {{count}} medicines",
+    "addedMany_zero": "The selected medicines are already in your list",
+    "addedMany_one": "1 medicine added to your list",
+    "addedMany_other": "{{count}} medicines added to your list"
   },
   "inq": {
     "warning": "Never confirm a reservation or dispense based on an inquiry.",

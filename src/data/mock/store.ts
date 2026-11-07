@@ -208,7 +208,7 @@ export interface MockState {
 }
 
 const STORAGE_KEY = 'madad.mock.v1';
-const VERSION = 4;
+const VERSION = 5; // 5: catalog grew to 167 medicines and new dosage forms
 
 const ago = (now: number, minutes: number | null) =>
   minutes == null ? null : new Date(now - minutes * 60_000).toISOString();

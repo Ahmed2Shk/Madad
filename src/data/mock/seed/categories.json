@@ -9,5 +9,11 @@
 {"id":"supplements","name_ar":"فيتامينات ومكملات","name_en":"Vitamins & supplements"},
 {"id":"neuro","name_ar":"الأعصاب والصرع","name_en":"Neurology & epilepsy"},
 {"id":"allergy","name_ar":"الحساسية","name_en":"Allergy"},
-{"id":"steroids","name_ar":"الكورتيزون","name_en":"Corticosteroids"}
+{"id":"steroids","name_ar":"الكورتيزون","name_en":"Corticosteroids"},
+{"id":"anti_infective","name_ar":"مضادات الفطريات والطفيليات والفيروسات","name_en":"Antifungals, antiparasitics & antivirals"},
+{"id":"eye_ear","name_ar":"العين والأذن","name_en":"Eye & ear"},
+{"id":"skin","name_ar":"الجلدية","name_en":"Skin"},
+{"id":"mental_health","name_ar":"الصحة النفسية","name_en":"Mental health"},
+{"id":"womens_health","name_ar":"صحة المرأة","name_en":"Women's health"},
+{"id":"urology","name_ar":"المسالك البولية","name_en":"Urology"}
 ]

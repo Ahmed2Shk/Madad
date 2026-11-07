@@ -33,16 +33,12 @@ export interface Category {
   nameEn: string;
 }
 
-export type DosageForm =
-  | 'tablet'
-  | 'capsule'
-  | 'syrup'
-  | 'suspension'
-  | 'injection_pen'
-  | 'vial'
-  | 'inhaler'
-  | 'sachet'
-  | 'cream';
+/** Every dosage form the catalog accepts (also the check in migration 0012). */
+export const DOSAGE_FORMS = [
+  'tablet', 'capsule', 'syrup', 'suspension', 'injection_pen', 'vial', 'inhaler', 'sachet', 'cream',
+  'drops', 'injection', 'ointment', 'gel', 'suppository', 'spray', 'solution',
+] as const;
+export type DosageForm = (typeof DOSAGE_FORMS)[number];
 
 export interface Medicine extends Searchable {
   dosageForm: DosageForm;
@@ -485,6 +481,8 @@ export interface PharmacyPortalRepo {
   setListed(orgId: string, medicineId: string, listed: boolean): Promise<void>;
   removeMedicine(orgId: string, medicineId: string): Promise<void>;
   addMedicine(orgId: string, medicineId: string, status: Reported): Promise<void>;
+  /** PH-04 «إضافة المحدد»: adds several at once with one status; medicines already listed are skipped. Returns how many were added. */
+  addMedicines(orgId: string, medicineIds: string[], status: Reported): Promise<number>;
   setQuantity(orgId: string, medicineId: string, quantity: number, lowThreshold: number): Promise<void>;
   requestMedicine(orgId: string, input: MedicineRequestInput): Promise<void>;
   requests(orgId: string): Promise<MedicineRequest[]>;

@@ -30,7 +30,7 @@
     "label": "Switch to English"
   },
   "home": {
-    "title": "ابحث عن دوائك، واعرف الصيدليات التي أبلغت عن توفره",
+    "title": "ابحث عن دوائك",
     "subtitle": "معلومات أبلغت بها الصيدليات، مع وقت آخر تحديث",
     "topSearched": "الأكثر بحثًا في {{gov}}",
     "recentlyUpdated": "حُدّث مؤخرًا",
@@ -126,7 +126,14 @@
     "vial": "قارورة حقن",
     "inhaler": "بخاخ",
     "sachet": "أكياس",
-    "cream": "كريم"
+    "cream": "كريم",
+    "drops": "قطرة",
+    "injection": "حقن",
+    "ointment": "مرهم",
+    "gel": "جل",
+    "suppository": "تحاميل",
+    "spray": "بخاخ",
+    "solution": "محلول"
   },
   "medicine": {
     "pack": "العبوة",
@@ -909,7 +916,6 @@
     "request": "طلب إضافة دواء",
     "myRequests": "طلباتي",
     "searchLabel": "ابحث بالاسم التجاري أو العلمي أو الباركود",
-    "typeToSearch": "اكتب حرفين على الأقل للبحث في قائمة الأدوية.",
     "notFound": "لم نجد الدواء في قائمة الأدوية",
     "notFoundBody": "اطلب إضافته، وسيراجعه فريق مدد.",
     "alreadyListed": "موجود في أدويتك",
@@ -930,7 +936,32 @@
       "approved": "اعتُمد",
       "rejected": "رُفض",
       "merged": "دُمج مع دواء موجود"
-    }
+    },
+    "showAll": "عرض كل الأدوية ({{count}})",
+    "typeOrShowAll": "ابحث باسم الدواء، أو اضغط «عرض كل الأدوية» لتختار من القائمة كاملة.",
+    "categoryFilter": "تصنيف الأدوية",
+    "allCategories": "كل التصنيفات",
+    "selectAll": "تحديد الكل",
+    "selectFor": "تحديد {{name}}",
+    "bulkStatus": "حالة الأدوية المحددة",
+    "selectedCount_zero": "لم تحدد أي دواء",
+    "selectedCount_one": "حددت دواءً واحدًا",
+    "selectedCount_two": "حددت دواءين",
+    "selectedCount_few": "حددت {{count}} أدوية",
+    "selectedCount_many": "حددت {{count}} دواءً",
+    "selectedCount_other": "حددت {{count}} دواء",
+    "addSelected_zero": "إضافة المحدد",
+    "addSelected_one": "إضافة الدواء المحدد",
+    "addSelected_two": "إضافة الدواءين",
+    "addSelected_few": "إضافة {{count}} أدوية",
+    "addSelected_many": "إضافة {{count}} دواءً",
+    "addSelected_other": "إضافة {{count}} دواء",
+    "addedMany_zero": "الأدوية المحددة موجودة في أدويتك أصلًا",
+    "addedMany_one": "أُضيف دواء واحد إلى أدويتك",
+    "addedMany_two": "أُضيف دواءان إلى أدويتك",
+    "addedMany_few": "أُضيفت {{count}} أدوية إلى أدويتك",
+    "addedMany_many": "أُضيف {{count}} دواءً إلى أدويتك",
+    "addedMany_other": "أُضيف {{count}} دواء إلى أدويتك"
   },
   "inq": {
     "warning": "لا تؤكد حجزًا، ولا تصرف دواءً بناءً على استفسار.",

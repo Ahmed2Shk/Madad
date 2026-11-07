@@ -3,6 +3,7 @@
 // Writes src/data/mock/seed/*.json and public/catalog.json. All names are fictional, all times are
 // relative ("*_minutes_ago") so freshness states stay varied on any day the demo runs.
 import { mkdirSync, writeFileSync } from 'node:fs';
+import { EXTRA_CATEGORIES, EXTRA_MEDICINES } from './catalog-extra.mjs';
 
 const SEED_DIR = new URL('../src/data/mock/seed/', import.meta.url);
 const PUBLIC_DIR = new URL('../public/', import.meta.url);
@@ -129,16 +130,17 @@ const UNIT_EN = [
   ['ميكروغرام/بخة', 'mcg/puff'],
   ['ميكروغرام', 'mcg'],
   ['ملغ/5 مل', 'mg/5 mL'],
+  ['ملغ/مل', 'mg/mL'],
   ['ملغ', 'mg'],
   [' مل', ' mL'],
   [' غ', ' g'],
 ];
-const PACK_EN = { "قرص": "tablets", "أقراص": "tablets", "كبسولة": "capsules", "كبسولات": "capsules", "أقلام": "pens", "بخة": "puffs", "أكياس": "sachets", "مل": "mL", "غ": "g" };
+const PACK_EN = { "قرص": "tablets", "أقراص": "tablets", "كبسولة": "capsules", "كبسولات": "capsules", "أقلام": "pens", "بخة": "puffs", "أكياس": "sachets", "مل": "mL", "غ": "g", "أمبولات": "ampoules", "محقنة": "prefilled syringes", "تحاميل": "suppositories", "تحميلة": "suppository", "قارورة": "vial" };
 const strengthEn = (ar) => (ar ? UNIT_EN.reduce((x, [arUnit, en]) => x.replaceAll(arUnit, en), ar) : null);
 const packEn = (ar) => {
   const [n, unit] = ar.split(" ");
   if (!PACK_EN[unit]) throw new Error(`no English pack unit for "${ar}"`);
-  return `${n} ${PACK_EN[unit]}`;
+  return n === "1" ? `1 ${PACK_EN[unit].replace(/s$/, "")}` : `${n} ${PACK_EN[unit]}`; // «1 capsule», not «1 capsules»
 };
 
 const medicines = M.map(([id, name_ar, name_en, generic_name, strength, dosage_form, pack_size, category_id, aliases], i) => ({
@@ -534,8 +536,22 @@ mkdirSync(SEED_DIR, { recursive: true });
 const write = (name, data) =>
   writeFileSync(new URL(name, SEED_DIR), `[\n${data.map((row) => JSON.stringify(row)).join(',\n')}\n]\n`);
 write('governorates.json', governorates);
-write('categories.json', categories);
-write('medicines.json', medicines);
+// More medicines and categories (scripts/catalog-extra.mjs), added only here, after the demo data:
+// the random draws above stay the same, so every seeded demo fact is unchanged.
+const allCategories = [...categories, ...EXTRA_CATEGORIES.map(([id, name_ar, name_en]) => ({ id, name_ar, name_en }))];
+const extraMedicines = EXTRA_MEDICINES.map(([id, name_ar, name_en, generic_name, strength, dosage_form, pack_size, category_id, aliases]) => ({
+  id, name_ar, name_en, generic_name, strength, strength_en: strengthEn(strength), dosage_form, pack_size, pack_size_en: packEn(pack_size),
+  manufacturer: null, barcode: null, aliases, category_id, prescription: 'unspecified', status: 'approved', is_demo: true,
+}));
+const allIds = new Set();
+for (const m of [...medicines, ...extraMedicines]) {
+  if (allIds.has(m.id)) throw new Error('duplicate medicine id ' + m.id);
+  allIds.add(m.id);
+  if (!allCategories.some((c) => c.id === m.category_id)) throw new Error('unknown category ' + m.category_id);
+}
+const catalogMedicines = [...medicines, ...extraMedicines];
+write('categories.json', allCategories);
+write('medicines.json', catalogMedicines);
 write('pharmacies.json', pharmacies);
 write('stock.json', stock);
 write('providers.json', providers);
@@ -552,7 +568,7 @@ write('announcements.json', announcements);
 // Public offline catalog for suggestions (SPEC §11): approved medicines only, compact keys.
 writeFileSync(
   new URL('catalog.json', PUBLIC_DIR),
-  JSON.stringify({ version: 1, categories, medicines: medicines.map(({ is_demo, status, prescription, ...m }) => m) }),
+  JSON.stringify({ version: 1, categories: allCategories, medicines: catalogMedicines.map(({ is_demo, status, prescription, ...m }) => m) }),
 );
 
 const buckets = { fresh: 0, stale: 0, expired: 0 };

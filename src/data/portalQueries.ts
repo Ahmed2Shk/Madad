@@ -127,6 +127,8 @@ export const useRemoveMedicine = (orgId: string) =>
   usePortalMutation((medicineId: string) => getRepos().then((r) => r.pharmacyPortal.removeMedicine(orgId, medicineId)));
 export const useAddMedicine = (orgId: string) =>
   usePortalMutation(({ medicineId, status }: { medicineId: string; status: Reported }) => getRepos().then((r) => r.pharmacyPortal.addMedicine(orgId, medicineId, status)));
+export const useAddMedicines = (orgId: string) =>
+  usePortalMutation(({ medicineIds, status }: { medicineIds: string[]; status: Reported }) => getRepos().then((r) => r.pharmacyPortal.addMedicines(orgId, medicineIds, status)));
 export const useSetQuantity = (orgId: string) =>
   usePortalMutation(({ medicineId, quantity, lowThreshold }: { medicineId: string; quantity: number; lowThreshold: number }) =>
     getRepos().then((r) => r.pharmacyPortal.setQuantity(orgId, medicineId, quantity, lowThreshold)),

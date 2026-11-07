@@ -2,6 +2,10 @@
 // and settings, keeps real accounts, removes every demo account; seed.sql brings the demo back.
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { as, createDb, one, readSql, rows, type Db } from './pglite';
+import medicines from '../../src/data/mock/seed/medicines.json';
+import categories from '../../src/data/mock/seed/categories.json';
+
+const CATALOG = medicines.length;
 
 const REAL = '11111111-1111-4111-8111-111111111111';
 let db: Db;
@@ -28,8 +32,8 @@ describe('seed-live.sql', () => {
     expect(await count('select count(*) from public.pharmacy_stock')).toBe(0);
     expect(await count('select count(*) from public.search_logs')).toBe(0);
     expect(await count('select count(*) from public.audit_log')).toBe(0);
-    expect(await count(`select count(*) from public.medicines where status = 'approved' and not is_demo and barcode is null`)).toBe(40);
-    expect(await count('select count(*) from public.categories')).toBe(11);
+    expect(await count(`select count(*) from public.medicines where status = 'approved' and not is_demo and barcode is null`)).toBe(CATALOG);
+    expect(await count('select count(*) from public.categories')).toBe(categories.length);
     expect((await one<{ v: string }>(db, `select value #>> '{}' as v from public.settings where key = 'demo_mode'`)).v).toBe('false');
     expect((await one<{ v: string }>(db, `select value #>> '{}' as v from public.settings where key = 'fresh_hours'`)).v).toBe('24');
   });
@@ -43,7 +47,7 @@ describe('seed-live.sql', () => {
   });
 
   it('a visitor sees the catalog', async () => {
-    expect(await as(db, null, () => rows(db, `select id from public.medicines`))).toHaveLength(40);
+    expect(await as(db, null, () => rows(db, `select id from public.medicines`))).toHaveLength(CATALOG);
   });
 });
 

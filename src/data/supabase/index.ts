@@ -51,7 +51,7 @@ export const supabaseRepos: Repos = {
   auth: authRepo,
   registration: notifying(registrationRepo, ['submit', 'resubmit']),
   pharmacyPortal: notifying(pharmacyPortalRepo, [
-    'setListed', 'removeMedicine', 'addMedicine', 'setQuantity', 'requestMedicine', 'replyInquiry', 'setInquiryStatus',
+    'setListed', 'removeMedicine', 'addMedicine', 'addMedicines', 'setQuantity', 'requestMedicine', 'replyInquiry', 'setInquiryStatus',
     'updateProfile', 'invite', 'updateMember', 'removeMember',
   ]),
   catalog: catalogRepo,

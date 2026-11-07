@@ -1,6 +1,6 @@
 // PH-04 إضافة دواء / طلب دواء جديد — search the catalog first; a pharmacy never creates catalog entries itself.
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Barcode, CirclePlus, FilePlus2, Search } from 'lucide-react';
+import { Barcode, CirclePlus, FilePlus2, List, Search } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +10,7 @@ import {
   CardSkeleton,
   EmptyState,
   Field,
+  FilterChips,
   Freshness,
   StatusBadge,
   StatusPicker,
@@ -17,15 +18,15 @@ import {
   inputClass,
   useToast,
 } from '../../components/ui';
-import type { DosageForm, Reported } from '../../data';
-import { useAddMedicine, useMedicineRequests, usePortalStock, useRequestMedicine } from '../../data/portalQueries';
+import { DOSAGE_FORMS, type DosageForm, type Reported } from '../../data';
+import { useAddMedicine, useAddMedicines, useMedicineRequests, usePortalStock, useRequestMedicine } from '../../data/portalQueries';
 import { useCatalog } from '../../data/queries';
 import { useLang } from '../../hooks/useLang';
 import { matchCatalog } from '../../lib/search';
 import { usePharmacyCtx } from './context';
 import { RequirePerm } from './NoAccess';
 
-const FORMS: DosageForm[] = ['tablet', 'capsule', 'syrup', 'suspension', 'injection_pen', 'vial', 'inhaler', 'sachet', 'cream'];
+const FORMS: readonly DosageForm[] = DOSAGE_FORMS;
 
 export default function AddMedicinePage() {
   return (
@@ -68,32 +69,93 @@ function FromCatalog({ onNotFound }: { onNotFound: () => void }) {
   const catalog = useCatalog();
   const stock = usePortalStock(orgId);
   const add = useAddMedicine(orgId);
+  const addMany = useAddMedicines(orgId);
   const [q, setQ] = useState('');
+  const [showAll, setShowAll] = useState(false);
+  const [category, setCategory] = useState('all');
   const [status, setStatus] = useState<Record<string, Reported>>({});
+  const [selected, setSelected] = useState<Set<string>>(() => new Set());
+  const [bulkStatus, setBulkStatus] = useState<Reported>('available');
   const mine = useMemo(() => new Set((stock.data ?? []).map((r) => r.medicineId)), [stock.data]);
-  const hits = useMemo(() => (catalog.data && q.trim().length >= 2 ? matchCatalog(catalog.data.medicines, q, 12) : []), [catalog.data, q]);
+  const all = useMemo(() => catalog.data?.medicines ?? [], [catalog.data]);
+  const searching = q.trim().length >= 2;
+
+  // Typing searches the whole list; «عرض الكل» lists everything (by category, then name) without typing.
+  const list = useMemo(() => {
+    if (searching) return matchCatalog(all, q, all.length);
+    if (!showAll) return [];
+    const order = new Map((catalog.data?.categories ?? []).map((c, i) => [c.id, i]));
+    return all
+      .filter((m) => category === 'all' || m.categoryId === category)
+      .sort((a, b) => (order.get(a.categoryId) ?? 99) - (order.get(b.categoryId) ?? 99) || pick(a).localeCompare(pick(b), 'ar'));
+  }, [searching, showAll, all, q, category, catalog.data, pick]);
+
+  // «تحديد الكل» acts on what is shown and not yet in the pharmacy's list.
+  const selectable = list.filter((m) => !mine.has(m.id));
+  const shownSelected = selectable.filter((m) => selected.has(m.id));
+  const allShownSelected = selectable.length > 0 && shownSelected.length === selectable.length;
+  const toggle = (id: string) =>
+    setSelected((s) => {
+      const n = new Set(s);
+      if (n.has(id)) n.delete(id);
+      else n.add(id);
+      return n;
+    });
+  const toggleAll = () =>
+    setSelected((s) => {
+      const n = new Set(s);
+      for (const m of selectable) {
+        if (allShownSelected) n.delete(m.id);
+        else n.add(m.id);
+      }
+      return n;
+    });
+  const addSelected = async () => {
+    const ids = [...selected].filter((id) => !mine.has(id));
+    if (ids.length === 0) return;
+    const added = await addMany.mutateAsync({ medicineIds: ids, status: bulkStatus });
+    setSelected(new Set());
+    toast(t('add.addedMany', { count: added }));
+  };
 
   return (
     <div className="space-y-4">
-      <div className="relative max-w-xl">
-        <label htmlFor="add-q" className="sr-only">
-          {t('add.searchLabel')}
-        </label>
-        <Search aria-hidden className="pointer-events-none absolute start-3 top-1/2 size-5 -translate-y-1/2 text-ink-muted" />
-        <input
-          id="add-q"
-          type="search"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder={t('add.searchLabel')}
-          className="min-h-12 w-full rounded-control border border-border bg-surface ps-10 pe-10"
-        />
-        <Barcode aria-hidden className="pointer-events-none absolute end-3 top-1/2 size-5 -translate-y-1/2 text-ink-muted" />
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="relative min-w-0 flex-1 basis-72">
+          <label htmlFor="add-q" className="sr-only">
+            {t('add.searchLabel')}
+          </label>
+          <Search aria-hidden className="pointer-events-none absolute start-3 top-1/2 size-5 -translate-y-1/2 text-ink-muted" />
+          <input
+            id="add-q"
+            type="search"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder={t('add.searchLabel')}
+            className="min-h-12 w-full rounded-control border border-border bg-surface ps-10 pe-10"
+          />
+          <Barcode aria-hidden className="pointer-events-none absolute end-3 top-1/2 size-5 -translate-y-1/2 text-ink-muted" />
+        </div>
+        <Button variant={showAll ? 'primary' : 'secondary'} aria-pressed={showAll} onClick={() => setShowAll((v) => !v)}>
+          <List aria-hidden className="size-4" />
+          {t('add.showAll', { count: all.length })}
+        </Button>
       </div>
 
-      {q.trim().length < 2 ? (
-        <p className="text-ink-muted">{t('add.typeToSearch')}</p>
-      ) : hits.length === 0 ? (
+      {showAll && !searching && (
+        <FilterChips
+          label={t('add.categoryFilter')}
+          onToggle={setCategory}
+          chips={[
+            { id: 'all', label: t('add.allCategories'), on: category === 'all' },
+            ...(catalog.data?.categories ?? []).map((c) => ({ id: c.id, label: pick(c), on: category === c.id })),
+          ]}
+        />
+      )}
+
+      {!searching && !showAll ? (
+        <p className="text-ink-muted">{t('add.typeOrShowAll')}</p>
+      ) : list.length === 0 ? (
         <EmptyState
           icon={Search}
           title={t('add.notFound')}
@@ -106,35 +168,86 @@ function FromCatalog({ onNotFound }: { onNotFound: () => void }) {
           }
         />
       ) : (
-        <ul className="rise-children divide-y divide-border rounded-card border border-border bg-surface">
-          {hits.map((m) => (
-            <li key={m.id} className="flex flex-col gap-3 p-4 lg:flex-row lg:items-center">
-              <div className="min-w-0 flex-1">
-                <p className="font-semibold">{pick(m)}</p>
-                <p className="text-meta text-ink-muted">
-                  <bdi dir="ltr">{m.genericName}</bdi> · {strength(m)} · {t(`forms.${m.dosageForm}`)}
-                </p>
-              </div>
-              {mine.has(m.id) ? (
-                <span className="text-meta text-ok-text">{t('add.alreadyListed')}</span>
-              ) : (
-                <div className="flex flex-wrap items-center gap-3">
-                  <StatusPicker label={t('update.statusFor', { name: pick(m) })} value={status[m.id] ?? 'available'} onChange={(v) => setStatus((s) => ({ ...s, [m.id]: v }))} />
-                  <Button
-                    loading={add.isPending && add.variables?.medicineId === m.id}
-                    onClick={async () => {
-                      await add.mutateAsync({ medicineId: m.id, status: status[m.id] ?? 'available' });
-                      toast(t('dashboard.added', { name: pick(m) }));
-                    }}
-                  >
-                    <CirclePlus aria-hidden className="size-4" />
-                    {t('add.addToMine')}
-                  </Button>
+        <>
+          {/* Bulk bar: select what is shown, pick one status, add them all. Sticks while the list scrolls. */}
+          <div className="sticky top-0 z-10 flex flex-wrap items-center gap-3 rounded-card border border-border bg-surface p-3 shadow-card">
+            <label className="inline-flex min-h-11 items-center gap-2 font-medium">
+              <input
+                type="checkbox"
+                className="size-5 accent-primary"
+                checked={allShownSelected}
+                ref={(el) => {
+                  if (el) el.indeterminate = shownSelected.length > 0 && !allShownSelected;
+                }}
+                disabled={selectable.length === 0}
+                onChange={toggleAll}
+              />
+              {t('add.selectAll')}
+            </label>
+            <span className="text-meta text-ink-muted">{t('add.selectedCount', { count: selected.size })}</span>
+            <div className="ms-auto flex flex-wrap items-center gap-3">
+              <StatusPicker label={t('add.bulkStatus')} value={bulkStatus} onChange={setBulkStatus} />
+              <Button disabled={selected.size === 0} loading={addMany.isPending} onClick={() => void addSelected()}>
+                <CirclePlus aria-hidden className="size-4" />
+                {t('add.addSelected', { count: selected.size })}
+              </Button>
+            </div>
+          </div>
+
+          <ul className="rise-children divide-y divide-border rounded-card border border-border bg-surface">
+            {list.map((m) => (
+              <li key={m.id} className="flex flex-col gap-3 p-4 lg:flex-row lg:items-center">
+                <div className="flex min-w-0 flex-1 items-start gap-3">
+                  {mine.has(m.id) ? (
+                    <span className="size-5 shrink-0" aria-hidden />
+                  ) : (
+                    <input
+                      type="checkbox"
+                      className="mt-1 size-5 shrink-0 accent-primary"
+                      aria-label={t('add.selectFor', { name: pick(m) })}
+                      checked={selected.has(m.id)}
+                      onChange={() => toggle(m.id)}
+                    />
+                  )}
+                  <div className="min-w-0">
+                    <p className="font-semibold">{pick(m)}</p>
+                    <p className="text-meta text-ink-muted">
+                      <bdi dir="ltr">{m.genericName}</bdi>
+                      {m.strength && <> · {strength(m)}</>} · {t(`forms.${m.dosageForm}`)}
+                    </p>
+                  </div>
                 </div>
-              )}
-            </li>
-          ))}
-        </ul>
+                {mine.has(m.id) ? (
+                  <span className="text-meta text-ok-text">{t('add.alreadyListed')}</span>
+                ) : (
+                  <div className="flex flex-wrap items-center gap-3">
+                    <StatusPicker
+                      label={t('update.statusFor', { name: pick(m) })}
+                      value={status[m.id] ?? 'available'}
+                      onChange={(v) => setStatus((s) => ({ ...s, [m.id]: v }))}
+                    />
+                    <Button
+                      variant="secondary"
+                      loading={add.isPending && add.variables?.medicineId === m.id}
+                      onClick={async () => {
+                        await add.mutateAsync({ medicineId: m.id, status: status[m.id] ?? 'available' });
+                        setSelected((s) => {
+                          const n = new Set(s);
+                          n.delete(m.id);
+                          return n;
+                        });
+                        toast(t('dashboard.added', { name: pick(m) }));
+                      }}
+                    >
+                      <CirclePlus aria-hidden className="size-4" />
+                      {t('add.addToMine')}
+                    </Button>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        </>
       )}
     </div>
   );

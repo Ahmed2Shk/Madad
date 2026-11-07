@@ -173,6 +173,22 @@ export const pharmacyPortalRepo: PharmacyPortalRepo = {
     return latency(undefined);
   },
 
+  addMedicines(orgId, medicineIds, status) {
+    requireOrgPerm(orgId, 'medicines');
+    let added = 0;
+    store.mutate((s) => {
+      const now = new Date().toISOString();
+      for (const medicineId of medicineIds) {
+        if (s.stock.some((x) => x.pharmacyId === orgId && x.medicineId === medicineId)) continue;
+        s.stock.push({ pharmacyId: orgId, medicineId, reportedStatus: status, reportedAt: now, priceIls: null, priceUpdatedAt: null, isListed: true, hiddenByAdmin: false });
+        history(s, orgId, { medicineId, action: 'add', oldStatus: null, newStatus: status, oldPrice: null, newPrice: null });
+        audit(s, 'stock.add', 'pharmacy_stock', `${orgId}/${medicineId}`, null, { status });
+        added++;
+      }
+    });
+    return latency(added);
+  },
+
   setQuantity(orgId, medicineId, quantity, lowThreshold) {
     requireOrgPerm(orgId, 'medicines');
     store.mutate((s) => {

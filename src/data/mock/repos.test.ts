@@ -54,7 +54,7 @@ describe('public reads', () => {
 
   it('search returns the same medicines for انسولين, إنسولين and insulin', async () => {
     const ids = async (q: string) => (await r.availability.searchMedicines(q, 'khan_younis')).map((h) => h.medicine.id).sort();
-    const expected = ['insulin-aspart', 'insulin-glargine', 'insulin-nph'];
+    const expected = ['insulin-aspart', 'insulin-glargine', 'insulin-mixtard', 'insulin-nph', 'insulin-regular'];
     expect(await ids('انسولين')).toEqual(expected);
     expect(await ids('إنسولين')).toEqual(expected);
     expect(await ids('insulin')).toEqual(expected);

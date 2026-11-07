@@ -21,12 +21,12 @@ import {
   useToast,
   type Column,
 } from '../../components/ui';
-import type { DosageForm, Medicine, MedicineRequestInput, RequestReview } from '../../data';
+import { DOSAGE_FORMS, type DosageForm, type Medicine, type MedicineRequestInput, type RequestReview } from '../../data';
 import { useAddCatalogMedicine, useAdminCatalog, useAdminRequests, useImportCatalog, useReviewRequest, useSetAliases } from '../../data/adminQueries';
 import { useLang } from '../../hooks/useLang';
 import { csvToObjects } from '../../lib/csv';
 
-const FORMS: DosageForm[] = ['tablet', 'capsule', 'syrup', 'suspension', 'injection_pen', 'vial', 'inhaler', 'sachet', 'cream'];
+const FORMS: readonly DosageForm[] = DOSAGE_FORMS;
 const CSV_HEADER = ['name_ar', 'name_en', 'generic_name', 'strength', 'dosage_form', 'pack_size', 'manufacturer', 'barcode', 'category_id', 'aliases'];
 
 export default function CatalogPage() {

@@ -38,6 +38,17 @@ export const pharmacyPortalRepo: PharmacyPortalRepo = {
     await rpc('stock_add', { pharmacy: orgId, medicine: medicineId, status });
   },
 
+  // The same RPC per medicine (permissions, history and audit stay in one place), four at a time;
+  // the screens refresh once at the end (index.ts lists this method as a mutator).
+  async addMedicines(orgId, medicineIds, status) {
+    const { data } = await db.from('pharmacy_stock').select('medicine_id').eq('pharmacy_id', orgId);
+    const listed = new Set(((data ?? []) as { medicine_id: string }[]).map((r) => r.medicine_id));
+    const todo = medicineIds.filter((id) => !listed.has(id));
+    for (let i = 0; i < todo.length; i += 4)
+      await Promise.all(todo.slice(i, i + 4).map((medicine) => rpc('stock_add', { pharmacy: orgId, medicine, status })));
+    return todo.length;
+  },
+
   async setQuantity(orgId, medicineId, quantity, lowThreshold) {
     must(
       await db
