@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { matchCatalog, searchTextOf, type Searchable } from './search';
+import { closeMatches, editDistance, matchCatalog, searchTextOf, type Searchable } from './search';
+import seedMedicines from '../data/mock/seed/medicines.json';
 
 const m = (id: string, nameAr: string, nameEn: string, genericName: string, extra: Partial<Searchable> = {}) => ({
   id,
@@ -62,5 +63,41 @@ describe('searchTextOf', () => {
   it('joins and normalizes every searchable field', () => {
     expect(searchTextOf(catalog[2]!)).toContain('بنادول');
     expect(searchTextOf(catalog[0]!)).toContain('6250000000011');
+  });
+});
+
+describe('«هل تقصد؟» close matches', () => {
+  // The real catalog (src/data/mock/seed/medicines.json), mapped to the search shape.
+  const real: Searchable[] = (seedMedicines as Array<Record<string, unknown>>).map((m) => ({
+    id: m.id as string,
+    nameAr: m.name_ar as string,
+    nameEn: m.name_en as string,
+    genericName: m.generic_name as string,
+    strength: (m.strength as string) ?? '',
+    strengthEn: (m.strength_en as string | null) ?? null,
+    aliases: m.aliases as string[],
+    barcode: null,
+  }));
+  const close = (q: string) => closeMatches(real, q, 5).map((m) => m.id);
+
+  it('counts swaps, missing and extra letters as one mistake each', () => {
+    expect(editDistance('بندول', 'بنادول')).toBe(1);
+    expect(editDistance('panadool', 'panadol')).toBe(1);
+    expect(editDistance('metfromin', 'metformin')).toBe(1);
+    expect(editDistance('abc', 'abc')).toBe(0);
+  });
+
+  it('suggests the medicine behind common misspellings, in Arabic and English', () => {
+    expect(matchCatalog(real, 'بندول')).toEqual([]); // no direct match: this is when suggestions show
+    expect(close('بندول')).toContain('paracetamol-500');
+    expect(close('Panadool')).toContain('paracetamol-500');
+    expect(close('metfromin')[0]).toMatch(/^metformin-/);
+    expect(close('امكسيسيلين')).toContain('amoxicillin-500');
+    expect(close('ليفوثيروكسن')[0]).toMatch(/^levothyroxine-/);
+  });
+
+  it('suggests nothing for unrelated text or very short words', () => {
+    expect(close('qwertyuiop')).toEqual([]);
+    expect(close('دوا')).toEqual([]);
   });
 });

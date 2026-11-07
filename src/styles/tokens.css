@@ -13,14 +13,18 @@
   --color-current: currentColor;
 
   /* Brand */
-  --color-primary: #146b68;
-  --color-primary-hover: #0f5653;
-  --color-secondary: #2a8c83; /* icons, active borders, large headings only */
-  --color-mint: #eaf6f2;
-  --color-ink: #183b3a;
+  /* Official MADAD palette: Deep Medical Green, Digital Teal, Soft Mint, Medical White, Charcoal Green. */
+  --color-primary: #174c43; /* Deep Medical Green — 9.8:1 with white */
+  --color-primary-hover: #113a33;
+  /* Digital Teal #20A895 is 2.96:1 on white: too light for icons or text, so they use a deeper shade of it. */
+  --color-secondary: #178a7a; /* icons, active borders, large headings only (4.2:1) */
+  --color-accent: #20a895; /* Digital Teal — fills and decoration only, never text */
+  --color-mint: #e6f4ef; /* light tint of Soft Mint for chips and hovers */
+  --color-mint-strong: #a8dccf; /* Soft Mint — text on the deep green (6.4:1) */
+  --color-ink: #263b37; /* Charcoal Green */
   --color-ink-muted: #5e6e6b;
   --color-surface: #ffffff;
-  --color-canvas: #f7faf9;
+  --color-canvas: #f3f7f5; /* Medical White */
   --color-border: #dce8e5;
 
   /* Status: icon / text / background */

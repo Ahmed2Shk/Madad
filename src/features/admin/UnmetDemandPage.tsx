@@ -111,8 +111,8 @@ export default function UnmetDemandPage() {
                       {med(id)}
                     </th>
                     {d.matrix.cells[i]!.map((c, j) => {
-                      // Sequential: one hue, light → mid teal by count. Capped at 58% so dark ink keeps 4.5:1 contrast.
-                      const share = c === null || c === 0 ? 0 : 8 + Math.round((c / max) * 50);
+                      // Sequential: one hue, light → mid teal by count. Capped at 48% so dark ink keeps 4.5:1 contrast on the Deep Medical Green mix (4.8:1).
+                      const share = c === null || c === 0 ? 0 : 8 + Math.round((c / max) * 40);
                       return (
                         <td key={j} className="p-0.5 text-center">
                           <span

@@ -79,12 +79,48 @@ export default function HomePage() {
         )}
         <div className="relative px-6 pt-14 pb-24 text-center lg:pt-20 lg:pb-28">
           <h1 className="text-hero mx-auto max-w-3xl">{t("home.title")}</h1>
-          <p className="mx-auto mt-3 max-w-2xl text-mint">{t("home.subtitle")}</p>
+          <p className="mx-auto mt-3 max-w-2xl text-mint-strong">{t("home.subtitle")}</p>
         </div>
       </section>
       <div className="relative z-10 mx-auto -mt-28 max-w-5xl px-2 lg:-mt-32">
         <SearchBar variant="hero" />
       </div>
+
+      {/* Who is this for: people looking for medicine, and the organizations that publish it. */}
+      <section aria-label={t("home.audience.label")} className="rise-children grid gap-3 md:grid-cols-2">
+        <div className="flex flex-col gap-3 rounded-card border border-border bg-surface p-5 shadow-card">
+          <span className="flex size-11 items-center justify-center rounded-control bg-mint">
+            <SearchIcon aria-hidden className="size-5 text-secondary" />
+          </span>
+          <h2 className="text-section">{t("home.audience.patientTitle")}</h2>
+          <p className="text-meta text-ink-muted">{t("home.audience.patientBody")}</p>
+          <div className="mt-auto flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => document.querySelector<HTMLInputElement>('main [role="combobox"]')?.focus()}
+              className={buttonClass("primary")}
+            >
+              <SearchIcon aria-hidden className="size-4" />
+              {t("home.audience.patientAction")}
+            </button>
+            <Link to="/directory" className={buttonClass("secondary")}>
+              {t("home.audience.directoryAction")}
+            </Link>
+          </div>
+        </div>
+        <div className="flex flex-col gap-3 rounded-card border border-border bg-surface p-5 shadow-card">
+          <span className="flex size-11 items-center justify-center rounded-control bg-mint">
+            <Building2 aria-hidden className="size-5 text-secondary" />
+          </span>
+          <h2 className="text-section">{t("home.audience.providerTitle")}</h2>
+          <p className="text-meta text-ink-muted">{t("home.audience.providerBody")}</p>
+          <div className="mt-auto flex flex-wrap gap-2">
+            <Link to="/for-organizations" className={buttonClass("primary")}>
+              {t("home.audience.providerAction")}
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {!online && last && (
         <Link

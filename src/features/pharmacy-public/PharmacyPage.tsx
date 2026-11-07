@@ -131,8 +131,10 @@ export default function PharmacyPage({ previewId }: { previewId?: string } = {})
           </div>
           <p className="flex items-start gap-2 text-ink-muted">
             <MapPin aria-hidden className="mt-1 size-4 shrink-0" />
+            {/* Area, then the address as the organization wrote it: on one line the city often read twice. */}
             <span>
-              {area(p)} — {p.addressText}
+              <span className="block text-ink">{area(p)}</span>
+              <span className="block">{p.addressText}</span>
             </span>
           </p>
           {p.landmark && (

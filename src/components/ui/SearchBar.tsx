@@ -7,7 +7,7 @@ import { useCatalog } from '../../data/queries';
 import { useLang } from '../../hooks/useLang';
 import { usePreferences } from '../../hooks/usePreferences';
 import { cn } from '../../lib/cn';
-import { matchCatalog } from '../../lib/search';
+import { closeMatches, matchCatalog } from '../../lib/search';
 import { Button } from './Button';
 import { GovernorateSelect } from './GovernorateSelect';
 import { searchUrl } from './searchUrl';
@@ -39,10 +39,12 @@ export function SearchBar({
   const [scanning, setScanning] = useState(false);
   const ids = { input: useId(), list: useId(), avail: useId() };
 
-  const suggestions = useMemo(
-    () => (catalog && q.trim().length >= 2 ? matchCatalog(catalog.medicines, q, 6) : []),
-    [catalog, q],
-  );
+  // Direct matches first; with none, «هل تقصد؟» close names to choose from (never swapped in by themselves).
+  const { suggestions, fuzzy } = useMemo(() => {
+    if (!catalog || q.trim().length < 2) return { suggestions: [], fuzzy: false };
+    const direct = matchCatalog(catalog.medicines, q, 6);
+    return direct.length ? { suggestions: direct, fuzzy: false } : { suggestions: closeMatches(catalog.medicines, q, 3), fuzzy: true };
+  }, [catalog, q]);
   const showList = open && suggestions.length > 0;
 
   const chooseGov = (g: GovFilter) => {
@@ -136,12 +138,9 @@ export function SearchBar({
           </button>
         </div>
         {showList && (
-          <ul
-            id={ids.list}
-            role="listbox"
-            aria-label={t('search.suggestions')}
-            className="absolute inset-x-0 top-full z-20 mt-1 overflow-hidden rounded-card border border-border bg-surface shadow-dialog"
-          >
+          <div className="absolute inset-x-0 top-full z-20 mt-1 overflow-hidden rounded-card border border-border bg-surface shadow-dialog">
+          {fuzzy && <p className="px-4 pt-2.5 text-meta font-medium text-ink-muted">{t('search.didYouMean')}</p>}
+          <ul id={ids.list} role="listbox" aria-label={fuzzy ? t('search.didYouMean') : t('search.suggestions')}>
             {suggestions.map((m, i) => (
               <li
                 key={m.id}
@@ -160,6 +159,7 @@ export function SearchBar({
               </li>
             ))}
           </ul>
+          </div>
         )}
       </div>
 

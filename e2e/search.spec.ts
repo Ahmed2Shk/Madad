@@ -60,9 +60,20 @@ test.describe('offline after the first visit', () => {
     await context.setOffline(true);
     await page.goto('/');
     await expect(page.locator('h1').first()).toBeVisible();
-    await expect(page.getByText('أنت غير متصل').first()).toBeVisible();
+    await expect(page.getByText('لا يوجد اتصال بالإنترنت').first()).toBeVisible();
     await page.goto('/medicine/insulin-aspart?gov=khan_younis');
     await expect(page.locator('main a[href^="/pharmacy/"]').first()).toBeVisible();
     await context.setOffline(false);
   });
+});
+
+test('a misspelt name offers «هل تقصد؟» choices instead of replacing the query', async ({ page }) => {
+  await freshStart(page, `/search?q=${encodeURIComponent('بندول')}&gov=all`);
+  await expect(page.getByRole('heading', { name: 'هل تقصد؟' })).toBeVisible();
+  const choice = page.locator('main a[href^="/medicine/paracetamol-500"]').first();
+  await expect(choice).toBeVisible();
+  // Nothing was swapped in: the page still says nothing matched what was typed.
+  await expect(page).toHaveURL(/q=%D8%A8%D9%86%D8%AF%D9%88%D9%84/);
+  await choice.click();
+  await expect(page).toHaveURL(/\/medicine\/paracetamol-500/);
 });

@@ -105,7 +105,7 @@ export default function MedicinePage() {
   );
 
   if (catalog.isPending) return <PageSkeleton />;
-  if (!medicine) return <UnknownMedicine query={id} />;
+  if (!medicine) return <UnknownMedicine query={id} gov={gov} />;
 
   const loading = rows.isPending || pharmacies.isPending;
   const allUnconfirmed = ranked.all.length > 0 && ranked.all.every((x) => x.view.display === 'unconfirmed');

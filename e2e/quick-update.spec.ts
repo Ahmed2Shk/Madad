@@ -45,7 +45,7 @@ test('an update made offline waits on the device and is sent when back online', 
   await switchTo(page, 'موظف صيدلية');
   await page.goto(`/pharmacy-portal/update?filter=all&q=${encodeURIComponent('ليفوثيروكسين 100')}`, { waitUntil: 'networkidle' });
   await context.setOffline(true);
-  await page.getByRole('radiogroup', { name: 'حالة ليفوثيروكسين 100' }).getByRole('radio', { name: 'محدود', exact: true }).click();
+  await page.getByRole('radiogroup', { name: 'حالة ليفوثيروكسين 100' }).getByRole('radio', { name: 'محدودة', exact: true }).click();
   await page.getByRole('button', { name: 'حفظ', exact: true }).click();
   const waiting = page.getByText(/(ينتظر|ينتظران|تنتظر) الاتصال/).first();
   await expect(waiting).toBeVisible({ timeout: 10_000 });
@@ -57,7 +57,7 @@ test('a visitor who taps «فعّل التنبيه» can continue as the demo pa
   await freshStart(page, '/medicine/levothyroxine-100?gov=gaza');
   await page.getByRole('button', { name: 'فعّل التنبيه' }).click();
   await page.getByRole('button', { name: 'المتابعة بحساب المريض التجريبي' }).click();
-  await expect(page.getByText('سنرسل لك إشعارًا عند التوفر').first()).toBeVisible();
+  await expect(page.getByText('سنرسل لك إشعارًا عند الإبلاغ عن توفره').first()).toBeVisible();
 });
 
 const LEVO = `/pharmacy-portal/update?filter=all&q=${encodeURIComponent('ليفوثيروكسين 100')}`;

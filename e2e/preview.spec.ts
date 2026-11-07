@@ -9,7 +9,7 @@ test('the pharmacy owner previews the pharmacy page from the dashboard', async (
   await page.goto('/pharmacy-portal', { waitUntil: 'networkidle' });
   await page.getByRole('link', { name: 'معاينة كما يراها المريض' }).click();
   const panel = page.getByRole('dialog');
-  await expect(panel.getByText('معاينة: هكذا يرى المريض صفحتك')).toBeVisible();
+  await expect(panel.getByText('معاينة: هكذا يرى المرضى صفحتك')).toBeVisible();
   await expect(panel.locator('h1').first()).toHaveText('صيدلية النور');
   await expect(page.locator('iframe')).toHaveCount(0);
 });

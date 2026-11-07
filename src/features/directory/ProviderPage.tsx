@@ -94,7 +94,7 @@ export default function ProviderPage({ previewId }: { previewId?: string } = {})
                   <BadgeCheck aria-hidden className="size-4 text-ok-icon" />
                   {t('dir.verified')}
                 </span>
-                <OpenNowBadge open={isOpenNow(p.hours, now)} />
+                <OpenNowBadge open={isOpenNow(p.hours, now)} masculine={p.type === 'hospital'} />
               </div>
               <p className="text-meta text-ink-muted">{t(`orgTypes.${p.type}`)}</p>
             </div>
@@ -107,8 +107,10 @@ export default function ProviderPage({ previewId }: { previewId?: string } = {})
           )}
           <p className="flex items-start gap-2 text-ink-muted">
             <MapPin aria-hidden className="mt-1 size-4 shrink-0" />
+            {/* Area, then the address as the organization wrote it: on one line the city often read twice. */}
             <span>
-              {area(p)} — {p.addressText}
+              <span className="block text-ink">{area(p)}</span>
+              <span className="block">{p.addressText}</span>
             </span>
           </p>
           <p className="flex items-center gap-2">

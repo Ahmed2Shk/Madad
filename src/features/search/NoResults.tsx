@@ -5,7 +5,8 @@ import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { buttonClass, useToast } from '../../components/ui';
 import { governorateById, type GovFilter, type Medicine } from '../../data';
-import { useCreateAlert, useSubmitReport } from '../../data/queries';
+import { useCatalog, useCreateAlert, useSubmitReport } from '../../data/queries';
+import { closeMatches } from '../../lib/search';
 import { useLang } from '../../hooks/useLang';
 import { cn } from '../../lib/cn';
 import { ReportDialog } from '../account/ReportDialog';
@@ -133,8 +134,12 @@ export function NotReported({ medicine, gov, allGovsUrl }: { medicine: Medicine;
 }
 
 /** The query matched nothing in the catalog. */
-export function UnknownMedicine({ query }: { query: string }) {
+export function UnknownMedicine({ query, gov }: { query: string; gov: GovFilter }) {
   const { t } = useTranslation();
+  const { pick, strength } = useLang();
+  const catalog = useCatalog();
+  // «هل تقصد؟»: close names for the user to choose from; similar names can be different medicines.
+  const close = catalog.data ? closeMatches(catalog.data.medicines, query, 3) : [];
   const toast = useToast();
   const submit = useSubmitReport();
   const [sent, setSent] = useState(false);
@@ -152,6 +157,24 @@ export function UnknownMedicine({ query }: { query: string }) {
       </span>
       <h2 className="text-page mt-4">{t('noResults.unknownTitle')}</h2>
       <p className="mt-2 text-ink-muted">{t('noResults.unknownHint')}</p>
+      {close.length > 0 && (
+        <div className="mx-auto mt-6 max-w-sm text-start">
+          <h3 className="font-semibold">{t('search.didYouMean')}</h3>
+          <ul className="rise-children mt-2 space-y-2">
+            {close.map((m) => (
+              <li key={m.id}>
+                <Link to={`/medicine/${m.id}?gov=${gov}`} className="lift block rounded-card border border-border bg-surface px-4 py-3 hover:border-secondary">
+                  <span className="font-medium">{pick(m)}</span>
+                  <span className="block text-meta text-ink-muted">
+                    <bdi dir="ltr">{m.genericName}</bdi>
+                    {m.strength && <> · {strength(m)}</>}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       <div className="mx-auto mt-6 max-w-sm">
         <ActionCard
           icon={Lightbulb}

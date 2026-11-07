@@ -121,7 +121,7 @@ export default function DirectoryPage() {
                           <BadgeCheck aria-hidden className="size-4 text-ok-icon" />
                           {t('dir.verified')}
                         </span>
-                        <OpenNowBadge open={isOpenNow(p.hours, now)} />
+                        <OpenNowBadge open={isOpenNow(p.hours, now)} masculine={p.type === 'hospital'} />
                       </div>
                       <p className="flex items-center gap-1 text-meta text-ink-muted">
                         <MapPin aria-hidden className="size-4" />

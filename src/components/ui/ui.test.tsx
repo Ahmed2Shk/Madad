@@ -10,8 +10,8 @@ describe('StatusBadge', () => {
   const cases: [BadgeStatus, string][] = [
     ['available', 'متوفر'],
     ['limited', 'كمية محدودة'],
-    ['needs_update', 'يحتاج تحديث'],
-    ['unconfirmed', 'غير مؤكد'],
+    ['needs_update', 'يحتاج إلى تحديث'],
+    ['unconfirmed', 'لم يتم تأكيد التوفر'],
     ['unavailable', 'غير متوفر'],
     ['pending_review', 'قيد المراجعة'],
   ];

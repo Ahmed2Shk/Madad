@@ -157,7 +157,7 @@ export default function SearchPage() {
           <CardSkeleton />
         </div>
       ) : search.data?.length === 0 ? (
-        <UnknownMedicine query={q} />
+        <UnknownMedicine query={q} gov={gov} />
       ) : hits.length === 0 ? (
         filters.today || filters.openNow ? (
           <EmptyState icon={Info} title={t('filters.noneMatch')} body={t('filters.noneMatchBody')} />

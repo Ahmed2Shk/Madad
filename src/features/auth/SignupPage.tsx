@@ -51,7 +51,7 @@ export default function SignupPage() {
         <Field label={t('account.name')} error={err('displayName')}>
           <input autoComplete="name" className={inputClass} {...register('displayName')} />
         </Field>
-        <Field label={t('account.email')} error={err('email')}>
+        <Field label={t('account.email')} hint={t('auth.emailWhy')} error={err('email')}>
           <input type="email" autoComplete="email" dir="ltr" className={inputClass} {...register('email')} />
         </Field>
         <Field label={t('auth.password')} hint={t('auth.passwordHint')} error={err('password')}>

@@ -30,12 +30,13 @@ export function HoursList({ hours }: { hours: Hours }) {
   );
 }
 
-export function OpenNowBadge({ open }: { open: boolean | null }) {
+/** «مفتوحة/مغلقة الآن»; `masculine` for a hospital («المستشفى مفتوح»). */
+export function OpenNowBadge({ open, masculine = false }: { open: boolean | null; masculine?: boolean }) {
   const { t } = useTranslation();
   if (open === null) return null;
   return (
     <span className={open ? 'text-meta font-medium text-ok-text' : 'text-meta font-medium text-bad-text'}>
-      {open ? t('hours.openNow') : t('hours.closedNow')}
+      {open ? t(masculine ? 'hours.openNowM' : 'hours.openNow') : t(masculine ? 'hours.closedNowM' : 'hours.closedNow')}
     </span>
   );
 }
