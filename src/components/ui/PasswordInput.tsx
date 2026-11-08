@@ -8,8 +8,9 @@ export const PasswordInput = forwardRef<HTMLInputElement, InputHTMLAttributes<HT
   const { t } = useTranslation();
   const [show, setShow] = useState(false);
   return (
-    <div className="relative">
-      <input ref={ref} type={show ? 'text' : 'password'} dir="ltr" className={`${inputClass} pe-12`} {...props} />
+    // The wrapper shares the input's LTR direction, so the eye button and the space kept for it are on the same side.
+    <div className="relative" dir="ltr">
+      <input ref={ref} type={show ? 'text' : 'password'} className={`${inputClass} pe-12`} {...props} />
       <button
         type="button"
         onClick={() => setShow((v) => !v)}
